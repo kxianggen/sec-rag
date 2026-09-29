@@ -33,3 +33,7 @@
 
 8. **AMD chunk returned for an NVIDIA-only question** (rank 2, 0.574).
    Retrieval ignores the company named in the question. (→ T05/T06)
+
+9. **T01b – Intel still broken, now silently.** Last "Item 1" is in the end-of-doc lookup
+   table, so all 23 sections are one-line index entries. Item list looks perfect; text is
+   empty. Needs a different approach (plain-title headings or the lookup table).

@@ -38,23 +38,28 @@ def html_to_text(html: str) -> str:
 
 
 def split_items(text: str) -> list[dict]:
-    """Split the text at every Item heading.
+    """Split the text into Item sections.
 
-    The table of contents also contains every heading, packed close together,
-    so any "section" shorter than 1,000 characters is treated as a TOC entry
-    and thrown away.
+    Every heading appears twice: once in the table of contents, once in the body.
+    The body starts at the last "Item 1", so every match before it is ignored.
     """
     matches = list(ITEM_RE.finditer(text))
+
+    body_start = None
+    for i, m in enumerate(matches):
+        if m.group(1) == "1":
+            body_start = i
+    if body_start is None:
+        return []
+    matches = matches[body_start:]
+
     sections = []
     for i, m in enumerate(matches):
         start = m.start()
         end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
         body = text[start:end].strip()
-        if len(body) < 1000:
-            continue
         sections.append({"item": m.group(1).upper(), "text": body})
     return sections
-
 
 def main():
     index = json.loads((RAW / "index.json").read_text(encoding="utf-8"))
