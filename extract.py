@@ -34,6 +34,8 @@ def html_to_text(html: str) -> str:
     text = text.replace("\xa0", " ")
     text = re.sub(r"[ \t]+", " ", text)
     text = re.sub(r"\n\s*\n+", "\n\n", text)
+    text = re.sub(r"\n\d{1,3}\nTable of Contents\n", "\n", text)
+    text = re.sub(r"\nTable of Contents\n", "\n", text)
     return text.strip()
 
 

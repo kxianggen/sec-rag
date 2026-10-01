@@ -37,3 +37,6 @@
 9. **T01b – Intel still broken, now silently.** Last "Item 1" is in the end-of-doc lookup
    table, so all 23 sections are one-line index entries. Item list looks perfect; text is
    empty. Needs a different approach (plain-title headings or the lookup table).
+
+10. **T02 rule only catches "number + Table of Contents" pairs.** QCOM (0 found), AMD 2025 (1),
+    MRVL 2024 (6) likely still have bare page numbers. Needs a per-company check.
