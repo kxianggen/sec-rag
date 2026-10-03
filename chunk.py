@@ -3,7 +3,11 @@
 Reads  data/text/<TICKER>/<period_end>.json
 Writes data/chunks.jsonl   (one JSON object per line)
 
-chunks overlap by CHUNK_OVERLAP characters
+Chunks are packed from whole lines (each line is one paragraph in the
+extracted text), up to CHUNK_SIZE characters, so no chunk starts or ends
+mid-word. A line longer than CHUNK_SIZE is first split at spaces.
+
+chunk_text() (fixed size + overlap) is kept for comparison in Experiment 1.
 """
 
 import json
@@ -16,7 +20,43 @@ CHUNK_OVERLAP = 150
 
 
 def chunk_text(text: str, size: int, overlap: int) -> list[str]:
+    if size - overlap <=0:
+        raise ValueError(f"overlap ({overlap}) must be smaller than size ({size})")
     return [text[i:i + size] for i in range(0, len(text), size - overlap)]
+
+def pack(pieces: list[str], size: int, sep: str) -> list[str]:
+    chunks = []
+    current: str = ""
+
+    for piece in pieces:
+        if current == "":
+            current = piece
+        elif len(current) + len(sep) + len(piece) <= size:
+            current += sep + piece
+        else:
+            chunks.append(current)
+            current = piece
+
+    if current:
+        chunks.append(current)
+
+    return chunks
+
+def chunk_by_paragraph(text: str, size: int) -> list[str]:
+    pieces = []
+    for line in text.split("\n"):
+
+        if not line.strip():
+            continue
+
+        if len(line) <= size:
+            pieces.append(line)
+        else:
+            words = line.split(" ")
+            parts = pack(words, size, " ")
+            pieces.extend(parts)
+    
+    return pack(pieces, size, "\n")
 
 
 def main():
@@ -25,7 +65,7 @@ def main():
         for path in sorted(TEXT.glob("*/*.json")):
             filing = json.loads(path.read_text(encoding="utf-8"))
             for section in filing["sections"]:
-                for i, piece in enumerate(chunk_text(section["text"], CHUNK_SIZE, CHUNK_OVERLAP)):
+                for i, piece in enumerate(chunk_by_paragraph(section["text"], CHUNK_SIZE)):
                     chunk = {
                         "id": f"{filing['ticker']}-{filing['period_end']}-{section['item']}-{i}",
                         "ticker": filing["ticker"],
