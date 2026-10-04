@@ -29,12 +29,19 @@ def _load():
         _vectors = np.load(VECTORS)
 
 
-def retrieve(question: str, k: int = 5) -> list[dict]:
+def retrieve(question: str, k: int = 5, ticker: str | None = None) -> list[dict]:
     _load()
     q = _model.encode([question], normalize_embeddings=True)[0]
     scores = _vectors @ q                     # cosine similarity: vectors are normalised
-    top = np.argsort(scores)[::-1][:k]
-    return [{**_chunks[i], "score": float(scores[i])} for i in top]
+    top = np.argsort(scores)[::-1]
+    results = []
+    for i in top:
+        if ticker and _chunks[i]["ticker"] != ticker:
+            continue
+        results.append({**_chunks[i], "score":float(scores[i])})
+        if len(results) == k:
+            break
+    return results
 
 
 if __name__ == "__main__":
