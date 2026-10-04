@@ -13,6 +13,7 @@ import sys
 from dotenv import load_dotenv
 
 from retrieve import retrieve
+from companies import detect_ticker
 
 load_dotenv()
 
@@ -51,7 +52,9 @@ def main():
     if not question:
         sys.exit('Usage: uv run python ask.py "your question"')
 
-    chunks = retrieve(question, k=5)
+    ticker = detect_ticker(question)
+    chunks = retrieve(question, k=5, ticker=ticker)
+    print(f"\nCOMPANY FILTER: {ticker or 'none (searching all companies)'}")
     answer = call_llm(build_prompt(question, chunks))
 
     print("\nANSWER\n" + (answer or "(no API key set — showing retrieved chunks only)"))

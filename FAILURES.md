@@ -40,3 +40,7 @@
 
 10. **T02 rule only catches "number + Table of Contents" pairs.** QCOM (0 found), AMD 2025 (1),
     MRVL 2024 (6) likely still have bare page numbers. Needs a per-company check.
+
+11. No citations. The answer never says which of the five sources each claim came from. A reader can't check "the NAC process has not resulted in approvals" against anything. → T07 (grounded prompt: cite [1]–[5], and refuse if the answer isn't in the excerpts).
+
+12. Three fiscal years blended into one story. The sources span FY2024, FY2025 and FY2026, but the answer reads as if everything is current. Point 4 (A100/H100 restrictions) most likely comes from the 2024 filing (source [2] or [5]). → T08 (fiscal year awareness).
