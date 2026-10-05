@@ -23,7 +23,16 @@ def build_prompt(question: str, chunks: list[dict]) -> str:
         f"[{i}] {c['ticker']} 10-K, period ending {c['period_end']}, Item {c['item']}\n{c['text']}"
         for i, c in enumerate(chunks, 1)
     )
-    return f"Here are excerpts from SEC filings:\n\n{context}\n\nQuestion: {question}"
+    return f"""You answer questions about companies' SEC 10-K filings. Follow these rules:
+1. Use only the numbered excerpts below. Do not use outside knowledge, even if you know the answer.
+2. After every claim, cite the excerpt it came from, like [1] or [2][3].
+3. When you state a fact, say which company and which fiscal period it comes from.
+4. If the excerpts do not contain the answer, reply exactly: Not in the filings.
+
+    Excerpts:
+    {context}
+
+    Question: {question}"""
 
 
 def call_llm(prompt: str) -> str | None:

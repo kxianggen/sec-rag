@@ -38,7 +38,7 @@ def retrieve(question: str, k: int = 5, ticker: str | None = None) -> list[dict]
     for i in top:
         if ticker and _chunks[i]["ticker"] != ticker:
             continue
-        results.append({**_chunks[i], "score":float(scores[i])})
+        results.append({**_chunks[i], "score": float(scores[i])})
         if len(results) == k:
             break
     return results

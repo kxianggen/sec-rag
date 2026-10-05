@@ -20,7 +20,7 @@ CHUNK_OVERLAP = 150
 
 
 def chunk_text(text: str, size: int, overlap: int) -> list[str]:
-    if size - overlap <=0:
+    if size - overlap <= 0:
         raise ValueError(f"overlap ({overlap}) must be smaller than size ({size})")
     return [text[i:i + size] for i in range(0, len(text), size - overlap)]
 
