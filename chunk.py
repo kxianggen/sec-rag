@@ -70,6 +70,7 @@ def main():
                         "id": f"{filing['ticker']}-{filing['period_end']}-{section['item']}-{i}",
                         "ticker": filing["ticker"],
                         "period_end": filing["period_end"],
+                        "fiscal_year": filing["fiscal_year"],
                         "item": section["item"],
                         "url": filing["url"],
                         "text": piece,

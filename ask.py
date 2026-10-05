@@ -13,14 +13,14 @@ import sys
 from dotenv import load_dotenv
 
 from retrieve import retrieve
-from companies import detect_ticker
+from companies import detect_ticker, detect_fiscal_year
 
 load_dotenv()
 
 
 def build_prompt(question: str, chunks: list[dict]) -> str:
     context = "\n\n".join(
-        f"[{i}] {c['ticker']} 10-K, period ending {c['period_end']}, Item {c['item']}\n{c['text']}"
+                f"[{i}] {c['ticker']} 10-K, fiscal {c['fiscal_year']} (period ending {c['period_end']}), Item {c['item']}\n{c['text']}"
         for i, c in enumerate(chunks, 1)
     )
     return f"""You answer questions about companies' SEC 10-K filings. Follow these rules:
@@ -29,10 +29,10 @@ def build_prompt(question: str, chunks: list[dict]) -> str:
 3. When you state a fact, say which company and which fiscal period it comes from.
 4. If the excerpts do not contain the answer, reply exactly: Not in the filings.
 
-    Excerpts:
-    {context}
+Excerpts:
+{context}
 
-    Question: {question}"""
+Question: {question}"""
 
 
 def call_llm(prompt: str) -> str | None:
@@ -62,8 +62,10 @@ def main():
         sys.exit('Usage: uv run python ask.py "your question"')
 
     ticker = detect_ticker(question)
-    chunks = retrieve(question, k=5, ticker=ticker)
+    fy = detect_fiscal_year(question)
+    chunks = retrieve(question, k=5, ticker=ticker, fiscal_year=fy)
     print(f"\nCOMPANY FILTER: {ticker or 'none (searching all companies)'}")
+    print(f"FISCAL YEAR FILTER: {fy or 'none (all years)'}")
     answer = call_llm(build_prompt(question, chunks))
 
     print("\nANSWER\n" + (answer or "(no API key set — showing retrieved chunks only)"))

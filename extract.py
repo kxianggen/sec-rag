@@ -22,6 +22,15 @@ OUT = Path("data/text")
 ITEM_RE = re.compile(
     r"(?im)^[ \t]*item[\s\xa0]+(1a|1b|1c|1|2|3|4|5|6|7a|7|8|9a|9b|9c|9|10|11|12|13|14|15|16)\b\.?"
 )
+# The company's own label for the fiscal year, from the filing's hidden XBRL tags,
+# e.g. <ix:nonNumeric name="dei:DocumentFiscalYearFocus" ...>2026</ix:nonNumeric>
+FY_RE = re.compile(r'DocumentFiscalYearFocus"[^>]*>\s*(\d{4})\s*<')
+
+
+def fiscal_year(html: str, period_end: str) -> int:
+    """Fiscal year as the company labels it; falls back to the year of period_end."""
+    m = FY_RE.search(html)
+    return int(m.group(1)) if m else int(period_end[:4])
 
 
 def html_to_text(html: str) -> str:
@@ -68,15 +77,17 @@ def main():
     for filing in index:
         ticker, period = filing["ticker"], filing["period_end"]
         src = RAW / ticker / f"{period}.html"
-        text = html_to_text(src.read_text(encoding="utf-8"))
+        html = src.read_text(encoding="utf-8")
+        fy = fiscal_year(html, period)
+        text = html_to_text(html)
         sections = split_items(text)
 
         out = OUT / ticker / f"{period}.json"
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(json.dumps({**filing, "sections": sections}, indent=1), encoding="utf-8")
+        out.write_text(json.dumps({**filing, "fiscal_year": fy, "sections": sections}, indent=1), encoding="utf-8")
 
         found = ", ".join(s["item"] for s in sections)
-        print(f"{ticker} {period}  {len(text):>8,} chars  items: {found}")
+        print(f"{ticker} FY{fy} (ends {period})  {len(text):>8,} chars  items: {found}")
 
 
 if __name__ == "__main__":
