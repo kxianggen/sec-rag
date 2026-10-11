@@ -13,7 +13,7 @@ import sys
 from dotenv import load_dotenv
 
 from retrieve import retrieve
-from companies import detect_ticker, detect_fiscal_year
+from companies import detect_ticker, detect_fiscal_years
 
 load_dotenv()
 
@@ -62,10 +62,10 @@ def main():
         sys.exit('Usage: uv run python ask.py "your question"')
 
     ticker = detect_ticker(question)
-    fy = detect_fiscal_year(question)
-    chunks = retrieve(question, k=5, ticker=ticker, fiscal_year=fy)
+    years = detect_fiscal_years(question)
+    chunks = retrieve(question, k=5, ticker=ticker, fiscal_years=years)
     print(f"\nCOMPANY FILTER: {ticker or 'none (searching all companies)'}")
-    print(f"FISCAL YEAR FILTER: {fy or 'none (all years)'}")
+    print(f"FISCAL YEAR FILTER: {years or 'none (all years)'}")
     answer = call_llm(build_prompt(question, chunks))
 
     print("\nANSWER\n" + (answer or "(no API key set — showing retrieved chunks only)"))

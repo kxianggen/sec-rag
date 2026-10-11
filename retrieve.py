@@ -29,7 +29,7 @@ def _load():
         _vectors = np.load(VECTORS)
 
 
-def retrieve(question: str, k: int = 5, ticker: str | None = None, fiscal_year: int | None = None) -> list[dict]:
+def retrieve(question: str, k: int = 5, ticker: str | None = None, fiscal_years: list[int] | None = None) -> list[dict]:
     _load()
     q = _model.encode([question], normalize_embeddings=True)[0]
     scores = _vectors @ q                     # cosine similarity: vectors are normalised
@@ -38,7 +38,7 @@ def retrieve(question: str, k: int = 5, ticker: str | None = None, fiscal_year: 
     for i in top:
         if ticker and _chunks[i]["ticker"] != ticker:
             continue
-        if fiscal_year and _chunks[i]["fiscal_year"] != fiscal_year:
+        if fiscal_years and _chunks[i]["fiscal_year"] not in fiscal_years:
             continue
         results.append({**_chunks[i], "score": float(scores[i])})
         if len(results) == k:

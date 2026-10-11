@@ -15,7 +15,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from ask import build_prompt, call_llm
-from companies import detect_fiscal_year, detect_ticker
+from companies import detect_fiscal_years, detect_ticker
 from metrics import is_refusal, refusal_correct, source_recall
 from retrieve import retrieve
 
@@ -29,14 +29,14 @@ def run(k: int, use_llm: bool) -> list[dict]:
             continue
         g = json.loads(line)
         ticker = detect_ticker(g["question"])
-        fy = detect_fiscal_year(g["question"])
-        chunks = retrieve(g["question"], k=k, ticker=ticker, fiscal_year=fy)
+        years = detect_fiscal_years(g["question"])
+        chunks = retrieve(g["question"], k=k, ticker=ticker, fiscal_years=years)
         answer = call_llm(build_prompt(g["question"], chunks)) if use_llm else None
         rows.append({
             "n": n,
             "type": g["type"],
             "question": g["question"],
-            "filters": {"ticker": ticker, "fiscal_year": fy},
+            "filters": {"ticker": ticker, "fiscal_years": years},
             "retrieved": [f"{c['ticker']} {c['period_end']} Item {c['item']}" for c in chunks],
             "recall": source_recall(g["sources"], chunks),
             "answer": answer,
