@@ -36,3 +36,29 @@ def refusal_correct(answer: str, expected: str) -> bool:
         return True
     else:
         return False
+
+def verdict_score(verdict: str) -> float | None:
+    """'correct' -> 1.0, 'partial' -> 0.5, 'incorrect' -> 0.0, anything else -> None."""
+    if verdict == 'correct':
+        return 1.0
+    elif verdict == 'partial':
+        return 0.5
+    elif verdict == 'incorrect':
+        return 0.0
+    else:
+        return None
+
+def agreement(human: dict[int, str], judged: dict[int, str]) -> float | None:
+    """Of the questions BOTH graded, the fraction where the verdicts match. None if none shared."""
+    if not human:
+        return None
+    count = 0
+    shared_question = 0
+    for n in human:
+        if n in judged:
+            shared_question += 1
+            if human[n] == judged[n]:
+                count += 1
+    if shared_question == 0:
+        return None
+    return count/shared_question

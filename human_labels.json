@@ -1,0 +1,8 @@
+{
+  "_note": "Your own verdicts on T12 answers (decided in T13 calibration). Used to check the judge.",
+  "1": "correct",
+  "2": "partial",
+  "3": "partial",
+  "6": "incorrect",
+  "7": "incorrect"
+}
