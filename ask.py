@@ -13,7 +13,7 @@ import sys
 from dotenv import load_dotenv
 
 from retrieve import retrieve_multi
-from companies import detect_fiscal_years, detect_tickers
+from companies import detect_fiscal_years, detect_latest, detect_tickers
 
 load_dotenv()
 
@@ -63,9 +63,10 @@ def main():
 
     tickers = detect_tickers(question)
     years = detect_fiscal_years(question)
-    chunks = retrieve_multi(question, k=5, tickers=tickers, fiscal_years=years)
+    latest = detect_latest(question)
+    chunks = retrieve_multi(question, k=5, tickers=tickers, fiscal_years=years, latest=latest)
     print(f"\nCOMPANY FILTER: {tickers or 'none (searching all companies)'}")
-    print(f"FISCAL YEAR FILTER: {years or 'none (all years)'}")
+    print(f"FISCAL YEAR FILTER: {years or ('latest filing per company' if latest else 'none (all years)')}")
     answer = call_llm(build_prompt(question, chunks))
 
     print("\nANSWER\n" + (answer or "(no API key set — showing retrieved chunks only)"))

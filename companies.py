@@ -64,3 +64,15 @@ def detect_fiscal_years(question: str) -> list[int]:
             if year not in years:
                 years.append(year)
     return years
+
+
+LATEST_RE = re.compile(r"\b(?:latest|most recent|newest)\b", re.IGNORECASE)
+
+
+def detect_latest(question: str) -> bool:
+    """True if the question asks about the 'latest' / 'most recent' / 'newest' filing.
+
+    'Which reported higher net income in its latest fiscal year?'  -> True
+    'What was NVIDIA's revenue in fiscal 2026?'                   -> False
+    """
+    return bool(LATEST_RE.search(question))

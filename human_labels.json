@@ -1,8 +1,11 @@
 {
-  "_note": "Your own verdicts on T12 answers (decided in T13 calibration). Used to check the judge.",
+  "_note": "Your own verdicts on the T12 answers (results/t12.json). Used to check the judge. Q3 = Claude's call (accounting).",
   "1": "correct",
   "2": "partial",
   "3": "partial",
+  "5": "correct",
   "6": "incorrect",
-  "7": "incorrect"
+  "7": "incorrect",
+  "8": "partial",
+  "10": "partial"
 }

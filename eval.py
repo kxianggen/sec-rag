@@ -15,7 +15,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from ask import build_prompt, call_llm
-from companies import detect_fiscal_years, detect_tickers
+from companies import detect_fiscal_years, detect_latest, detect_tickers
 from judge import judge
 from metrics import agreement, is_refusal, refusal_correct, source_recall, verdict_score
 from retrieve import retrieve_multi
@@ -32,14 +32,15 @@ def run(k: int, use_llm: bool) -> list[dict]:
         g = json.loads(line)
         tickers = detect_tickers(g["question"])
         years = detect_fiscal_years(g["question"])
-        chunks = retrieve_multi(g["question"], k=k, tickers=tickers, fiscal_years=years)
+        latest = detect_latest(g["question"])
+        chunks = retrieve_multi(g["question"], k=k, tickers=tickers, fiscal_years=years, latest=latest)
         answer = call_llm(build_prompt(g["question"], chunks)) if use_llm else None
         graded = judge(g["question"], g["answer"], answer) if answer is not None else None
         rows.append({
             "n": n,
             "type": g["type"],
             "question": g["question"],
-            "filters": {"tickers": tickers, "fiscal_years": years},
+            "filters": {"tickers": tickers, "fiscal_years": years, "latest": latest},
             "retrieved": [f"{c['ticker']} {c['period_end']} Item {c['item']}" for c in chunks],
             "recall": source_recall(g["sources"], chunks),
             "answer": answer,
@@ -74,7 +75,7 @@ def fmt(x) -> str:
     return f"{x:5.2f}"
 
 
-def report(rows: list[dict], k: int) -> None:
+def report(rows: list[dict], k: int, rejudged: bool = False) -> None:
     print(f"\n#   type           recall@{k}  refusal ok  verdict     question")
     for r in rows:
         v = r.get("verdict") or "-"
@@ -93,7 +94,9 @@ def report(rows: list[dict], k: int) -> None:
         sc = f"{sum(scores) / len(scores):.2f}" if scores else "  -"
         print(f"{t:<14} {len(rs):<3} {mean:>8}          {ok:>5}        {sc:>5}")
 
-    if HUMAN.exists() and any(r.get("verdict") for r in rows):
+    # Your labels were made on ONE set of saved answers (results/t12.json), so the comparison
+    # is only valid when the judge grades those same answers: i.e. with --rejudge.
+    if rejudged and HUMAN.exists() and any(r.get("verdict") for r in rows):
         human = {int(n): v for n, v in json.loads(HUMAN.read_text(encoding="utf-8")).items() if n.isdigit()}
         judged = {r["n"]: r["verdict"] for r in rows if r.get("verdict")}
         agree = agreement(human, judged)
@@ -113,7 +116,7 @@ def main():
     a = p.parse_args()
 
     rows = rejudge(a.rejudge) if a.rejudge else run(a.k, not a.no_llm)
-    report(rows, a.k)
+    report(rows, a.k, rejudged=bool(a.rejudge))
     if a.out:
         a.out.parent.mkdir(parents=True, exist_ok=True)
         a.out.write_text(json.dumps({"k": a.k, "rows": rows}, indent=1, ensure_ascii=False), encoding="utf-8")
