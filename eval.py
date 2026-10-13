@@ -15,9 +15,9 @@ from collections import defaultdict
 from pathlib import Path
 
 from ask import build_prompt, call_llm
-from companies import detect_fiscal_years, detect_ticker
+from companies import detect_fiscal_years, detect_tickers
 from metrics import is_refusal, refusal_correct, source_recall
-from retrieve import retrieve
+from retrieve import retrieve_multi
 
 GOLDEN = Path("golden.jsonl")
 
@@ -28,15 +28,15 @@ def run(k: int, use_llm: bool) -> list[dict]:
         if not line.strip():
             continue
         g = json.loads(line)
-        ticker = detect_ticker(g["question"])
+        tickers = detect_tickers(g["question"])
         years = detect_fiscal_years(g["question"])
-        chunks = retrieve(g["question"], k=k, ticker=ticker, fiscal_years=years)
+        chunks = retrieve_multi(g["question"], k=k, tickers=tickers, fiscal_years=years)
         answer = call_llm(build_prompt(g["question"], chunks)) if use_llm else None
         rows.append({
             "n": n,
             "type": g["type"],
             "question": g["question"],
-            "filters": {"ticker": ticker, "fiscal_years": years},
+            "filters": {"tickers": tickers, "fiscal_years": years},
             "retrieved": [f"{c['ticker']} {c['period_end']} Item {c['item']}" for c in chunks],
             "recall": source_recall(g["sources"], chunks),
             "answer": answer,

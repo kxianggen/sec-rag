@@ -1,10 +1,10 @@
-"""Work out which company a question is about.
+"""Work out which companies and fiscal years a question is about.
 
-detect_ticker("What did Nvidia say about China?")  ->  "NVDA"
-detect_ticker("Compare AMD and Intel margins")     ->  None   (two companies)
-detect_ticker("What are the risks from tariffs?")  ->  None   (no company)
+detect_tickers("What did Nvidia say about China?")       ->  ["NVDA"]
+detect_tickers("Compare AMD and Nvidia net income")      ->  ["AMD", "NVDA"]   (order of mention)
+detect_tickers("What are the risks from tariffs?")       ->  []
 
-None means "don't filter": retrieve() then searches every company.
+An empty list means "don't filter": retrieval then searches every company.
 """
 
 import re
@@ -20,17 +20,17 @@ ALIASES = {
 }
 
 
-def detect_ticker(question: str) -> str | None:
+def detect_tickers(question: str) -> list[str]:
+    """Every company the question names, in the order they are first mentioned."""
     q = question.lower()
-    found = set()
+    first_seen = {}
     for ticker, names in ALIASES.items():
         for name in names:
-            if re.search(r"\b" + re.escape(name) + r"\b", q):
-                found.add(ticker)
-                break
-    if len(found) == 1:
-        return found.pop()
-    return None
+            m = re.search(r"\b" + re.escape(name) + r"\b", q)
+            if m and (ticker not in first_seen or m.start() < first_seen[ticker]):
+                first_seen[ticker] = m.start()
+    return sorted(first_seen, key=first_seen.get)
+
 
 # "fiscal 2025", "fiscal year 2025", "fiscal years 2024 and 2026", "FY2025", "FY 25", "FY'25",
 # plus 4-digit years chained right after one: "fiscal 2024 to 2026", "FY2023, 2024 and 2025".

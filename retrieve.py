@@ -45,6 +45,18 @@ def retrieve(question: str, k: int = 5, ticker: str | None = None, fiscal_years:
             break
     return results
 
+def retrieve_multi(question: str, k: int = 5, tickers: list[str] | None = None, fiscal_years: list[int] | None = None)-> list[dict]:
+    if not tickers:
+        return retrieve(question, k, ticker=None, fiscal_years=fiscal_years)
+    if len(tickers) == 1:
+        return retrieve(question, k, ticker=tickers[0], fiscal_years=fiscal_years)
+    else:
+        per_company = max(1, k//len(tickers))
+        results = []
+        for t in tickers:
+            results.extend(retrieve(question, ticker=t, k=per_company, fiscal_years=fiscal_years))
+    return results
+
 
 if __name__ == "__main__":
     import sys

@@ -12,8 +12,8 @@ import sys
 
 from dotenv import load_dotenv
 
-from retrieve import retrieve
-from companies import detect_ticker, detect_fiscal_years
+from retrieve import retrieve_multi
+from companies import detect_fiscal_years, detect_tickers
 
 load_dotenv()
 
@@ -61,10 +61,10 @@ def main():
     if not question:
         sys.exit('Usage: uv run python ask.py "your question"')
 
-    ticker = detect_ticker(question)
+    tickers = detect_tickers(question)
     years = detect_fiscal_years(question)
-    chunks = retrieve(question, k=5, ticker=ticker, fiscal_years=years)
-    print(f"\nCOMPANY FILTER: {ticker or 'none (searching all companies)'}")
+    chunks = retrieve_multi(question, k=5, tickers=tickers, fiscal_years=years)
+    print(f"\nCOMPANY FILTER: {tickers or 'none (searching all companies)'}")
     print(f"FISCAL YEAR FILTER: {years or 'none (all years)'}")
     answer = call_llm(build_prompt(question, chunks))
 
