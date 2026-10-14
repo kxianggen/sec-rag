@@ -110,7 +110,7 @@ def report(rows: list[dict], k: int, rejudged: bool = False) -> None:
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--k", type=int, default=5)
+    p.add_argument("--k", type=int, default=10)   # Experiment 2: k=10 chosen
     p.add_argument("--no-llm", action="store_true")
     p.add_argument("--out", type=Path)
     p.add_argument("--rejudge", type=Path, help="grade the answers saved in this results file")

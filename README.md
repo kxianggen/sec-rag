@@ -9,7 +9,7 @@ filings, cite their sources, and say "Not in the filings." when the answer isn't
 ## Results
 
 Measured on 12 hand-written golden questions (10 answerable + 2 unanswerable) with
-`eval.py`. Retrieval: top 5 chunks. Answers graded by an LLM judge (see below).
+`eval.py`. Answers graded by an LLM judge (see below).
 
 | Stage | Change | Recall@5 | Refusal ok | Answer score |
 |---|---|---|---|---|
@@ -17,9 +17,10 @@ Measured on 12 hand-written golden questions (10 answerable + 2 unanswerable) wi
 | T11 | detect every fiscal year in the question | 0.60 | 10/12 | — |
 | T12 | retrieve per company for cross-company questions | 0.65 | 12/12 | — |
 | T14 | "latest fiscal year" → each company's newest filing | 0.65 | 10/12 | 0.62 |
+| Exp 2 (current) | 10 chunks instead of 5 | 0.80 @10 | 12/12 | 0.67 |
 
-- **Recall@5:** share of the golden source passages (company + filing + section) found in
-  the top 5 chunks, averaged over answerable questions.
+- **Recall@k:** share of the golden source passages (company + filing + section) found in
+  the top k chunks (k = 5 until Experiment 2, then 10), averaged over answerable questions.
 - **Refusal ok:** answered when it should, refused when it should.
 - **Answer score:** correct = 1, partial = 0.5, incorrect = 0, graded against the golden
   answer.
@@ -44,6 +45,25 @@ refused (Q4, recall 1.00 but "Not in the filings."). Number questions suffered m
 recall 0.33 → 0.00). Caveats: 12 questions is a small set, where one question moves the
 score by about 0.1, and paragraph chunks are also shorter on average (8,504 vs 6,953
 chunks), so chunk length changed slightly too.
+
+### Experiment 2 — does the model need more context?
+
+| Chunks per question | Answer score | Refusal ok | Prompt size |
+|---|---|---|---|
+| 5 | 0.62 | 10/12 | 1× |
+| **10** | **0.67** | **12/12** | ~2× |
+
+With 5 chunks, the two cross-company questions get only 2 chunks per company and refuse.
+With 10, every answerable question gets an answer. (Recall rises to 0.80, but recall@10 vs
+recall@5 isn't a fair comparison: more slots, more chances.) The answer-score gain comes
+from one question: Micron's gross margin is now quoted exactly ("40%") instead of
+recomputed ("≈39.8%"). The cross-company questions still miss: for AMD vs NVIDIA net income
+the model now gives NVIDIA's correct figure and says AMD's isn't in the excerpts, which is
+better than inventing it (an earlier run did) or refusing, but still graded incorrect.
+The missing piece is one specific table row, which suggests keyword search (BM25) next.
+Decision: **k = 10**. At this scale the extra cost is negligible (well under a tenth of a
+US cent per question with gpt-4o-mini) and answers are more complete and more honest; at
+production volume the 2× prompt size would need weighing against that small gain.
 
 ### Can the judge be trusted?
 
