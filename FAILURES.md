@@ -169,7 +169,8 @@ Question numbers refer to `golden.jsonl`.
 
 27. **Golden set never tests a question with no company in it.** So the "search all
     companies" branch of `retrieve_multi` is untested; a bug there would go unnoticed.
-    Open: add such questions when the golden set grows to 30.
+    ✓ Fixed: the 30-question set has company-less questions (Q27 10%+ customers across the
+    filings; Q28 tariff risks).
 
 28. **Partially answerable questions aren't tested.** A planned unanswerable question ("How
     many H200 chips did NVIDIA ship to China?") was dropped because the filing half-answers
@@ -183,3 +184,51 @@ Question numbers refer to `golden.jsonl`.
     came out after the snapshot — so "latest fiscal year" in the golden set means the newest
     filing *in the corpus*. Keeping the snapshot fixed keeps every result reproducible; a
     live product would need to refresh the corpus and re-check these answers.
+
+## Found on the 30-question set (Experiment 3)
+
+### evaluation
+
+30. **Scores on the original 12 questions were optimistic.** Growing the set to 30 dropped
+    the answer score 0.67 → 0.58: the original 12 scored ~0.71, the 18 new ones ~0.50.
+    I had tuned the system on those 12. ✓ Handled: all later changes are measured on 30.
+
+31. **Answers weren't repeatable.** Generation ran without a set temperature; re-running the
+    30 questions flipped 8 grades (4 up, 4 down) while the total barely moved. ✓ Fixed:
+    answers at temperature 0 (new baseline 0.55). Not fully: one question (NVIDIA vs AMD R&D)
+    still gave a different answer from identical chunks, so a ±1-question change is noise.
+
+32. **Section-level recall can rise without the answer being retrieved (Experiment 3).**
+    Recall checks that a chunk from the right section is in the top 10, not that the chunk
+    holding the answer is. Forcing more sections into the top 10 (the section cap) raised
+    recall 0.68 → 0.87 with no change in answer score; NVIDIA employees went to recall 1.00
+    and still refused. Open: add an "evidence hit" check (does a retrieved chunk contain the
+    golden evidence quote?).
+
+33. **"Refusal ok" improved when an answer got worse (hybrid; Broadcom R&D).** The question
+    went from refusing to a wrong figure ($23,137M vs $10,977M), which counts as "answered
+    when it should". Lesson: read refusal ok together with the answer grade.
+
+### retrieval
+
+34. **Financial-statement notes crowd out prose (Q13, Q19, Q21).** Note tables (Items 8 and
+    15) rank high for almost any number question; for NVIDIA employees, 8 of 10 chunks were
+    Item 15 notes and Item 1 never got in. ✓ Mostly fixed by hybrid search (Q13 answered).
+    Open: the employee questions across two years / two companies still miss Item 1.
+
+35. **The section cap throws out answer chunks (Experiment 3; Q17, Q20, Q22).** It drops the
+    4th chunk of a section whether or not it holds the answer — fine when the answer is in
+    prose, harmful when it sits in a busy section (Micron revenue in Item 8, Qualcomm
+    revenue in Item 7). Not adopted.
+
+### answers
+
+36. **Wrong number picked from a table with the right section retrieved (Q6, Q18, Q23).**
+    E.g. AMD's R&D given as $5,000M or $8.4B instead of $8,091M. Open: results only save
+    section labels, not chunk text, so the source of these numbers can't be traced yet.
+    Hypothesis: flattened tables lose which column is which year.
+
+37. **A prompt rule pushed the model into guessing (Experiment 3, rule 5).** "Use the
+    company-wide total, not a segment's figure" fixed nothing and turned "AMD's net income
+    isn't in the excerpts" into a wrong $3.7B. Not adopted: a rule that demands a number can
+    trade honest refusals for invented figures.
