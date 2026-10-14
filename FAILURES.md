@@ -12,6 +12,9 @@ Open items are still to do; ✓ marks fixed ones.
    stored. Item 16 survives only because it's the last bookmark, so it runs to the end
    and picks up the signatures page (>1,000 chars). → T01
    Open: T01 changed the symptom but not the cause (see #9).
+   **Descoped (14 Oct):** Intel's 10-K is structured differently from the other six
+   (plain titles, no "Item" headings in the body), so section detection can't work on it
+   without a separate approach. The project covers 6 companies; Intel is left out on purpose.
 
 2. **Fake Item 16 listed first (T00; NVDA, MU, AVGO, QCOM, MRVL).** The TOC's last line
    is "Item 16". Its next bookmark is the real Item 1, so it swallows the intro pages
@@ -34,7 +37,7 @@ Open items are still to do; ✓ marks fixed ones.
    lookup table, so all 23 sections are one-line index entries. The item list looks
    perfect; the text is empty. Needs a different approach (plain-title headings or
    the lookup table). → T01b
-   Open.
+   Descoped with #1.
 
 10. **Page-number rule only catches "number + Table of Contents" pairs (T02).** QCOM
     (0 found), AMD 2025 (1) and MRVL 2024 (6) likely still have bare page numbers.
@@ -72,7 +75,7 @@ Open items are still to do; ✓ marks fixed ones.
     FY2025 and FY2026, but the answer reads as if everything is current. The A100/H100
     restrictions most likely come from the FY2024 filing (source [2] or [5]).
     → T08 (fiscal-year awareness).
-    Open.
+    Partly addressed in T08: every excerpt header now states its fiscal year.
 
 13. **Citations bunched at the end (T07).** Rule 2 says cite after every claim, but the
     China answer put one [4][5] block at the end of the paragraph. Readers can't tell
@@ -84,4 +87,86 @@ Open items are still to do; ✓ marks fixed ones.
     (FY2026, highest score 0.575) was not used; the answer cites only FY2025 and FY2024
     and presents older restrictions as the whole story. → T08, plus a golden question
     that checks the latest year is used.
+    ✓ Addressed in T14 for questions that say "latest" (see #17).
+## Found by the eval harness (T10–T14 and Experiment 1)
+
+Question numbers refer to `golden.jsonl`.
+
+### retrieval
+
+15. **Only the first fiscal year in a question was used (T10 baseline; Q4, Q5).**
+    "From fiscal 2024 to fiscal 2026" was filtered to 2024 only, so the 2026 figure was
+    never retrieved and the model refused. → T11: detect every year, filter on a list.
+    ✓ Fixed: cross-period recall 0.50 → 1.00, refusal 0/2 → 2/2.
+
+16. **One company crowded out the other (T09/T10; Q6, Q7).** With no company filter, top-5
+    is winner-takes-all: the Broadcom vs Qualcomm question got 5/5 Qualcomm chunks.
+    → T12: retrieve separately per company, keeping the total at k (k // n each) so the
+    comparison with the baseline stays fair.
+    ✓ Fixed: both companies now retrieved; cross-company recall 0.25 → 0.50.
+
+17. **"Latest fiscal year" was not understood (T12; Q7).** With no year filter, each
+    company's chunks could come from any of its three filings, and Q7 was answered with
+    fiscal 2023 data. → T14: when a question says "latest" / "most recent" and names no
+    year, keep only each company's newest filing.
+    ✓ Years fixed. Open: with only 2 chunks per company the exact passage is still missed,
+    so Q6 and Q7 now refuse ("Not in the filings") instead of answering wrongly. Better
+    failure, still a failure → Experiment 2 (more chunks per company).
+
+18. **Regression in T12: a missing argument dropped the year filter (Q1, Q10).** In
+    `retrieve_multi`, the one-company branch didn't pass `fiscal_years` to `retrieve()`,
+    so it searched all three years and took whatever top 5 came back, which included the
+    wrong years. Q1 and Q10 fell from 1.00 to 0.00. Q4, Q5 and Q9 went through the same
+    branch but still scored 1.00 by luck, so a passing test doesn't prove the code right.
+    ✓ Fixed the same day; caught only because the eval was re-run.
+
+19. **Financial-statement notes labelled Item 15 / 16 (NVDA, QCOM).** These filings put
+    the notes after the Item 15/16 headings, so their chunks carry that label instead of
+    Item 8. Golden sources were labelled to match.
     Open.
+
+20. **Fixed-size chunks hurt retrieval and answers (Experiment 1).** Cutting every 1,000
+    characters splits sentences and table rows: recall@5 0.40 vs 0.65 for paragraph
+    chunks, answer score 0.38 vs 0.62. ✓ Paragraph chunking kept (see README).
+
+### answers
+
+21. **Invented a number (T12; Q6, AMD vs NVIDIA net income).** The answer gave AMD's net
+    income as "$2.0 billion ... not directly stated in the excerpts but can be inferred";
+    the filing says $4,335 million. Rule 1 of the prompt ("use only the excerpts") already
+    existed since T07, but the retrieved chunks didn't contain AMD's figure and the model
+    filled the gap instead of refusing. Prompt rules are not guarantees, which is why
+    answers are now graded by a judge.
+    Open. Since T14 the model refuses on Q6 instead of inventing; the fix is retrieving the
+    passage that has the figure (Experiment 2).
+
+22. **Q3 answered with the wrong debt figure.** Even after rewording to "debt principal",
+    retrieval returns only Item 8 tables and the answer quotes fair value ($64,609M) instead
+    of principal ($67,120M).
+    Open.
+
+### evaluation
+
+23. **The judge gave different grades on different runs (T13).** `call_llm` didn't set a
+    temperature, so the same answer could be graded differently each run (Q5 flipped from
+    correct to partial with nothing changed). That moves both the answer score and the
+    judge-vs-human agreement. ✓ Fixed: the judge runs at temperature 0.
+
+24. **Incomplete answer key (Q8).** The golden key points for NVIDIA's export-control
+    answer left out the filing's headline statement ("effectively foreclosed from
+    competing in China's data center market"), so a correct system answer was graded
+    incorrect. ✓ Fixed by adding it as key point (0), backed by a quote from the filing.
+    Caution: editing an answer key after seeing answers can bend the test; only done here
+    because the filing quote proves the key was missing it.
+
+25. **Ambiguous question (Q3).** "Total debt" can mean principal ($67,120M) or the
+    balance-sheet amount ($65,136M); both are defensible, so it couldn't be graded
+    cleanly. ✓ Reworded to "total debt principal".
+
+26. **Judge agreement compared two different sets of answers (eval.py bug, T14).** A full
+    run graded new answers but compared them with labels made on old answers.
+    ✓ Fixed: agreement is only reported with `--rejudge` on the labelled run.
+
+27. **Golden set never tests a question with no company in it.** So the "search all
+    companies" branch of `retrieve_multi` is untested; a bug there would go unnoticed.
+    Open: add such questions when the golden set grows to 30.

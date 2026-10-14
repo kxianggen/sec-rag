@@ -3,6 +3,9 @@
 Reads  data/text/<TICKER>/<period_end>.json
 Writes data/chunks.jsonl   (one JSON object per line)
 
+    uv run python chunk.py                                                  # paragraph packing (default)
+    uv run python chunk.py --method fixed --out data/chunks_fixed.jsonl     # Experiment 1
+
 Chunks are packed from whole lines (each line is one paragraph in the
 extracted text), up to CHUNK_SIZE characters, so no chunk starts or ends
 mid-word. A line longer than CHUNK_SIZE is first split at spaces.
@@ -10,6 +13,7 @@ mid-word. A line longer than CHUNK_SIZE is first split at spaces.
 chunk_text() (fixed size + overlap) is kept for comparison in Experiment 1.
 """
 
+import argparse
 import json
 from pathlib import Path
 
@@ -60,12 +64,23 @@ def chunk_by_paragraph(text: str, size: int) -> list[str]:
 
 
 def main():
+    p = argparse.ArgumentParser()
+    p.add_argument("--method", choices=["paragraph", "fixed"], default="paragraph")
+    p.add_argument("--out", type=Path, default=OUT)
+    a = p.parse_args()
+
+    # Experiment 1 compares ONE thing: where the cuts fall. Same size (1000), no overlap in either.
+    def split(text: str) -> list[str]:
+        if a.method == "fixed":
+            return chunk_text(text, CHUNK_SIZE, 0)
+        return chunk_by_paragraph(text, CHUNK_SIZE)
+
     n = 0
-    with OUT.open("w", encoding="utf-8") as f:
+    with a.out.open("w", encoding="utf-8") as f:
         for path in sorted(TEXT.glob("*/*.json")):
             filing = json.loads(path.read_text(encoding="utf-8"))
             for section in filing["sections"]:
-                for i, piece in enumerate(chunk_by_paragraph(section["text"], CHUNK_SIZE)):
+                for i, piece in enumerate(split(section["text"])):
                     chunk = {
                         "id": f"{filing['ticker']}-{filing['period_end']}-{section['item']}-{i}",
                         "ticker": filing["ticker"],
@@ -77,7 +92,7 @@ def main():
                     }
                     f.write(json.dumps(chunk) + "\n")
                     n += 1
-    print(f"{n:,} chunks written to {OUT}")
+    print(f"{n:,} chunks ({a.method}) written to {a.out}")
 
 
 if __name__ == "__main__":

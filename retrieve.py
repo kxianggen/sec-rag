@@ -22,6 +22,17 @@ _vectors = None
 _latest = None      # {ticker: newest fiscal_year in the corpus}, built in _load()
 
 
+def set_index(name: str) -> None:
+    """Switch to another chunk/vector index, e.g. "fixed" -> data/chunks_fixed.jsonl +
+    data/embeddings_fixed.npy. "main" is the default index. Used by Experiment 1."""
+    global CHUNKS, VECTORS, _model
+    if name == "main":
+        CHUNKS, VECTORS = Path("data/chunks.jsonl"), Path("data/embeddings.npy")
+    else:
+        CHUNKS, VECTORS = Path(f"data/chunks_{name}.jsonl"), Path(f"data/embeddings_{name}.npy")
+    _model = None          # forces _load() to read the new files
+
+
 def _load():
     global _model, _chunks, _vectors, _latest
     if _model is None:

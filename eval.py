@@ -4,6 +4,7 @@
     uv run python eval.py --no-llm         # retrieval only, free
     uv run python eval.py --out results/baseline.json
     uv run python eval.py --rejudge results/t12.json   # judge answers already saved (12 calls)
+    uv run python eval.py --index fixed --out results/exp1_fixed.json   # Experiment 1
 
 Uses YOUR scoring functions from metrics.py. Answer correctness is graded by an
 LLM judge (judge.py) and checked against your own labels in human_labels.json.
@@ -18,7 +19,7 @@ from ask import build_prompt, call_llm
 from companies import detect_fiscal_years, detect_latest, detect_tickers
 from judge import judge
 from metrics import agreement, is_refusal, refusal_correct, source_recall, verdict_score
-from retrieve import retrieve_multi
+from retrieve import retrieve_multi, set_index
 
 GOLDEN = Path("golden.jsonl")
 HUMAN = Path("human_labels.json")
@@ -113,13 +114,15 @@ def main():
     p.add_argument("--no-llm", action="store_true")
     p.add_argument("--out", type=Path)
     p.add_argument("--rejudge", type=Path, help="grade the answers saved in this results file")
+    p.add_argument("--index", default="main", help='"main" (paragraph chunks) or e.g. "fixed"')
     a = p.parse_args()
+    set_index(a.index)
 
     rows = rejudge(a.rejudge) if a.rejudge else run(a.k, not a.no_llm)
     report(rows, a.k, rejudged=bool(a.rejudge))
     if a.out:
         a.out.parent.mkdir(parents=True, exist_ok=True)
-        a.out.write_text(json.dumps({"k": a.k, "rows": rows}, indent=1, ensure_ascii=False), encoding="utf-8")
+        a.out.write_text(json.dumps({"k": a.k, "index": a.index, "rows": rows}, indent=1, ensure_ascii=False), encoding="utf-8")
         print(f"\nSaved {a.out}")
 
 

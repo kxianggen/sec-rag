@@ -23,11 +23,14 @@ RUBRIC = """\
   golden key points and adds nothing that contradicts them.
 - partial: right company, year and conclusion, but a number is only approximately right
   (e.g. computed or rounded instead of quoted: 39.8% vs 40%) or uses a different but
-  reasonable definition (e.g. balance-sheet debt instead of debt principal); or a narrative
-  answer covers only some of the key points.
+  reasonable definition (e.g. balance-sheet debt instead of debt principal).
+  For NARRATIVE questions: the answer is accurate on at least ONE of the golden key points
+  and contradicts none of them, even if it leaves out other key points, specific events
+  or numbers. Missing points make it partial, not incorrect.
 - incorrect: any invented or unsupported number, the wrong fiscal year, the wrong company,
   the wrong conclusion, or a statement that contradicts the golden answer — even if the final
-  conclusion happens to be right.
+  conclusion happens to be right. For NARRATIVE questions: incorrect only if the answer covers
+  none of the golden key points, or says something false.
 - refusals: if the golden answer is "Not in the filings." then a refusal is correct and any
   attempted answer is incorrect. If the golden answer is a real answer, a refusal is incorrect."""
 
@@ -47,7 +50,8 @@ Reply with JSON only, no other text:
 
 
 def judge(question: str, golden: str, answer: str) -> dict:
-    raw = call_llm(PROMPT.format(rubric=RUBRIC, question=question, golden=golden, answer=answer)) or ""
+    raw = call_llm(PROMPT.format(rubric=RUBRIC, question=question, golden=golden, answer=answer),
+                   temperature=0) or ""
     m = re.search(r"\{.*\}", raw, re.DOTALL)          # tolerate ```json fences or stray text
     try:
         out = json.loads(m.group(0)) if m else {}

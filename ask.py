@@ -35,7 +35,9 @@ Excerpts:
 Question: {question}"""
 
 
-def call_llm(prompt: str) -> str | None:
+def call_llm(prompt: str, temperature: float | None = None) -> str | None:
+    """temperature=None uses the provider default; the judge passes 0 so its grades repeat."""
+    extra = {} if temperature is None else {"temperature": temperature}
     if os.getenv("ANTHROPIC_API_KEY"):
         import anthropic
         client = anthropic.Anthropic()
@@ -43,6 +45,7 @@ def call_llm(prompt: str) -> str | None:
             model=os.getenv("ANTHROPIC_MODEL", "claude-haiku-4-5"),
             max_tokens=800,
             messages=[{"role": "user", "content": prompt}],
+            **extra,
         )
         return resp.content[0].text
     if os.getenv("OPENAI_API_KEY"):
@@ -51,6 +54,7 @@ def call_llm(prompt: str) -> str | None:
         resp = client.chat.completions.create(
             model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
             messages=[{"role": "user", "content": prompt}],
+            **extra,
         )
         return resp.choices[0].message.content
     return None
