@@ -13,7 +13,7 @@ from pathlib import Path
 GOLDEN = Path("golden.jsonl")
 TEXT = Path("data/text")
 TYPES = {"fact", "cross-period", "cross-company", "narrative", "unanswerable"}
-TARGET = {"fact": 3, "cross-period": 2, "cross-company": 2, "narrative": 3, "unanswerable": 2}
+TARGET = {"fact": 7, "cross-period": 6, "cross-company": 6, "narrative": 7, "unanswerable": 4}   # 30 questions
 ITEMS = {"1", "1A", "1B", "1C", "2", "3", "4", "5", "6", "7", "7A", "8", "9", "9A", "9B", "9C",
          "10", "11", "12", "13", "14", "15", "16"}
 FIELDS = {"question", "answer", "type", "sources"}

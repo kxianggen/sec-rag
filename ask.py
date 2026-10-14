@@ -18,7 +18,14 @@ from companies import detect_fiscal_years, detect_latest, detect_tickers
 load_dotenv()
 
 
-def build_prompt(question: str, chunks: list[dict]) -> str:
+# Step 4 (prompt v2): one new rule, aimed at answers that quote a segment's number
+# (e.g. Qualcomm QCT, AMD Data Center) when the question asks about the whole company.
+# Not adopted (0.63 vs 0.65): fixed nothing; Q6 swapped "not provided" for a wrong AMD figure. Kept for the record.
+RULE_TOTAL = ("5. When the question asks about a company's revenue, net income, R&D or similar, use the "
+              "company-wide total, not a segment's figure, unless the question names the segment.\n")
+
+
+def build_prompt(question: str, chunks: list[dict], prompt_version: int = 1) -> str:
     context = "\n\n".join(
                 f"[{i}] {c['ticker']} 10-K, fiscal {c['fiscal_year']} (period ending {c['period_end']}), Item {c['item']}\n{c['text']}"
         for i, c in enumerate(chunks, 1)
@@ -28,7 +35,7 @@ def build_prompt(question: str, chunks: list[dict]) -> str:
 2. After every claim, cite the excerpt it came from, like [1] or [2][3].
 3. When you state a fact, say which company and which fiscal period it comes from.
 4. If the excerpts do not contain the answer, reply exactly: Not in the filings.
-
+{RULE_TOTAL if prompt_version >= 2 else ""}
 Excerpts:
 {context}
 
@@ -68,10 +75,10 @@ def main():
     tickers = detect_tickers(question)
     years = detect_fiscal_years(question)
     latest = detect_latest(question)
-    chunks = retrieve_multi(question, k=10, tickers=tickers, fiscal_years=years, latest=latest)
+    chunks = retrieve_multi(question, k=10, tickers=tickers, fiscal_years=years, latest=latest, mode="hybrid")
     print(f"\nCOMPANY FILTER: {tickers or 'none (searching all companies)'}")
     print(f"FISCAL YEAR FILTER: {years or ('latest filing per company' if latest else 'none (all years)')}")
-    answer = call_llm(build_prompt(question, chunks))
+    answer = call_llm(build_prompt(question, chunks), temperature=0)
 
     print("\nANSWER\n" + (answer or "(no API key set — showing retrieved chunks only)"))
     print("\nSOURCES")

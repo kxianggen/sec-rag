@@ -25,7 +25,8 @@ GOLDEN = Path("golden.jsonl")
 HUMAN = Path("human_labels.json")
 
 
-def run(k: int, use_llm: bool) -> list[dict]:
+def run(k: int, use_llm: bool, mode: str = "hybrid", max_per_section: int | None = None,
+        prompt_version: int = 1) -> list[dict]:
     rows = []
     for n, line in enumerate(GOLDEN.read_text(encoding="utf-8").splitlines(), 1):
         if not line.strip():
@@ -34,8 +35,9 @@ def run(k: int, use_llm: bool) -> list[dict]:
         tickers = detect_tickers(g["question"])
         years = detect_fiscal_years(g["question"])
         latest = detect_latest(g["question"])
-        chunks = retrieve_multi(g["question"], k=k, tickers=tickers, fiscal_years=years, latest=latest)
-        answer = call_llm(build_prompt(g["question"], chunks)) if use_llm else None
+        chunks = retrieve_multi(g["question"], k=k, tickers=tickers, fiscal_years=years, latest=latest,
+                                mode=mode, max_per_section=max_per_section)
+        answer = call_llm(build_prompt(g["question"], chunks, prompt_version), temperature=0) if use_llm else None
         graded = judge(g["question"], g["answer"], answer) if answer is not None else None
         rows.append({
             "n": n,
@@ -115,14 +117,20 @@ def main():
     p.add_argument("--out", type=Path)
     p.add_argument("--rejudge", type=Path, help="grade the answers saved in this results file")
     p.add_argument("--index", default="main", help='"main" (paragraph chunks) or e.g. "fixed"')
+    p.add_argument("--mode", default="hybrid", choices=["dense", "hybrid"], help="Experiment 3b: hybrid won (0.65 vs 0.55)")
+    p.add_argument("--max-per-section", type=int, default=None, help="Experiment 3a, e.g. 3 (off by default: lost answers)")
+    p.add_argument("--prompt", type=int, default=1, choices=[1, 2],
+                   help="1 = T07 rules (default), 2 = + company-total rule (step 4: 0.63 vs 0.65, not adopted)")
     a = p.parse_args()
     set_index(a.index)
 
-    rows = rejudge(a.rejudge) if a.rejudge else run(a.k, not a.no_llm)
+    rows = rejudge(a.rejudge) if a.rejudge else run(a.k, not a.no_llm, a.mode, a.max_per_section, a.prompt)
     report(rows, a.k, rejudged=bool(a.rejudge))
     if a.out:
         a.out.parent.mkdir(parents=True, exist_ok=True)
-        a.out.write_text(json.dumps({"k": a.k, "index": a.index, "rows": rows}, indent=1, ensure_ascii=False), encoding="utf-8")
+        a.out.write_text(json.dumps({"k": a.k, "index": a.index, "mode": a.mode,
+                                          "max_per_section": a.max_per_section,
+                                          "prompt": a.prompt, "rows": rows}, indent=1, ensure_ascii=False), encoding="utf-8")
         print(f"\nSaved {a.out}")
 
 

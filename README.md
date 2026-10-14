@@ -4,12 +4,16 @@ Ask questions about six US semiconductor companies' annual reports (NVIDIA, AMD,
 Broadcom, Qualcomm, Marvell; fiscal years 2023–2026) and get answers that quote only the
 filings, cite their sources, and say "Not in the filings." when the answer isn't there.
 
+The corpus is a fixed snapshot of 18 10-K filings downloaded in September 2026 (Intel was
+dropped: its 10-K structure defeats the section parser — see FAILURES #1). "Latest fiscal
+year" means the newest filing in this snapshot.
+
 *Full README (architecture, setup, demo) in progress. Results so far:*
 
 ## Results
 
 Measured on 12 hand-written golden questions (10 answerable + 2 unanswerable) with
-`eval.py`. Answers graded by an LLM judge (see below).
+`eval.py`. (The golden set has since grown to 30; results on 30 below once run.) Answers graded by an LLM judge (see below).
 
 | Stage | Change | Recall@5 | Refusal ok | Answer score |
 |---|---|---|---|---|

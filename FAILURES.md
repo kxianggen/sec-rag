@@ -170,3 +170,16 @@ Question numbers refer to `golden.jsonl`.
 27. **Golden set never tests a question with no company in it.** So the "search all
     companies" branch of `retrieve_multi` is untested; a bug there would go unnoticed.
     Open: add such questions when the golden set grows to 30.
+
+28. **Partially answerable questions aren't tested.** A planned unanswerable question ("How
+    many H200 chips did NVIDIA ship to China?") was dropped because the filing half-answers
+    it (a licence was granted, no H200 revenue yet), so "Not in the filings" vs "none so far"
+    couldn't be graded cleanly. The underlying behaviour — answer what the filings support,
+    say clearly what they don't — is real and matters (see Q6 at k = 10). Open: add
+    questions with an explicit partial answer key.
+
+29. **"Latest" depends on when the corpus was downloaded.** The corpus is a fixed snapshot
+    (filings downloaded September 2026). Companies keep filing — Micron's fiscal 2026 10-K
+    came out after the snapshot — so "latest fiscal year" in the golden set means the newest
+    filing *in the corpus*. Keeping the snapshot fixed keeps every result reproducible; a
+    live product would need to refresh the corpus and re-check these answers.
