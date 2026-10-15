@@ -2,6 +2,7 @@
 
     uv run uvicorn app:app --reload          # then open http://localhost:8000/docs
 
+GET  /        the web page (static/index.html)
 POST /ask     {"question": "..."}  ->  answer + sources + the filters that were used
 GET  /health  is the server up? (also touches the database, which keeps Supabase awake)
 
@@ -19,9 +20,11 @@ import time
 from collections import defaultdict, deque
 from contextlib import asynccontextmanager
 from datetime import date
+from pathlib import Path
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 load_dotenv()
@@ -29,7 +32,7 @@ load_dotenv()
 import retrieve  # noqa: E402  (after load_dotenv, so SEC_RAG_STORE is read)
 from ask import build_prompt, call_llm  # noqa: E402
 from companies import detect_fiscal_years, detect_latest, detect_tickers  # noqa: E402
-from metrics import is_refusal  # noqa: E402
+from metrics import REFUSAL, is_refusal  # noqa: E402
 
 K = 10
 RATE_PER_IP_PER_HOUR = int(os.getenv("RATE_PER_IP_PER_HOUR", "20"))
@@ -108,6 +111,13 @@ app = FastAPI(title="sec-rag", description="Questions about six US chip makers' 
               "answered only from the filings, with sources.", lifespan=lifespan)
 
 
+@app.get("/", include_in_schema=False)
+def home():
+    # The page calls /ask on this same server, so the browser never sees the API key
+    # and no cross-site (CORS) settings are needed.
+    return FileResponse(Path(__file__).parent / "static" / "index.html")
+
+
 @app.get("/health")
 def health():
     if retrieve.STORE == "pgvector":
@@ -128,6 +138,11 @@ def ask(body: AskRequest, request: Request):
     latest = detect_latest(question)
     chunks = retrieve.retrieve_multi(question, k=K, tickers=tickers, fiscal_years=years,
                                      latest=latest, mode="hybrid")
+    if not chunks:
+        # e.g. "fiscal 2028": the filters matched no filing, so skip the paid LLM call
+        return AskResponse(question=question, answer=REFUSAL, refused=True,
+                           filters=Filters(tickers=tickers, fiscal_years=years, latest=latest and not years),
+                           sources=[], seconds=round(time.time() - start, 2))
     try:
         answer = call_llm(build_prompt(question, chunks), temperature=0)
     except Exception as e:                      # provider down, bad key, network...
