@@ -232,3 +232,20 @@ Question numbers refer to `golden.jsonl`.
     company-wide total, not a segment's figure" fixed nothing and turned "AMD's net income
     isn't in the excerpts" into a wrong $3.7B. Not adopted: a rule that demands a number can
     trade honest refusals for invented figures.
+
+## Found moving to pgvector
+
+### retrieval
+
+38. **Filtering before ranking changed hybrid results (pgvector store).** The first
+    pgvector version filtered chunks in SQL and ranked only what was left. Dense search
+    didn't care (same 10 chunks on 30/30 questions), but hybrid mixes RANKS
+    (1 / (60 + rank)), and a chunk's rank among NVIDIA FY2026 chunks isn't its rank among
+    all 8,504. Result: ~2 of 10 chunks swapped per question, 27/30 questions retrieved
+    something different, answer score 0.65 → 0.57 (e.g. Qualcomm's "$44.3 billion" chunk
+    dropped out, so the answer quoted the $37.7B chip segment). ✓ Fixed: SQL computes each
+    chunk's global rank with a window function (`row_number() over (order by distance)`)
+    BEFORE the WHERE filter, so both stores rank identically.
+    Side lesson: two answers flipped with the SAME chunks in a different order (NVIDIA
+    employees) or one irrelevant chunk swapped (Qualcomm automotive → refused) — the
+    answer step is sensitive to small changes in its input, not only to temperature.

@@ -5,6 +5,7 @@
     uv run python eval.py --out results/baseline.json
     uv run python eval.py --rejudge results/t12.json   # judge answers already saved (12 calls)
     uv run python eval.py --index fixed --out results/exp1_fixed.json   # Experiment 1
+    uv run python eval.py --store pgvector --out results/pg_hybrid.json  # search in Supabase
 
 Uses YOUR scoring functions from metrics.py. Answer correctness is graded by an
 LLM judge (judge.py) and checked against your own labels in human_labels.json.
@@ -19,7 +20,7 @@ from ask import build_prompt, call_llm
 from companies import detect_fiscal_years, detect_latest, detect_tickers
 from judge import judge
 from metrics import agreement, is_refusal, refusal_correct, source_recall, verdict_score
-from retrieve import retrieve_multi, set_index
+from retrieve import retrieve_multi, set_index, set_store
 
 GOLDEN = Path("golden.jsonl")
 HUMAN = Path("human_labels.json")
@@ -45,6 +46,8 @@ def run(k: int, use_llm: bool, mode: str = "hybrid", max_per_section: int | None
             "question": g["question"],
             "filters": {"tickers": tickers, "fiscal_years": years, "latest": latest},
             "retrieved": [f"{c['ticker']} {c['period_end']} Item {c['item']}" for c in chunks],
+            "chunk_ids": [c["id"] for c in chunks],
+            "chunk_texts": [c["text"] for c in chunks],
             "recall": source_recall(g["sources"], chunks),
             "answer": answer,
             "refused": is_refusal(answer) if answer is not None else None,
@@ -117,18 +120,20 @@ def main():
     p.add_argument("--out", type=Path)
     p.add_argument("--rejudge", type=Path, help="grade the answers saved in this results file")
     p.add_argument("--index", default="main", help='"main" (paragraph chunks) or e.g. "fixed"')
+    p.add_argument("--store", default="numpy", choices=["numpy", "pgvector"], help="where vectors are searched")
     p.add_argument("--mode", default="hybrid", choices=["dense", "hybrid"], help="Experiment 3b: hybrid won (0.65 vs 0.55)")
     p.add_argument("--max-per-section", type=int, default=None, help="Experiment 3a, e.g. 3 (off by default: lost answers)")
     p.add_argument("--prompt", type=int, default=1, choices=[1, 2],
                    help="1 = T07 rules (default), 2 = + company-total rule (step 4: 0.63 vs 0.65, not adopted)")
     a = p.parse_args()
     set_index(a.index)
+    set_store(a.store)
 
     rows = rejudge(a.rejudge) if a.rejudge else run(a.k, not a.no_llm, a.mode, a.max_per_section, a.prompt)
     report(rows, a.k, rejudged=bool(a.rejudge))
     if a.out:
         a.out.parent.mkdir(parents=True, exist_ok=True)
-        a.out.write_text(json.dumps({"k": a.k, "index": a.index, "mode": a.mode,
+        a.out.write_text(json.dumps({"k": a.k, "index": a.index, "store": a.store, "mode": a.mode,
                                           "max_per_section": a.max_per_section,
                                           "prompt": a.prompt, "rows": rows}, indent=1, ensure_ascii=False), encoding="utf-8")
         print(f"\nSaved {a.out}")

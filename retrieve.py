@@ -5,6 +5,12 @@ same model, and returns the top-k chunks by cosine similarity.
 
 Plain numpy, no vector database, no framework. See TICKETS.md.
 
+Two storage backends ("stores"), same results for dense search:
+  numpy     data/chunks.jsonl + data/embeddings.npy, searched in memory (default)
+  pgvector  the `chunks` table on Supabase (Postgres + pgvector), searched with SQL;
+            needs DATABASE_URL in .env. Filters run inside the query (WHERE ...).
+Pick with set_store("pgvector") or SEC_RAG_STORE=pgvector.
+
 Two optional switches (Experiment 3):
   mode="hybrid"      blend the embedding ranking with a BM25 keyword ranking (reciprocal rank fusion)
   max_per_section=N  keep at most N chunks from the same filing section (ticker + period + Item)
@@ -12,6 +18,7 @@ Two optional switches (Experiment 3):
 
 import json
 import math
+import os
 import re
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -28,6 +35,9 @@ _chunks = None
 _vectors = None
 _latest = None      # {ticker: newest fiscal_year in the corpus}, built in _load()
 _bm25 = None        # keyword index, built on first hybrid search
+_conn = None        # Postgres connection (pgvector store only)
+
+STORE = os.getenv("SEC_RAG_STORE", "numpy")
 
 RRF_K = 60          # reciprocal rank fusion constant (the usual default)
 TOKEN_RE = re.compile(r"[a-z0-9]+")
@@ -49,12 +59,44 @@ def set_index(name: str) -> None:
     _bm25 = None
 
 
+def set_store(name: str) -> None:
+    """"numpy" (local files) or "pgvector" (Supabase)."""
+    global STORE, _model, _bm25
+    if name not in ("numpy", "pgvector"):
+        raise ValueError(f"unknown store {name!r}")
+    STORE = name
+    _model = None
+    _bm25 = None
+
+
+def _connect():
+    global _conn
+    if _conn is None:
+        import psycopg
+        from dotenv import load_dotenv
+        load_dotenv()
+        url = os.getenv("DATABASE_URL")
+        if not url:
+            raise SystemExit("DATABASE_URL is not set in .env (Supabase > Connect > Session pooler)")
+        _conn = psycopg.connect(url, autocommit=True)
+    return _conn
+
+
 def _load():
     global _model, _chunks, _vectors, _latest
     if _model is None:
         _model = SentenceTransformer(MODEL)
-        _chunks = [json.loads(line) for line in CHUNKS.open(encoding="utf-8")]
-        _vectors = np.load(VECTORS)
+        if STORE == "pgvector":
+            # Chunk text + metadata still come into memory: BM25 (hybrid) needs every text.
+            # Vectors stay in the database; only the search runs there.
+            rows = _connect().execute(
+                "select chunk_id, ticker, period_end, fiscal_year, item, text from chunks order by idx"
+            ).fetchall()
+            _chunks = [dict(zip(("id", "ticker", "period_end", "fiscal_year", "item", "text"), r)) for r in rows]
+            _vectors = None
+        else:
+            _chunks = [json.loads(line) for line in CHUNKS.open(encoding="utf-8")]
+            _vectors = np.load(VECTORS)
         _latest = {}
         for c in _chunks:
             if c["ticker"] not in _latest or c["fiscal_year"] > _latest[c["ticker"]]:
@@ -95,6 +137,63 @@ def _bm25_scores(question: str) -> np.ndarray:
     return scores
 
 
+def _ranking_pg(question: str, mode: str, ticker, fiscal_years, latest_only, pool: int | None):
+    """pgvector store: the filters run inside Postgres (WHERE), but every rank is a GLOBAL
+    rank -- the chunk's position among ALL chunks, computed before filtering, exactly like
+    the numpy store. Hybrid mixes ranks (1 / (60 + rank)), so ranking only the filtered
+    chunks would change the mix: that version swapped ~2 of 10 chunks per question and
+    scored 0.57 vs 0.65 (FAILURES #38)."""
+    q = _model.encode([question], normalize_embeddings=True)[0]
+    qtext = "[" + ",".join(f"{x:.7f}" for x in q) + "]"
+    where, params = [], []
+    if ticker:
+        where.append("ticker = %s")
+        params.append(ticker)
+    if fiscal_years:
+        where.append("fiscal_year = any(%s)")
+        params.append(list(fiscal_years))
+    if latest_only:
+        where.append("ticker || ':' || fiscal_year = any(%s)")
+        params.append([f"{t}:{y}" for t, y in _latest.items()])
+    # inner query: distance + global rank for every chunk; outer query: keep the filtered ones
+    sql = ("select idx, score, global_rank from ("
+           "  select idx, ticker, fiscal_year, 1 - (embedding <=> %s::extensions.vector) as score,"
+           "         row_number() over (order by embedding <=> %s::extensions.vector) as global_rank"
+           "  from chunks) ranked"
+           + (" where " + " and ".join(where) if where else "")
+           + " order by global_rank"
+           + (" limit %s" if pool else ""))
+    rows = _connect().execute(sql, [qtext, qtext, *params] + ([pool] if pool else [])).fetchall()
+    dense = np.zeros(len(_chunks))       # chunks outside the dense pool show score 0.000
+    dense_rank = {}
+    for idx, score, global_rank in rows:
+        dense[idx] = score
+        dense_rank[idx] = global_rank
+    dense_order = np.array([idx for idx, _, _ in rows], dtype=int)
+    if mode == "dense":
+        return dense_order, dense
+    # hybrid: BM25 global ranks (same numpy call as the numpy store), then reciprocal rank fusion
+    bm25_order = np.argsort(_bm25_scores(question))[::-1]
+    rrf = defaultdict(float)
+    for idx, rank in dense_rank.items():
+        rrf[idx] += 1.0 / (RRF_K + rank)
+    for rank, idx in enumerate(bm25_order, 1):
+        if _passes(idx, ticker, fiscal_years, latest_only):
+            rrf[int(idx)] += 1.0 / (RRF_K + rank)
+    return np.array(sorted(rrf, key=rrf.get, reverse=True), dtype=int), dense
+
+
+def _passes(i: int, ticker, fiscal_years, latest_only) -> bool:
+    c = _chunks[i]
+    if ticker and c["ticker"] != ticker:
+        return False
+    if fiscal_years and c["fiscal_year"] not in fiscal_years:
+        return False
+    if latest_only and c["fiscal_year"] != _latest[c["ticker"]]:
+        return False
+    return True
+
+
 def _ranking(question: str, mode: str) -> tuple[np.ndarray, np.ndarray]:
     """Chunk indices best-first, plus the dense (cosine) score of every chunk."""
     q = _model.encode([question], normalize_embeddings=True)[0]
@@ -114,15 +213,18 @@ def _ranking(question: str, mode: str) -> tuple[np.ndarray, np.ndarray]:
 def retrieve(question: str, k: int = 5, ticker: str | None = None, fiscal_years: list[int] | None = None,
              latest_only: bool = False, mode: str = "dense", max_per_section: int | None = None) -> list[dict]:
     _load()
-    top, scores = _ranking(question, mode)
+    if STORE == "pgvector":
+        # dense: only the top k are needed. Hybrid (or the cap) needs the dense rank of EVERY
+        # filtered chunk to match the numpy store exactly, so no LIMIT (a few hundred rows,
+        # all 8,504 only for questions that name no company).
+        pool = k if (mode == "dense" and not max_per_section) else None
+        top, scores = _ranking_pg(question, mode, ticker, fiscal_years, latest_only, pool)
+    else:
+        top, scores = _ranking(question, mode)
     per_section = Counter()
     results = []
     for i in top:
-        if ticker and _chunks[i]["ticker"] != ticker:
-            continue
-        if fiscal_years and _chunks[i]["fiscal_year"] not in fiscal_years:
-            continue
-        if latest_only and _chunks[i]["fiscal_year"] != _latest[_chunks[i]["ticker"]]:
+        if not _passes(i, ticker, fiscal_years, latest_only):
             continue
         section = (_chunks[i]["ticker"], _chunks[i]["period_end"], _chunks[i]["item"])
         if max_per_section and per_section[section] >= max_per_section:
