@@ -1,0 +1,13 @@
+{
+  "_note": "Your verdicts on the answers in results/exp3b_hybrid.json (hybrid, the adopted system). Fill each with correct / partial / incorrect. Grade from LABELING.md, using the rubric. Don't look at the judge's verdicts first.",
+  "13": "correct",
+  "14": "correct",
+  "17": "incorrect",
+  "18": "incorrect",
+  "20": "correct",
+  "22": "correct",
+  "23": "incorrect",
+  "24": "partial",
+  "25": "partial",
+  "27": "incorrect"
+}

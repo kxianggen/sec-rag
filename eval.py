@@ -4,6 +4,7 @@
     uv run python eval.py --no-llm         # retrieval only, free
     uv run python eval.py --out results/baseline.json
     uv run python eval.py --rejudge results/t12.json   # judge answers already saved (12 calls)
+    uv run python eval.py --rejudge results/exp3b_hybrid.json --labels human_labels_30.json
     uv run python eval.py --index fixed --out results/exp1_fixed.json   # Experiment 1
     uv run python eval.py --store pgvector --out results/pg_hybrid.json  # search in Supabase
 
@@ -81,7 +82,7 @@ def fmt(x) -> str:
     return f"{x:5.2f}"
 
 
-def report(rows: list[dict], k: int, rejudged: bool = False) -> None:
+def report(rows: list[dict], k: int, rejudged: bool = False, labels: Path = HUMAN) -> None:
     print(f"\n#   type           recall@{k}  refusal ok  verdict     question")
     for r in rows:
         v = r.get("verdict") or "-"
@@ -100,10 +101,13 @@ def report(rows: list[dict], k: int, rejudged: bool = False) -> None:
         sc = f"{sum(scores) / len(scores):.2f}" if scores else "  -"
         print(f"{t:<14} {len(rs):<3} {mean:>8}          {ok:>5}        {sc:>5}")
 
-    # Your labels were made on ONE set of saved answers (results/t12.json), so the comparison
-    # is only valid when the judge grades those same answers: i.e. with --rejudge.
-    if rejudged and HUMAN.exists() and any(r.get("verdict") for r in rows):
-        human = {int(n): v for n, v in json.loads(HUMAN.read_text(encoding="utf-8")).items() if n.isdigit()}
+    # Labels are made on ONE set of saved answers, so the comparison is only valid when the
+    # judge grades those same answers: --rejudge <that file> --labels <your labels for it>.
+    #   human_labels.json     -> results/t12.json          (8 labels, original questions)
+    #   human_labels_30.json  -> results/exp3b_hybrid.json (10 labels, new questions)
+    if rejudged and labels.exists() and any(r.get("verdict") for r in rows):
+        human = {int(n): v for n, v in json.loads(labels.read_text(encoding="utf-8")).items()
+                 if n.isdigit() and v in ("correct", "partial", "incorrect")}
         judged = {r["n"]: r["verdict"] for r in rows if r.get("verdict")}
         agree = agreement(human, judged)
         print(f"\nJudge vs your labels: {agree:.2f} agreement on {len(human)} labelled questions" if agree is not None
@@ -119,6 +123,7 @@ def main():
     p.add_argument("--no-llm", action="store_true")
     p.add_argument("--out", type=Path)
     p.add_argument("--rejudge", type=Path, help="grade the answers saved in this results file")
+    p.add_argument("--labels", type=Path, default=HUMAN, help="your hand labels for the --rejudge file")
     p.add_argument("--index", default="main", help='"main" (paragraph chunks) or e.g. "fixed"')
     p.add_argument("--store", default="numpy", choices=["numpy", "pgvector"], help="where vectors are searched")
     p.add_argument("--mode", default="hybrid", choices=["dense", "hybrid"], help="Experiment 3b: hybrid won (0.65 vs 0.55)")
@@ -130,7 +135,7 @@ def main():
     set_store(a.store)
 
     rows = rejudge(a.rejudge) if a.rejudge else run(a.k, not a.no_llm, a.mode, a.max_per_section, a.prompt)
-    report(rows, a.k, rejudged=bool(a.rejudge))
+    report(rows, a.k, rejudged=bool(a.rejudge), labels=a.labels)
     if a.out:
         a.out.parent.mkdir(parents=True, exist_ok=True)
         a.out.write_text(json.dumps({"k": a.k, "index": a.index, "store": a.store, "mode": a.mode,
