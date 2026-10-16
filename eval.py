@@ -8,7 +8,10 @@
     uv run python eval.py --index fixed --out results/exp1_fixed.json   # Experiment 1
     uv run python eval.py --store pgvector --out results/pg_hybrid.json  # search in Supabase
     uv run python eval.py --out results/p1b_expand.json                  # Phase 1b: R&D expansion (default on)
-    uv run python eval.py --rewrite --out results/p1b_rewrite.json       # Phase 1b part 2: LLM query rewriting
+    uv run python eval.py --rewrite 1 --out results/p1b_rewrite.json     # Phase 1b part 2 v1 (per company x year)
+    uv run python eval.py --rewrite 2 --out results/p1b_rewrite2.json    # v2 (per company, keeps key words)
+    uv run python eval.py --prompt 3 --out results/p1b_prompt3.json      # answer prompt + exact-number rule
+    uv run python eval.py --facts --out results/p2_facts.json            # Phase 2: + exact XBRL figures
 
 Uses YOUR scoring functions from metrics.py. Answer correctness is graded by an
 LLM judge (judge.py) and checked against your own labels in human_labels.json.
@@ -25,6 +28,7 @@ from judge import CATEGORY_VERDICT, JUDGE_MODEL, judge
 from metrics import agreement, is_refusal, refusal_correct, source_recall, verdict_score
 from retrieve import retrieve_multi, retrieve_planned, set_index, set_store
 from rewrite import plan_searches
+from facts import lookup as lookup_facts
 
 GOLDEN = Path("golden.jsonl")
 HUMAN = Path("human_labels.json")
@@ -32,7 +36,7 @@ HUMAN = Path("human_labels.json")
 
 def run(k: int, use_llm: bool, mode: str = "hybrid", max_per_section: int | None = None,
         prompt_version: int = 1, rubric: str = "v2.1", expand: bool = True,
-        rewrite: bool = False, split_only: bool = False) -> list[dict]:
+        rewrite: int | None = None, split_only: bool = False, facts: bool = False) -> list[dict]:
     rows = []
     for n, line in enumerate(GOLDEN.read_text(encoding="utf-8").splitlines(), 1):
         if not line.strip():
@@ -43,13 +47,14 @@ def run(k: int, use_llm: bool, mode: str = "hybrid", max_per_section: int | None
         latest = detect_latest(g["question"])
         plan = None
         if rewrite:      # Phase 1b part 2: one focused search per company x year, text written by an LLM
-            plan = plan_searches(g["question"], tickers, years, latest, use_llm=not split_only)
+            plan = plan_searches(g["question"], tickers, years, latest, use_llm=not split_only, version=rewrite)
             chunks = retrieve_planned(plan["searches"], k=k, latest=latest, mode=mode,
                                       max_per_section=max_per_section)
         else:
             chunks = retrieve_multi(g["question"], k=k, tickers=tickers, fiscal_years=years, latest=latest,
                                     mode=mode, max_per_section=max_per_section, expand=expand)
-        answer = call_llm(build_prompt(g["question"], chunks, prompt_version), temperature=0) if use_llm else None
+        xbrl = lookup_facts(g["question"], tickers, years, latest) if facts else []
+        answer = call_llm(build_prompt(g["question"], chunks + xbrl, prompt_version), temperature=0) if use_llm else None
         graded = judge(g["question"], g["answer"], answer, rubric, g.get("required")) if answer is not None else None
         rows.append({
             "n": n,
@@ -57,6 +62,7 @@ def run(k: int, use_llm: bool, mode: str = "hybrid", max_per_section: int | None
             "question": g["question"],
             "filters": {"tickers": tickers, "fiscal_years": years, "latest": latest},
             "searches": plan["searches"] if plan else None,
+            "facts": [f"{x['ticker']} {x['text']}" for x in xbrl] if facts else None,
             "rewritten": plan["rewritten"] if plan else None,
             "retrieved": [f"{c['ticker']} {c['period_end']} Item {c['item']}" for c in chunks],
             "chunk_ids": [c["id"] for c in chunks],
@@ -166,27 +172,31 @@ def main():
                    help='"tables_hdr" (default since Phase 1a), "main" (original paragraph chunks), "fixed", ...')
     p.add_argument("--no-expand", action="store_true",
                    help="turn OFF abbreviation expansion (default on since Phase 1b; off reproduces earlier runs)")
-    p.add_argument("--rewrite", action="store_true",
-                   help="Phase 1b part 2: LLM writes one focused search per company x year (+1 LLM call per question)")
+    p.add_argument("--rewrite", type=int, choices=[1, 2], default=None,
+                   help="Phase 1b part 2: LLM writes one focused search per target (+1 LLM call per question). "
+                        "1 = per company x year (16 Oct: 0.68, 5 wrong, not adopted), 2 = per company")
+    p.add_argument("--facts", action="store_true",
+                   help="Phase 2: add exact XBRL figures (facts.py) to the prompt after the passages")
     p.add_argument("--split-only", action="store_true",
                    help="with --rewrite: split per company x year but search the original question (no LLM)")
     p.add_argument("--store", default="numpy", choices=["numpy", "pgvector"], help="where vectors are searched")
     p.add_argument("--mode", default="hybrid", choices=["dense", "hybrid"], help="Experiment 3b: hybrid won (0.65 vs 0.55)")
     p.add_argument("--max-per-section", type=int, default=None, help="Experiment 3a, e.g. 3 (off by default: lost answers)")
-    p.add_argument("--prompt", type=int, default=1, choices=[1, 2],
-                   help="1 = T07 rules (default), 2 = + company-total rule (step 4: 0.63 vs 0.65, not adopted)")
+    p.add_argument("--prompt", type=int, default=1, choices=[1, 2, 3],
+                   help="1 = T07 rules (default), 2 = + company-total rule (step 4: 0.63 vs 0.65, not adopted), "
+                        "3 = + copy numbers exactly (Phase 1b)")
     a = p.parse_args()
     set_index(a.index)
     set_store(a.store)
 
     rows = (rejudge(a.rejudge, a.rubric) if a.rejudge
             else run(a.k, not a.no_llm, a.mode, a.max_per_section, a.prompt, a.rubric,
-                     not a.no_expand, a.rewrite, a.split_only))
+                     not a.no_expand, a.rewrite, a.split_only, a.facts))
     report(rows, a.k, rejudged=bool(a.rejudge), labels=a.labels)
     if a.out:
         a.out.parent.mkdir(parents=True, exist_ok=True)
         a.out.write_text(json.dumps({"k": a.k, "index": a.index, "store": a.store, "mode": a.mode,
-                                          "max_per_section": a.max_per_section, "expand": not a.no_expand, "rewrite": a.rewrite, "split_only": a.split_only,
+                                          "max_per_section": a.max_per_section, "expand": not a.no_expand, "rewrite": a.rewrite, "split_only": a.split_only, "facts": a.facts,
                                           "prompt": a.prompt, "rubric": a.rubric,
                                           "judge_model": JUDGE_MODEL if a.rubric == "v2.1" else "answer model", "rows": rows}, indent=1, ensure_ascii=False), encoding="utf-8")
         print(f"\nSaved {a.out}")

@@ -24,18 +24,32 @@ load_dotenv()
 RULE_TOTAL = ("5. When the question asks about a company's revenue, net income, R&D or similar, use the "
               "company-wide total, not a segment's figure, unless the question names the segment.\n")
 
+# Prompt v3 (16 Oct, his rule): copy numbers exactly. The rubric already marked converted / re-rounded
+# figures wrong, but the ANSWER prompt never told the model -- e.g. Q23 wrote AMD's "$8.1 billion" as
+# "$8,100 million" (false precision; filing: $8,091 million). v3 = rules 1-4 + this rule (no RULE_TOTAL).
+RULE_EXACT = ("5. Copy every number exactly as the excerpt writes it, with the same unit and precision: "
+              "if it says \"$8,091 million\", write \"$8,091 million\"; if it says \"$8.1 billion\", write "
+              "\"$8.1 billion\". Never convert units or re-round. If the excerpts give the same figure at "
+              "different precision, use the most exact one. Calculate (a change, a percentage) only when the "
+              "question asks for it, and show the exact figures you used.\n")
+
+PROMPT_RULES = {1: "", 2: RULE_TOTAL, 3: RULE_EXACT}
+
+
+def _excerpt(i: int, c: dict) -> str:
+    if c["item"] == "XBRL":     # Phase 2: an exact figure from the filing's XBRL data (facts.py)
+        return f"[{i}] {c['ticker']} 10-K, fiscal {c['fiscal_year']}: XBRL financial data (exact reported figure)\n{c['text']}"
+    return f"[{i}] {c['ticker']} 10-K, fiscal {c['fiscal_year']} (period ending {c['period_end']}), Item {c['item']}\n{c['text']}"
+
 
 def build_prompt(question: str, chunks: list[dict], prompt_version: int = 1) -> str:
-    context = "\n\n".join(
-                f"[{i}] {c['ticker']} 10-K, fiscal {c['fiscal_year']} (period ending {c['period_end']}), Item {c['item']}\n{c['text']}"
-        for i, c in enumerate(chunks, 1)
-    )
+    context = "\n\n".join(_excerpt(i, c) for i, c in enumerate(chunks, 1))
     return f"""You answer questions about companies' SEC 10-K filings. Follow these rules:
 1. Use only the numbered excerpts below. Do not use outside knowledge, even if you know the answer.
 2. After every claim, cite the excerpt it came from, like [1] or [2][3].
 3. When you state a fact, say which company and which fiscal period it comes from.
 4. If the excerpts do not contain the answer, reply exactly: Not in the filings.
-{RULE_TOTAL if prompt_version >= 2 else ""}
+{PROMPT_RULES[prompt_version]}
 Excerpts:
 {context}
 

@@ -1,4 +1,4 @@
-"""Phase 1b part 2: LLM query rewriting -- one focused search per company x fiscal year.
+"""Phase 1b part 2: LLM query rewriting -- one focused search per company (v2; v1 also split per year).
 
 The question "Which spent more on R&D in its latest fiscal year, NVIDIA or AMD?" is a
 comparison sentence; searched as-is it matches chunks ABOUT R&D, not the row with the amount.
@@ -32,7 +32,7 @@ from retrieve import expand_query
 NAMES = {"NVDA": "NVIDIA", "AMD": "AMD", "INTC": "Intel", "MU": "Micron", "AVGO": "Broadcom",
          "QCOM": "Qualcomm", "MRVL": "Marvell"}
 
-PROMPT = """You write search queries for a search engine over companies' annual reports (SEC 10-K filings).
+PROMPT_V1 = """You write search queries for a search engine over companies' annual reports (SEC 10-K filings).
 Write ONE query for EACH target below, in the same order. Each query must:
 - name the target's company (if it has one),
 - ask for the one fact THAT target must supply to answer the question,
@@ -54,23 +54,59 @@ Targets:
 Reply with JSON only."""
 
 
-def _describe(ticker, year, latest) -> str:
+# v2 (after the v1 run, 16 Oct): v1 split by YEAR too, but a 10-K's financial tables already show the
+# prior year, so the split pushed half the search into the older filing (Q5, Q18 broke); and v1's
+# example wording ("net revenue") replaced the question's own words (Q22 lost "total"), and an
+# any-company target got the placeholder "company name" (Q27). v2: one search per COMPANY only
+# (all the question's years together, as before), keep the question's key words, no placeholders.
+PROMPT_V2 = """You write search queries for a search engine over companies' annual reports (SEC 10-K filings).
+Write ONE query for EACH target below, in the same order. Each query must:
+- name the target's company, if the target has one; if the target is "any company", name no company
+  and write no placeholder words such as "company name",
+- ask only for what THAT target must supply to answer the question,
+- KEEP the question's own key words exactly (e.g. "total revenue" stays "total revenue"; "employees"
+  stays "employees"); write abbreviations out in full (R&D -> research and development),
+- be short: 4 to 12 words, keywords rather than a sentence, no years.
+Do not answer the question. Do not mention companies other than the target's.
+
+Example
+Question: Which spent more on R&D in its latest fiscal year, NVIDIA or AMD?
+Targets:
+1. NVIDIA, latest 10-K
+2. AMD, latest 10-K
+Reply: {{"queries": ["NVIDIA research and development expenses", "AMD research and development expenses"]}}
+
+Question: {question}
+Targets:
+{targets}
+Reply with JSON only."""
+
+
+def _describe(ticker, years, latest) -> str:
     who = NAMES.get(ticker, ticker) if ticker else "any company"
-    when = f"fiscal {year} 10-K" if year else ("latest 10-K" if latest else "any year")
+    if years:
+        when = "fiscal " + " and ".join(str(y) for y in years) + " 10-K" + ("s" if len(years) > 1 else "")
+    else:
+        when = "latest 10-K" if latest else "any year"
     return f"{who}, {when}"
 
 
 def plan_searches(question: str, tickers: list[str], years: list[int], latest: bool,
-                  use_llm: bool = True) -> dict:
-    """Returns {"searches": [{"ticker", "fiscal_years", "query"}, ...], "rewritten": bool}."""
-    targets = [(t, y) for t in (tickers or [None]) for y in (years or [None])]
+                  use_llm: bool = True, version: int = 2) -> dict:
+    """Returns {"searches": [{"ticker", "fiscal_years", "query"}, ...], "rewritten": bool}.
+    version 1: one search per company x year. version 2: one search per company (years together)."""
+    if version == 1:
+        targets = [(t, [y] if y else None) for t in (tickers or [None]) for y in (years or [None])]
+    else:
+        targets = [(t, years or None) for t in (tickers or [None])]
+    prompt = PROMPT_V1 if version == 1 else PROMPT_V2
     queries = None
     try:
         if not use_llm:
             raise RuntimeError("split only")
-        reply = call_llm(PROMPT.format(
+        reply = call_llm(prompt.format(
             question=question,
-            targets="\n".join(f"{i}. {_describe(t, y, latest)}" for i, (t, y) in enumerate(targets, 1))),
+            targets="\n".join(f"{i}. {_describe(t, ys, latest)}" for i, (t, ys) in enumerate(targets, 1))),
             temperature=0)
         m = re.search(r"\{.*\}", reply or "", re.DOTALL)
         got = json.loads(m.group(0))["queries"] if m else None
@@ -82,8 +118,8 @@ def plan_searches(question: str, tickers: list[str], years: list[int], latest: b
     if not rewritten:
         queries = [question] * len(targets)
     return {"rewritten": rewritten,
-            "searches": [{"ticker": t, "fiscal_years": [y] if y else None, "query": expand_query(q)}
-                         for (t, y), q in zip(targets, queries)]}
+            "searches": [{"ticker": t, "fiscal_years": ys, "query": expand_query(q)}
+                         for (t, ys), q in zip(targets, queries)]}
 
 
 if __name__ == "__main__":
