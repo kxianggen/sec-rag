@@ -42,14 +42,15 @@ Excerpts:
 Question: {question}"""
 
 
-def call_llm(prompt: str, temperature: float | None = None) -> str | None:
-    """temperature=None uses the provider default; the judge passes 0 so its grades repeat."""
+def call_llm(prompt: str, temperature: float | None = None, model: str | None = None) -> str | None:
+    """temperature=None uses the provider default; the judge passes 0 so its grades repeat.
+    model=None uses ANTHROPIC_MODEL / OPENAI_MODEL; the judge passes a stronger one (JUDGE_MODEL)."""
     extra = {} if temperature is None else {"temperature": temperature}
     if os.getenv("ANTHROPIC_API_KEY"):
         import anthropic
         client = anthropic.Anthropic()
         resp = client.messages.create(
-            model=os.getenv("ANTHROPIC_MODEL", "claude-haiku-4-5"),
+            model=model or os.getenv("ANTHROPIC_MODEL", "claude-haiku-4-5"),
             max_tokens=800,
             messages=[{"role": "user", "content": prompt}],
             **extra,
@@ -59,7 +60,7 @@ def call_llm(prompt: str, temperature: float | None = None) -> str | None:
         from openai import OpenAI
         client = OpenAI()
         resp = client.chat.completions.create(
-            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+            model=model or os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
             messages=[{"role": "user", "content": prompt}],
             **extra,
         )

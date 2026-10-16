@@ -17,14 +17,14 @@ TARGET = {"fact": 7, "cross-period": 6, "cross-company": 6, "narrative": 7, "una
 ITEMS = {"1", "1A", "1B", "1C", "2", "3", "4", "5", "6", "7", "7A", "8", "9", "9A", "9B", "9C",
          "10", "11", "12", "13", "14", "15", "16"}
 FIELDS = {"question", "answer", "type", "sources"}
-OPTIONAL = {"evidence"}   # exact quote from the filing, for spot-checking
+OPTIONAL = {"evidence", "required"}   # exact quote from the filing, for spot-checking
 REFUSAL = "Not in the filings."
 
 
 def check(n: int, row: dict) -> list[str]:
     errs = []
     if not FIELDS <= set(row) <= FIELDS | OPTIONAL:
-        return [f"fields should be {sorted(FIELDS)} (+ optional evidence), got {sorted(row)}"]
+        return [f"fields should be {sorted(FIELDS)} (+ optional evidence, required), got {sorted(row)}"]
     if "TODO" in json.dumps(row):
         errs.append("still contains TODO")
     if row["type"] not in TYPES:

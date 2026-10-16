@@ -5,6 +5,7 @@ Writes data/chunks.jsonl   (one JSON object per line)
 
     uv run python chunk.py                                                  # paragraph packing (default)
     uv run python chunk.py --method fixed --out data/chunks_fixed.jsonl     # Experiment 1
+    uv run python chunk.py --text data/text_tables --out data/chunks_tables.jsonl   # Experiment 4
 
 Chunks are packed from whole lines (each line is one paragraph in the
 extracted text), up to CHUNK_SIZE characters, so no chunk starts or ends
@@ -67,6 +68,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--method", choices=["paragraph", "fixed"], default="paragraph")
     p.add_argument("--out", type=Path, default=OUT)
+    p.add_argument("--text", type=Path, default=TEXT, help="folder written by extract.py")
     a = p.parse_args()
 
     # Experiment 1 compares ONE thing: where the cuts fall. Same size (1000), no overlap in either.
@@ -77,7 +79,7 @@ def main():
 
     n = 0
     with a.out.open("w", encoding="utf-8") as f:
-        for path in sorted(TEXT.glob("*/*.json")):
+        for path in sorted(a.text.glob("*/*.json")):
             filing = json.loads(path.read_text(encoding="utf-8"))
             for section in filing["sections"]:
                 for i, piece in enumerate(split(section["text"])):

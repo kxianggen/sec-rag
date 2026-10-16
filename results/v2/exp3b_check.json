@@ -1,0 +1,1030 @@
+{
+ "k": 10,
+ "index": "main",
+ "store": "numpy",
+ "mode": "hybrid",
+ "max_per_section": null,
+ "prompt": 1,
+ "rubric": "v2",
+ "rows": [
+  {
+   "n": 1,
+   "type": "fact",
+   "question": "What was NVIDIA's total revenue in fiscal 2026?",
+   "filters": {
+    "tickers": [
+     "NVDA"
+    ],
+    "fiscal_years": [
+     2026
+    ],
+    "latest": false
+   },
+   "retrieved": [
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 7",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 7",
+    "NVDA 2026-01-25 Item 7",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 15"
+   ],
+   "recall": 1.0,
+   "answer": "NVIDIA's total revenue in fiscal 2026 was $215.9 billion [7].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "correct",
+   "judge_reason": "The system answer contains the same facts as the golden answer.",
+   "answer_score": 1.0,
+   "category": "C",
+   "crag": 1.0
+  },
+  {
+   "n": 2,
+   "type": "fact",
+   "question": "What was Micron's gross margin percentage in fiscal 2025?",
+   "filters": {
+    "tickers": [
+     "MU"
+    ],
+    "fiscal_years": [
+     2025
+    ],
+    "latest": false
+   },
+   "retrieved": [
+    "MU 2025-08-28 Item 7",
+    "MU 2025-08-28 Item 8",
+    "MU 2025-08-28 Item 7",
+    "MU 2025-08-28 Item 8",
+    "MU 2025-08-28 Item 5",
+    "MU 2025-08-28 Item 8",
+    "MU 2025-08-28 Item 8",
+    "MU 2025-08-28 Item 8",
+    "MU 2025-08-28 Item 7",
+    "MU 2025-08-28 Item 15"
+   ],
+   "recall": 1.0,
+   "answer": "Micron's gross margin percentage in fiscal 2025 was 40% [1].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "partial",
+   "judge_reason": "The system answer provides the gross margin percentage for fiscal 2025 but omits the comparison to fiscal 2024.",
+   "answer_score": 0.5,
+   "category": "A",
+   "crag": 0.5
+  },
+  {
+   "n": 3,
+   "type": "fact",
+   "question": "How much total debt principal did Broadcom have outstanding at the end of fiscal 2025?",
+   "filters": {
+    "tickers": [
+     "AVGO"
+    ],
+    "fiscal_years": [
+     2025
+    ],
+    "latest": false
+   },
+   "retrieved": [
+    "AVGO 2025-11-02 Item 8",
+    "AVGO 2025-11-02 Item 8",
+    "AVGO 2025-11-02 Item 8",
+    "AVGO 2025-11-02 Item 8",
+    "AVGO 2025-11-02 Item 8",
+    "AVGO 2025-11-02 Item 8",
+    "AVGO 2025-11-02 Item 8",
+    "AVGO 2025-11-02 Item 8",
+    "AVGO 2025-11-02 Item 5",
+    "AVGO 2025-11-02 Item 15"
+   ],
+   "recall": 1.0,
+   "answer": "As of November 2, 2025, Broadcom had a total debt principal outstanding of $67,120 million [1][7].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "correct",
+   "judge_reason": "The system answer contains the same facts as the golden answer.",
+   "answer_score": 1.0,
+   "category": "C",
+   "crag": 1.0
+  },
+  {
+   "n": 4,
+   "type": "cross-period",
+   "question": "How did NVIDIA's Data Center revenue change from fiscal 2024 to fiscal 2026?",
+   "filters": {
+    "tickers": [
+     "NVDA"
+    ],
+    "fiscal_years": [
+     2024,
+     2026
+    ],
+    "latest": false
+   },
+   "retrieved": [
+    "NVDA 2024-01-28 Item 7",
+    "NVDA 2024-01-28 Item 7",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 7",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2024-01-28 Item 7",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 7",
+    "NVDA 2026-01-25 Item 7",
+    "NVDA 2026-01-25 Item 15"
+   ],
+   "recall": 1.0,
+   "answer": "NVIDIA's Data Center revenue increased from $47.5 billion in fiscal year 2024 to $193.7 billion in fiscal year 2026, which represents an increase of 307% over that period [2][3].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "correct",
+   "judge_reason": "The system answer contains the same facts as the golden answer.",
+   "answer_score": 1.0,
+   "category": "C",
+   "crag": 1.0
+  },
+  {
+   "n": 5,
+   "type": "cross-period",
+   "question": "How did Qualcomm's research and development expenses change from fiscal 2024 to fiscal 2025?",
+   "filters": {
+    "tickers": [
+     "QCOM"
+    ],
+    "fiscal_years": [
+     2024,
+     2025
+    ],
+    "latest": false
+   },
+   "retrieved": [
+    "QCOM 2024-09-29 Item 7",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 16",
+    "QCOM 2024-09-29 Item 16",
+    "QCOM 2025-09-28 Item 16",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2024-09-29 Item 16",
+    "QCOM 2025-09-28 Item 16"
+   ],
+   "recall": 1.0,
+   "answer": "Qualcomm's research and development expenses increased from $8,893 million in fiscal 2024 to $9,042 million in fiscal 2025, which is a change of $149 million. This information comes from the fiscal 2025 10-K filing [2][3].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "partial",
+   "judge_reason": "The system answer is consistent with the golden answer but omits the percentage of revenues and the reason for the increase in expenses.",
+   "answer_score": 0.5,
+   "category": "A",
+   "crag": 0.5
+  },
+  {
+   "n": 6,
+   "type": "cross-company",
+   "question": "Which reported higher net income in its latest fiscal year, AMD or NVIDIA?",
+   "filters": {
+    "tickers": [
+     "AMD",
+     "NVDA"
+    ],
+    "fiscal_years": [],
+    "latest": true
+   },
+   "retrieved": [
+    "AMD 2025-12-27 Item 7",
+    "AMD 2025-12-27 Item 7",
+    "AMD 2025-12-27 Item 7",
+    "AMD 2025-12-27 Item 7",
+    "AMD 2025-12-27 Item 1",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 7",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 7",
+    "NVDA 2026-01-25 Item 15"
+   ],
+   "recall": 1.0,
+   "answer": "In the latest fiscal year, NVIDIA reported a net income of $120.1 billion for the fiscal year ending January 25, 2026 [9]. In contrast, AMD's net income for the fiscal year ending December 27, 2025, is not provided in the excerpts. Therefore, based on the available information, NVIDIA reported a higher net income. \n\nAMD's net income is not in the filings.",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "incorrect",
+   "judge_reason": "The system answer incorrectly states NVIDIA's net income as $120.1 billion instead of $120.067 million, which is a significant error.",
+   "answer_score": 0.0,
+   "category": "D",
+   "crag": -1.0
+  },
+  {
+   "n": 7,
+   "type": "cross-company",
+   "question": "Which of Broadcom and Qualcomm got a larger share of its revenue from China in its latest fiscal year?",
+   "filters": {
+    "tickers": [
+     "AVGO",
+     "QCOM"
+    ],
+    "fiscal_years": [],
+    "latest": true
+   },
+   "retrieved": [
+    "AVGO 2025-11-02 Item 8",
+    "AVGO 2025-11-02 Item 8",
+    "AVGO 2025-11-02 Item 8",
+    "AVGO 2025-11-02 Item 5",
+    "AVGO 2025-11-02 Item 7",
+    "QCOM 2025-09-28 Item 1A",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 16",
+    "QCOM 2025-09-28 Item 1A",
+    "QCOM 2025-09-28 Item 16"
+   ],
+   "recall": 1.0,
+   "answer": "In Broadcom's latest fiscal year 2025, net revenue from China (including Hong Kong) was $11,155 million [2]. In Qualcomm's latest fiscal year 2025, a significant portion of its revenues is derived from Chinese OEMs, but the exact revenue figure from China is not provided in the excerpts [9]. Therefore, based on the available data, Broadcom had a larger share of its revenue from China in its latest fiscal year.",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "incorrect",
+   "judge_reason": "The system answer incorrectly concludes that Broadcom had a larger share of its revenue from China, contradicting the golden answer which states Qualcomm had 46% compared to Broadcom's 17%.",
+   "answer_score": 0.0,
+   "category": "D",
+   "crag": -1.0
+  },
+  {
+   "n": 8,
+   "type": "narrative",
+   "question": "What did NVIDIA say about US export controls on its sales to China in its fiscal 2026 10-K?",
+   "filters": {
+    "tickers": [
+     "NVDA"
+    ],
+    "fiscal_years": [
+     2026
+    ],
+    "latest": false
+   },
+   "retrieved": [
+    "NVDA 2026-01-25 Item 1A",
+    "NVDA 2026-01-25 Item 1A",
+    "NVDA 2026-01-25 Item 1A",
+    "NVDA 2026-01-25 Item 1A",
+    "NVDA 2026-01-25 Item 1A",
+    "NVDA 2026-01-25 Item 1",
+    "NVDA 2026-01-25 Item 1A",
+    "NVDA 2026-01-25 Item 1A",
+    "NVDA 2026-01-25 Item 1A",
+    "NVDA 2026-01-25 Item 1"
+   ],
+   "recall": 0.5,
+   "answer": "In its fiscal 2026 10-K, NVIDIA stated that the U.S. government requires a license for the export of its H20 integrated circuits and any other circuits achieving similar performance metrics to China, including Hong Kong and Macau. This requirement led to a $4.5 billion charge in the first quarter of fiscal year 2026 due to excess inventory and purchase obligations, as demand for H20 products diminished. Additionally, NVIDIA mentioned that in August 2025, the U.S. government granted licenses allowing the shipment of certain H20 products to specific China-based customers, generating approximately $60 million in revenue under those licenses. However, the U.S. government expressed an expectation to receive 15% or more of the revenue from these licensed sales, although no regulation codifying this requirement was published [10].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "partial",
+   "judge_reason": "The system answer is consistent with the golden answer but omits some key points, such as the impact on NVIDIA's competition in China's data-center compute market and the uncertainty regarding future imports.",
+   "answer_score": 0.5,
+   "category": "A",
+   "crag": 0.5
+  },
+  {
+   "n": 9,
+   "type": "narrative",
+   "question": "What risks did Qualcomm describe about its business with Apple in its fiscal 2025 10-K?",
+   "filters": {
+    "tickers": [
+     "QCOM"
+    ],
+    "fiscal_years": [
+     2025
+    ],
+    "latest": false
+   },
+   "retrieved": [
+    "QCOM 2025-09-28 Item 1A",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 1A",
+    "QCOM 2025-09-28 Item 15",
+    "QCOM 2025-09-28 Item 15",
+    "QCOM 2025-09-28 Item 16",
+    "QCOM 2025-09-28 Item 15",
+    "QCOM 2025-09-28 Item 1",
+    "QCOM 2025-09-28 Item 15",
+    "QCOM 2025-09-28 Item 16"
+   ],
+   "recall": 1.0,
+   "answer": "Qualcomm described several risks regarding its business with Apple in its fiscal 2025 10-K. They noted that Apple purchases Qualcomm's MDM products, which have lower revenue and margin contributions compared to combined modem and application processor products. Qualcomm expects that as Apple increasingly uses its own modem products in future devices, this will significantly negatively impact Qualcomm's QCT revenues, results of operations, and cash flows. Additionally, Qualcomm highlighted the risk of competition from Apple's vertical integration, as Apple has begun utilizing its own modem in its recently released smartphones and is expected to continue this trend [1][2][3].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "partial",
+   "judge_reason": "The system answer is consistent with the golden answer but omits the key point that Apple is a 10%+ customer.",
+   "answer_score": 0.5,
+   "category": "A",
+   "crag": 0.5
+  },
+  {
+   "n": 10,
+   "type": "narrative",
+   "question": "What did Marvell say drove its data center revenue growth in fiscal 2026?",
+   "filters": {
+    "tickers": [
+     "MRVL"
+    ],
+    "fiscal_years": [
+     2026
+    ],
+    "latest": false
+   },
+   "retrieved": [
+    "MRVL 2026-01-31 Item 7",
+    "MRVL 2026-01-31 Item 7",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 1",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 7",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 8"
+   ],
+   "recall": 1.0,
+   "answer": "Marvell stated that the strong revenue growth from its data center market in fiscal 2026 was driven by AI-related demand for its custom products and electro-optics portfolio [1][2].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "partial",
+   "judge_reason": "The system answer captures the key point about AI-related demand driving data center revenue growth but omits the specific percentage increase and the total net revenue change.",
+   "answer_score": 0.5,
+   "category": "A",
+   "crag": 0.5
+  },
+  {
+   "n": 11,
+   "type": "unanswerable",
+   "question": "What will NVIDIA's stock price be in three years?",
+   "filters": {
+    "tickers": [
+     "NVDA"
+    ],
+    "fiscal_years": [],
+    "latest": false
+   },
+   "retrieved": [
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2024-01-28 Item 15",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2025-01-26 Item 7",
+    "NVDA 2024-01-28 Item 15",
+    "NVDA 2024-01-28 Item 7",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2025-01-26 Item 15",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2025-01-26 Item 15"
+   ],
+   "recall": null,
+   "answer": "Not in the filings.",
+   "refused": true,
+   "refusal_ok": true,
+   "verdict": "correct",
+   "judge_reason": "Both the golden answer and the system answer state that the information is not in the filings.",
+   "answer_score": 1.0,
+   "category": "C",
+   "crag": 1.0
+  },
+  {
+   "n": 12,
+   "type": "unanswerable",
+   "question": "What average selling price does Micron forecast for its DRAM in fiscal 2027?",
+   "filters": {
+    "tickers": [
+     "MU"
+    ],
+    "fiscal_years": [
+     2027
+    ],
+    "latest": false
+   },
+   "retrieved": [],
+   "recall": null,
+   "answer": "Not in the filings.",
+   "refused": true,
+   "refusal_ok": true,
+   "verdict": "correct",
+   "judge_reason": "Both the golden answer and the system answer state 'Not in the filings.', indicating they are in agreement.",
+   "answer_score": 1.0,
+   "category": "C",
+   "crag": 1.0
+  },
+  {
+   "n": 13,
+   "type": "fact",
+   "question": "How many employees did NVIDIA have at the end of fiscal 2026?",
+   "filters": {
+    "tickers": [
+     "NVDA"
+    ],
+    "fiscal_years": [
+     2026
+    ],
+    "latest": false
+   },
+   "retrieved": [
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 7",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 1",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 15"
+   ],
+   "recall": 1.0,
+   "answer": "As of the end of fiscal year 2026, NVIDIA had approximately 42,000 employees in 38 countries [8].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "partial",
+   "judge_reason": "The system answer is consistent with the golden answer but omits the specific number of employees in research and development.",
+   "answer_score": 0.5,
+   "category": "A",
+   "crag": 0.5
+  },
+  {
+   "n": 14,
+   "type": "fact",
+   "question": "How much did NVIDIA spend on share repurchases in fiscal 2026?",
+   "filters": {
+    "tickers": [
+     "NVDA"
+    ],
+    "fiscal_years": [
+     2026
+    ],
+    "latest": false
+   },
+   "retrieved": [
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 5",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 7",
+    "NVDA 2026-01-25 Item 5",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 15"
+   ],
+   "recall": 1.0,
+   "answer": "In fiscal year 2026, NVIDIA repurchased 282 million shares of its common stock for $40.4 billion [3][5].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "correct",
+   "judge_reason": "The system answer contains the same facts as the golden answer.",
+   "answer_score": 1.0,
+   "category": "C",
+   "crag": 1.0
+  },
+  {
+   "n": 15,
+   "type": "fact",
+   "question": "What was Marvell's total net revenue in fiscal 2026?",
+   "filters": {
+    "tickers": [
+     "MRVL"
+    ],
+    "fiscal_years": [
+     2026
+    ],
+    "latest": false
+   },
+   "retrieved": [
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 7",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 7"
+   ],
+   "recall": 1.0,
+   "answer": "Marvell's total net revenue in fiscal 2026 was $8,194.6 million [7].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "partial",
+   "judge_reason": "The system answer provides the total net revenue for fiscal 2026 but omits the comparison to fiscal 2025 and the percentage increase.",
+   "answer_score": 0.5,
+   "category": "A",
+   "crag": 0.5
+  },
+  {
+   "n": 16,
+   "type": "fact",
+   "question": "What was AMD's Data Center segment revenue in fiscal 2025?",
+   "filters": {
+    "tickers": [
+     "AMD"
+    ],
+    "fiscal_years": [
+     2025
+    ],
+    "latest": false
+   },
+   "retrieved": [
+    "AMD 2025-12-27 Item 7",
+    "AMD 2025-12-27 Item 7",
+    "AMD 2025-12-27 Item 1",
+    "AMD 2025-12-27 Item 7",
+    "AMD 2025-12-27 Item 1",
+    "AMD 2025-12-27 Item 7",
+    "AMD 2025-12-27 Item 8",
+    "AMD 2025-12-27 Item 8",
+    "AMD 2025-12-27 Item 7",
+    "AMD 2025-12-27 Item 1"
+   ],
+   "recall": 1.0,
+   "answer": "AMD's Data Center segment revenue in fiscal 2025 was $16.6 billion, which increased by 32% compared to $12.6 billion in 2024 [1][2].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "correct",
+   "judge_reason": "The system answer contains the same facts as the golden answer.",
+   "answer_score": 1.0,
+   "category": "C",
+   "crag": 1.0
+  },
+  {
+   "n": 17,
+   "type": "cross-period",
+   "question": "How did Micron's total revenue change from fiscal 2024 to fiscal 2025?",
+   "filters": {
+    "tickers": [
+     "MU"
+    ],
+    "fiscal_years": [
+     2024,
+     2025
+    ],
+    "latest": false
+   },
+   "retrieved": [
+    "MU 2025-08-28 Item 8",
+    "MU 2024-08-29 Item 8",
+    "MU 2024-08-29 Item 8",
+    "MU 2025-08-28 Item 8",
+    "MU 2024-08-29 Item 8",
+    "MU 2025-08-28 Item 5",
+    "MU 2025-08-28 Item 8",
+    "MU 2025-08-28 Item 8",
+    "MU 2024-08-29 Item 15",
+    "MU 2024-08-29 Item 8"
+   ],
+   "recall": 0.0,
+   "answer": "Not in the filings.",
+   "refused": true,
+   "refusal_ok": false,
+   "verdict": "incorrect",
+   "judge_reason": "The system answer contradicts the golden answer by stating 'Not in the filings.' when the golden answer provides specific revenue figures.",
+   "answer_score": 0.0,
+   "category": "D",
+   "crag": 0.0
+  },
+  {
+   "n": 18,
+   "type": "cross-period",
+   "question": "How did Broadcom's R&D expenses change from fiscal 2024 to fiscal 2025?",
+   "filters": {
+    "tickers": [
+     "AVGO"
+    ],
+    "fiscal_years": [
+     2024,
+     2025
+    ],
+    "latest": false
+   },
+   "retrieved": [
+    "AVGO 2025-11-02 Item 8",
+    "AVGO 2024-11-03 Item 8",
+    "AVGO 2025-11-02 Item 8",
+    "AVGO 2024-11-03 Item 8",
+    "AVGO 2024-11-03 Item 8",
+    "AVGO 2024-11-03 Item 8",
+    "AVGO 2025-11-02 Item 8",
+    "AVGO 2025-11-02 Item 8",
+    "AVGO 2024-11-03 Item 8",
+    "AVGO 2025-11-02 Item 8"
+   ],
+   "recall": 0.0,
+   "answer": "Broadcom's research and development (R&D) expenses increased from $9,310 million in fiscal 2024 to $23,137 million in fiscal 2025. This represents an increase of $13,827 million from fiscal 2024 to fiscal 2025. This information is from the fiscal periods ending November 3, 2024, and November 2, 2025, respectively [3][4].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "incorrect",
+   "judge_reason": "The system answer provides incorrect figures for R&D expenses, stating an increase that contradicts the golden answer.",
+   "answer_score": 0.0,
+   "category": "D",
+   "crag": -1.0
+  },
+  {
+   "n": 19,
+   "type": "cross-period",
+   "question": "How did NVIDIA's number of employees change from fiscal 2024 to fiscal 2026?",
+   "filters": {
+    "tickers": [
+     "NVDA"
+    ],
+    "fiscal_years": [
+     2024,
+     2026
+    ],
+    "latest": false
+   },
+   "retrieved": [
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2024-01-28 Item 1",
+    "NVDA 2026-01-25 Item 7",
+    "NVDA 2024-01-28 Item 15",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2024-01-28 Item 7",
+    "NVDA 2024-01-28 Item 1",
+    "NVDA 2026-01-25 Item 15"
+   ],
+   "recall": 0.5,
+   "answer": "Not in the filings.",
+   "refused": true,
+   "refusal_ok": false,
+   "verdict": "incorrect",
+   "judge_reason": "The system answer contradicts the golden answer by stating 'Not in the filings.' when the golden answer provides specific figures.",
+   "answer_score": 0.0,
+   "category": "D",
+   "crag": 0.0
+  },
+  {
+   "n": 20,
+   "type": "cross-period",
+   "question": "How did Qualcomm's automotive revenue change from fiscal 2024 to fiscal 2025?",
+   "filters": {
+    "tickers": [
+     "QCOM"
+    ],
+    "fiscal_years": [
+     2024,
+     2025
+    ],
+    "latest": false
+   },
+   "retrieved": [
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2024-09-29 Item 7",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 16",
+    "QCOM 2024-09-29 Item 7",
+    "QCOM 2024-09-29 Item 7",
+    "QCOM 2024-09-29 Item 7",
+    "QCOM 2024-09-29 Item 7"
+   ],
+   "recall": 1.0,
+   "answer": "Qualcomm's automotive revenue increased from $2.910 billion in fiscal 2024 to $3.957 billion in fiscal 2025, which is an increase of $1.047 billion [5].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "partial",
+   "judge_reason": "The system answer is consistent with the golden answer but omits the explanation about the increase being mainly from more shipments for new vehicle launches.",
+   "answer_score": 0.5,
+   "category": "A",
+   "crag": 0.5
+  },
+  {
+   "n": 21,
+   "type": "cross-company",
+   "question": "Which had more employees at the end of its latest fiscal year, Micron or Marvell?",
+   "filters": {
+    "tickers": [
+     "MU",
+     "MRVL"
+    ],
+    "fiscal_years": [],
+    "latest": true
+   },
+   "retrieved": [
+    "MU 2025-08-28 Item 8",
+    "MU 2025-08-28 Item 8",
+    "MU 2025-08-28 Item 15",
+    "MU 2025-08-28 Item 15",
+    "MU 2025-08-28 Item 7",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 8"
+   ],
+   "recall": 0.0,
+   "answer": "Not in the filings.",
+   "refused": true,
+   "refusal_ok": false,
+   "verdict": "incorrect",
+   "judge_reason": "The system answer contradicts the golden answer by refusing to provide information that is available in the filings.",
+   "answer_score": 0.0,
+   "category": "D",
+   "crag": 0.0
+  },
+  {
+   "n": 22,
+   "type": "cross-company",
+   "question": "Which reported higher total revenue in fiscal 2025, Qualcomm or Broadcom?",
+   "filters": {
+    "tickers": [
+     "QCOM",
+     "AVGO"
+    ],
+    "fiscal_years": [
+     2025
+    ],
+    "latest": false
+   },
+   "retrieved": [
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 16",
+    "QCOM 2025-09-28 Item 7",
+    "AVGO 2025-11-02 Item 7",
+    "AVGO 2025-11-02 Item 7",
+    "AVGO 2025-11-02 Item 8",
+    "AVGO 2025-11-02 Item 7",
+    "AVGO 2025-11-02 Item 5"
+   ],
+   "recall": 1.0,
+   "answer": "Qualcomm reported total revenues of $44.3 billion in fiscal 2025 [5], while Broadcom reported total net revenues of $63.887 billion in fiscal 2025 [9]. Therefore, Broadcom reported higher total revenue in fiscal 2025.",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "correct",
+   "judge_reason": "The system answer uses different formatting for the revenue figures (billion vs million) but conveys the same information.",
+   "answer_score": 1.0,
+   "category": "E",
+   "crag": 1.0
+  },
+  {
+   "n": 23,
+   "type": "cross-company",
+   "question": "Which spent more on R&D in its latest fiscal year, NVIDIA or AMD?",
+   "filters": {
+    "tickers": [
+     "NVDA",
+     "AMD"
+    ],
+    "fiscal_years": [],
+    "latest": true
+   },
+   "retrieved": [
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 1",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 7",
+    "NVDA 2026-01-25 Item 7",
+    "AMD 2025-12-27 Item 1",
+    "AMD 2025-12-27 Item 1",
+    "AMD 2025-12-27 Item 7",
+    "AMD 2025-12-27 Item 7",
+    "AMD 2025-12-27 Item 15"
+   ],
+   "recall": 1.0,
+   "answer": "In the latest fiscal year, NVIDIA spent $18,497 million on research and development [3]. In comparison, AMD spent $8.4 billion on research and development in its latest fiscal year [8]. Therefore, NVIDIA spent more on R&D in its latest fiscal year, which is fiscal 2026 for NVIDIA and fiscal 2025 for AMD. \n\nThis information comes from NVIDIA's 10-K for fiscal 2026 [3] and AMD's 10-K for fiscal 2025 [8].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "partial",
+   "judge_reason": "The system answer is consistent with the golden answer but provides a slightly different figure for AMD's R&D spending.",
+   "answer_score": 0.5,
+   "category": "A",
+   "crag": 0.5
+  },
+  {
+   "n": 24,
+   "type": "narrative",
+   "question": "What did Micron say about HBM demand in its fiscal 2025 10-K?",
+   "filters": {
+    "tickers": [
+     "MU"
+    ],
+    "fiscal_years": [
+     2025
+    ],
+    "latest": false
+   },
+   "retrieved": [
+    "MU 2025-08-28 Item 15",
+    "MU 2025-08-28 Item 1A",
+    "MU 2025-08-28 Item 7",
+    "MU 2025-08-28 Item 15",
+    "MU 2025-08-28 Item 15",
+    "MU 2025-08-28 Item 7",
+    "MU 2025-08-28 Item 8",
+    "MU 2025-08-28 Item 15",
+    "MU 2025-08-28 Item 8",
+    "MU 2025-08-28 Item 16"
+   ],
+   "recall": 0.5,
+   "answer": "In its fiscal 2025 10-K, Micron stated that \"AI-driven demand is accelerating and is outpacing industry supply\" and that they benefited from \"substantial improvements in DRAM pricing, volumes and margins as compared to 2024, reflecting strong demand growth, driven in part by the continued advancement of AI.\" They emphasized that they shifted a portion of their DRAM supply to the data center and hyperscale cloud markets to meet the strong demand fueled by AI, with an emphasis on HBM products, resulting in a revenue mix weighted more prominently toward segments experiencing higher growth [3].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "partial",
+   "judge_reason": "The system answer captures the essence of the golden answer but omits specific details such as the revenue figures and the mention of the HBM3E 12-high shipments and the new facility.",
+   "answer_score": 0.5,
+   "category": "A",
+   "crag": 0.5
+  },
+  {
+   "n": 25,
+   "type": "narrative",
+   "question": "What did NVIDIA say about customer concentration in its fiscal 2026 10-K?",
+   "filters": {
+    "tickers": [
+     "NVDA"
+    ],
+    "fiscal_years": [
+     2026
+    ],
+    "latest": false
+   },
+   "retrieved": [
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 7",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 7",
+    "NVDA 2026-01-25 Item 16",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 15",
+    "NVDA 2026-01-25 Item 15"
+   ],
+   "recall": 0.5,
+   "answer": "In its fiscal 2026 10-K, NVIDIA stated that its revenue is concentrated among a limited number of direct and indirect customers, and this trend may continue. For fiscal year 2026, sales to one direct customer represented 22% of total revenue, and sales to another direct customer represented 14% of total revenue, all of which were primarily attributable to the Compute & Networking segment [3][5].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "partial",
+   "judge_reason": "The system answer is consistent with the golden answer but omits the details about the significant revenue from indirect customers and the potential risks associated with losing a large customer.",
+   "answer_score": 0.5,
+   "category": "A",
+   "crag": 0.5
+  },
+  {
+   "n": 26,
+   "type": "narrative",
+   "question": "What did Qualcomm say about its automotive strategy in its fiscal 2025 10-K?",
+   "filters": {
+    "tickers": [
+     "QCOM"
+    ],
+    "fiscal_years": [
+     2025
+    ],
+    "latest": false
+   },
+   "retrieved": [
+    "QCOM 2025-09-28 Item 15",
+    "QCOM 2025-09-28 Item 16",
+    "QCOM 2025-09-28 Item 15",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 15",
+    "QCOM 2025-09-28 Item 15",
+    "QCOM 2025-09-28 Item 16",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 16",
+    "QCOM 2025-09-28 Item 16"
+   ],
+   "recall": 0.5,
+   "answer": "In its fiscal 2025 10-K, Qualcomm stated that its automotive revenues were primarily driven by an increase in shipments from new vehicle launches with their Snapdragon digital cockpit products, which supports their diversification strategy in the automotive sector [4].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "partial",
+   "judge_reason": "The system answer is consistent with the golden answer but omits key points about the digitalization of the car cockpit and the specific revenue figures.",
+   "answer_score": 0.5,
+   "category": "A",
+   "crag": 0.5
+  },
+  {
+   "n": 27,
+   "type": "cross-company",
+   "question": "Which of these companies' latest 10-Ks say a single customer (including distributors) made up 10% or more of revenue?",
+   "filters": {
+    "tickers": [],
+    "fiscal_years": [],
+    "latest": true
+   },
+   "retrieved": [
+    "MRVL 2026-01-31 Item 8",
+    "MU 2025-08-28 Item 8",
+    "MRVL 2026-01-31 Item 1",
+    "AVGO 2025-11-02 Item 1A",
+    "AVGO 2025-11-02 Item 1",
+    "MRVL 2026-01-31 Item 1A",
+    "NVDA 2026-01-25 Item 7",
+    "NVDA 2026-01-25 Item 1A",
+    "AVGO 2025-11-02 Item 7",
+    "MRVL 2026-01-31 Item 7"
+   ],
+   "recall": 0.6666666666666666,
+   "answer": "The latest 10-Ks for the following companies indicate that a single customer (including distributors) made up 10% or more of revenue:\n\n1. **MRVL**: For fiscal 2026, there were two customers (one distributor and one direct customer) whose revenues represented 10% or more of total net revenue [6].\n2. **AVGO**: For fiscal 2025, direct sales to one semiconductor solutions customer, which is a distributor, accounted for 32% of net revenue [9].\n3. **MU**: For fiscal 2025, revenue from one customer was 10% of total revenue [2].\n\nThe other companies' filings do not mention any single customer making up 10% or more of revenue.",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "incorrect",
+   "judge_reason": "The system answer incorrectly states that Micron had one customer making up 10% of total revenue, while the golden answer specifies that Micron had one customer at 17%, and it also omits the details about NVIDIA and Qualcomm.",
+   "answer_score": 0.0,
+   "category": "D",
+   "crag": -1.0
+  },
+  {
+   "n": 28,
+   "type": "narrative",
+   "question": "What do the filings say about the risk of US tariffs?",
+   "filters": {
+    "tickers": [],
+    "fiscal_years": [],
+    "latest": false
+   },
+   "retrieved": [
+    "QCOM 2025-09-28 Item 7",
+    "MU 2025-08-28 Item 1",
+    "MU 2025-08-28 Item 1A",
+    "MU 2024-08-29 Item 1",
+    "MRVL 2026-01-31 Item 1A",
+    "MU 2023-08-31 Item 1",
+    "MRVL 2025-02-01 Item 1A",
+    "MU 2023-08-31 Item 1A",
+    "QCOM 2025-09-28 Item 1A",
+    "AMD 2025-12-27 Item 1A"
+   ],
+   "recall": 0.6666666666666666,
+   "answer": "The filings indicate that U.S. tariffs pose a significant risk to companies' operations and financial conditions. For example, Qualcomm (QCOM) mentions that changes in global trade policies, including tariffs, may negatively impact demand, pricing, and costs for their products, potentially leading to increased excess inventory or reserve charges, which could adversely affect their results of operations and cash flows [1]. \n\nMicron Technology (MU) states that increased tariffs can raise the cost of their products to customers and that changes in international trade laws can limit their ability to sell products or conduct operations [2][4]. They also highlight that geopolitical risks associated with international operations could materially affect their business and financial condition [3].\n\nMarvell Technology (MRVL) notes that new tariffs announced by the U.S. government could trigger retaliatory actions from affected countries, which may adversely impact their business [5]. They also mention specific tariff increases on semiconductors and the potential for retaliatory trade sanctions from foreign governments [7].\n\nOverall, the filings collectively emphasize that tariffs and trade policy changes can lead to increased costs, reduced competitiveness, and potential limitations on business operations for these companies.",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "partial",
+   "judge_reason": "The system answer captures key points about the impact of tariffs on companies but omits some specific details and examples provided in the golden answer.",
+   "answer_score": 0.5,
+   "category": "A",
+   "crag": 0.5
+  },
+  {
+   "n": 29,
+   "type": "unanswerable",
+   "question": "What is Broadcom's market share in AI networking?",
+   "filters": {
+    "tickers": [
+     "AVGO"
+    ],
+    "fiscal_years": [],
+    "latest": false
+   },
+   "retrieved": [
+    "AVGO 2024-11-03 Item 8",
+    "AVGO 2025-11-02 Item 8",
+    "AVGO 2025-11-02 Item 1",
+    "AVGO 2025-11-02 Item 8",
+    "AVGO 2024-11-03 Item 8",
+    "AVGO 2023-10-29 Item 8",
+    "AVGO 2025-11-02 Item 8",
+    "AVGO 2023-10-29 Item 7",
+    "AVGO 2023-10-29 Item 8",
+    "AVGO 2023-10-29 Item 15"
+   ],
+   "recall": null,
+   "answer": "Not in the filings.",
+   "refused": true,
+   "refusal_ok": true,
+   "verdict": "correct",
+   "judge_reason": "Both the golden answer and the system answer state that the information is not in the filings.",
+   "answer_score": 1.0,
+   "category": "C",
+   "crag": 1.0
+  },
+  {
+   "n": 30,
+   "type": "unanswerable",
+   "question": "What will NVIDIA's revenue be in fiscal 2028?",
+   "filters": {
+    "tickers": [
+     "NVDA"
+    ],
+    "fiscal_years": [
+     2028
+    ],
+    "latest": false
+   },
+   "retrieved": [],
+   "recall": null,
+   "answer": "Not in the filings.",
+   "refused": true,
+   "refusal_ok": true,
+   "verdict": "correct",
+   "judge_reason": "Both the golden answer and the system answer state that the information is not in the filings.",
+   "answer_score": 1.0,
+   "category": "C",
+   "crag": 1.0
+  }
+ ]
+}
