@@ -7,6 +7,7 @@
     uv run python eval.py --rejudge results/exp3b_hybrid.json --labels human_labels_30.json
     uv run python eval.py --index fixed --out results/exp1_fixed.json   # Experiment 1
     uv run python eval.py --store pgvector --out results/pg_hybrid.json  # search in Supabase
+    uv run python eval.py --expand --out results/p1b_expand.json         # Phase 1b: R&D -> research and development
 
 Uses YOUR scoring functions from metrics.py. Answer correctness is graded by an
 LLM judge (judge.py) and checked against your own labels in human_labels.json.
@@ -28,7 +29,7 @@ HUMAN = Path("human_labels.json")
 
 
 def run(k: int, use_llm: bool, mode: str = "hybrid", max_per_section: int | None = None,
-        prompt_version: int = 1, rubric: str = "v2.1") -> list[dict]:
+        prompt_version: int = 1, rubric: str = "v2.1", expand: bool = False) -> list[dict]:
     rows = []
     for n, line in enumerate(GOLDEN.read_text(encoding="utf-8").splitlines(), 1):
         if not line.strip():
@@ -38,7 +39,7 @@ def run(k: int, use_llm: bool, mode: str = "hybrid", max_per_section: int | None
         years = detect_fiscal_years(g["question"])
         latest = detect_latest(g["question"])
         chunks = retrieve_multi(g["question"], k=k, tickers=tickers, fiscal_years=years, latest=latest,
-                                mode=mode, max_per_section=max_per_section)
+                                mode=mode, max_per_section=max_per_section, expand=expand)
         answer = call_llm(build_prompt(g["question"], chunks, prompt_version), temperature=0) if use_llm else None
         graded = judge(g["question"], g["answer"], answer, rubric, g.get("required")) if answer is not None else None
         rows.append({
@@ -150,7 +151,9 @@ def main():
     p.add_argument("--labels", type=Path, default=HUMAN, help="your hand labels for the --rejudge file")
     p.add_argument("--rubric", default="v2.1", choices=["v1", "v2", "v2.1"],
                    help="judge rubric: v2.1 (default) grades against each question's required facts")
-    p.add_argument("--index", default="main", help='"main" (paragraph chunks) or e.g. "fixed"')
+    p.add_argument("--index", default="tables_hdr",
+                   help='"tables_hdr" (default since Phase 1a), "main" (original paragraph chunks), "fixed", ...')
+    p.add_argument("--expand", action="store_true", help="Phase 1b: expand abbreviations in the search text")
     p.add_argument("--store", default="numpy", choices=["numpy", "pgvector"], help="where vectors are searched")
     p.add_argument("--mode", default="hybrid", choices=["dense", "hybrid"], help="Experiment 3b: hybrid won (0.65 vs 0.55)")
     p.add_argument("--max-per-section", type=int, default=None, help="Experiment 3a, e.g. 3 (off by default: lost answers)")
@@ -161,12 +164,12 @@ def main():
     set_store(a.store)
 
     rows = (rejudge(a.rejudge, a.rubric) if a.rejudge
-            else run(a.k, not a.no_llm, a.mode, a.max_per_section, a.prompt, a.rubric))
+            else run(a.k, not a.no_llm, a.mode, a.max_per_section, a.prompt, a.rubric, a.expand))
     report(rows, a.k, rejudged=bool(a.rejudge), labels=a.labels)
     if a.out:
         a.out.parent.mkdir(parents=True, exist_ok=True)
         a.out.write_text(json.dumps({"k": a.k, "index": a.index, "store": a.store, "mode": a.mode,
-                                          "max_per_section": a.max_per_section,
+                                          "max_per_section": a.max_per_section, "expand": a.expand,
                                           "prompt": a.prompt, "rubric": a.rubric,
                                           "judge_model": JUDGE_MODEL if a.rubric == "v2.1" else "answer model", "rows": rows}, indent=1, ensure_ascii=False), encoding="utf-8")
         print(f"\nSaved {a.out}")

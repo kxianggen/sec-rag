@@ -11,6 +11,10 @@ Two storage backends ("stores"), same results for dense search:
             needs DATABASE_URL in .env. Filters run inside the query (WHERE ...).
 Pick with set_store("pgvector") or SEC_RAG_STORE=pgvector.
 
+Query expansion (Phase 1b): expand=True adds the long form of finance abbreviations to the
+search text, e.g. "R&D" -> "R&D (research and development)", because BM25 only matches exact
+words and the filings write the long form. The prompt still gets the original question.
+
 Two optional switches (Experiment 3):
   mode="hybrid"      blend the embedding ranking with a BM25 keyword ranking (reciprocal rank fusion)
   max_per_section=N  keep at most N chunks from the same filing section (ticker + period + Item)
@@ -26,8 +30,10 @@ from pathlib import Path
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-CHUNKS = Path("data/chunks.jsonl")
-VECTORS = Path("data/embeddings.npy")
+# Default index since Phase 1a (16 Oct): table rows (Exp 4) + contextual headers.
+# 0.67 / CRAG +0.60 / 2 wrong vs the old paragraph index 0.63 / +0.47 / 5 (rubric v2.1).
+CHUNKS = Path("data/chunks_tables_hdr.jsonl")
+VECTORS = Path("data/embeddings_tables_hdr.npy")
 MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 
 _model = None
@@ -48,7 +54,8 @@ STOPWORDS = {"the", "a", "an", "of", "in", "its", "it", "to", "and", "or", "what
 
 def set_index(name: str) -> None:
     """Switch to another chunk/vector index, e.g. "fixed" -> data/chunks_fixed.jsonl +
-    data/embeddings_fixed.npy. "main" is the default index. Used by Experiment 1."""
+    data/embeddings_fixed.npy. "main" = the original paragraph index (data/chunks.jsonl),
+    "tables_hdr" = the default since Phase 1a."""
     global CHUNKS, VECTORS, _model
     if name == "main":
         CHUNKS, VECTORS = Path("data/chunks.jsonl"), Path("data/embeddings.npy")
@@ -112,7 +119,7 @@ def _build_bm25(k1: float = 1.5, b: float = 0.75) -> dict:
     postings = defaultdict(dict)
     lengths = np.zeros(len(_chunks))
     for i, c in enumerate(_chunks):
-        toks = _tokens(c["text"])
+        toks = _tokens(c.get("header", "") + "\n" + c["text"])   # header: Phase 1a (if present)
         lengths[i] = len(toks)
         for term, tf in Counter(toks).items():
             postings[term][i] = tf
@@ -235,9 +242,28 @@ def retrieve(question: str, k: int = 5, ticker: str | None = None, fiscal_years:
             break
     return results
 
+ABBREVIATIONS = {
+    r"\bR\s*&\s*D\b": "research and development",
+    r"\bSG\s*&\s*A\b": "selling, general and administrative",
+    r"\bcapex\b": "capital expenditures",
+    r"\bEPS\b": "earnings per share",
+    r"\bheadcount\b": "employees",
+}
+
+
+def expand_query(question: str) -> str:
+    """Add the long form after each abbreviation the question uses (search text only)."""
+    extra = [long for pattern, long in ABBREVIATIONS.items()
+             if re.search(pattern, question, re.IGNORECASE) and long.lower() not in question.lower()]
+    return question + (" (" + "; ".join(extra) + ")" if extra else "")
+
+
 def retrieve_multi(question: str, k: int = 5, tickers: list[str] | None = None,
                    fiscal_years: list[int] | None = None, latest: bool = False,
-                   mode: str = "dense", max_per_section: int | None = None) -> list[dict]:
+                   mode: str = "dense", max_per_section: int | None = None,
+                   expand: bool = False) -> list[dict]:
+    if expand:
+        question = expand_query(question)
     # "latest" only applies when the question names no explicit year: years win.
     latest_only = latest and not fiscal_years
     opts = {"fiscal_years": fiscal_years, "latest_only": latest_only, "mode": mode,
