@@ -11,7 +11,7 @@ Two storage backends ("stores"), same results for dense search:
             needs DATABASE_URL in .env. Filters run inside the query (WHERE ...).
 Pick with set_store("pgvector") or SEC_RAG_STORE=pgvector.
 
-Query expansion (Phase 1b): expand=True adds the long form of finance abbreviations to the
+Query expansion (Phase 1b, default ON since 16 Oct): expand=True adds the long form of finance abbreviations to the
 search text, e.g. "R&D" -> "R&D (research and development)", because BM25 only matches exact
 words and the filings write the long form. The prompt still gets the original question.
 
@@ -261,7 +261,7 @@ def expand_query(question: str) -> str:
 def retrieve_multi(question: str, k: int = 5, tickers: list[str] | None = None,
                    fiscal_years: list[int] | None = None, latest: bool = False,
                    mode: str = "dense", max_per_section: int | None = None,
-                   expand: bool = False) -> list[dict]:
+                   expand: bool = True) -> list[dict]:
     if expand:
         question = expand_query(question)
     # "latest" only applies when the question names no explicit year: years win.
@@ -277,6 +277,19 @@ def retrieve_multi(question: str, k: int = 5, tickers: list[str] | None = None,
         results = []
         for t in tickers:
             results.extend(retrieve(question, ticker=t, k=per_company, **opts))
+    return results
+
+
+def retrieve_planned(searches: list[dict], k: int = 10, latest: bool = False, mode: str = "hybrid",
+                     max_per_section: int | None = None) -> list[dict]:
+    """Phase 1b part 2: run one search per planned target (rewrite.plan_searches), each with
+    its own search text and filters, sharing the k slots like retrieve_multi (k // n each)."""
+    per_search = max(1, k // len(searches))
+    results = []
+    for s in searches:
+        years = s["fiscal_years"]
+        results.extend(retrieve(s["query"], per_search, ticker=s["ticker"], fiscal_years=years,
+                                latest_only=latest and not years, mode=mode, max_per_section=max_per_section))
     return results
 
 

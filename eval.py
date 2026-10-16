@@ -7,7 +7,8 @@
     uv run python eval.py --rejudge results/exp3b_hybrid.json --labels human_labels_30.json
     uv run python eval.py --index fixed --out results/exp1_fixed.json   # Experiment 1
     uv run python eval.py --store pgvector --out results/pg_hybrid.json  # search in Supabase
-    uv run python eval.py --expand --out results/p1b_expand.json         # Phase 1b: R&D -> research and development
+    uv run python eval.py --out results/p1b_expand.json                  # Phase 1b: R&D expansion (default on)
+    uv run python eval.py --rewrite --out results/p1b_rewrite.json       # Phase 1b part 2: LLM query rewriting
 
 Uses YOUR scoring functions from metrics.py. Answer correctness is graded by an
 LLM judge (judge.py) and checked against your own labels in human_labels.json.
@@ -22,14 +23,16 @@ from ask import build_prompt, call_llm
 from companies import detect_fiscal_years, detect_latest, detect_tickers
 from judge import CATEGORY_VERDICT, JUDGE_MODEL, judge
 from metrics import agreement, is_refusal, refusal_correct, source_recall, verdict_score
-from retrieve import retrieve_multi, set_index, set_store
+from retrieve import retrieve_multi, retrieve_planned, set_index, set_store
+from rewrite import plan_searches
 
 GOLDEN = Path("golden.jsonl")
 HUMAN = Path("human_labels.json")
 
 
 def run(k: int, use_llm: bool, mode: str = "hybrid", max_per_section: int | None = None,
-        prompt_version: int = 1, rubric: str = "v2.1", expand: bool = False) -> list[dict]:
+        prompt_version: int = 1, rubric: str = "v2.1", expand: bool = True,
+        rewrite: bool = False, split_only: bool = False) -> list[dict]:
     rows = []
     for n, line in enumerate(GOLDEN.read_text(encoding="utf-8").splitlines(), 1):
         if not line.strip():
@@ -38,8 +41,14 @@ def run(k: int, use_llm: bool, mode: str = "hybrid", max_per_section: int | None
         tickers = detect_tickers(g["question"])
         years = detect_fiscal_years(g["question"])
         latest = detect_latest(g["question"])
-        chunks = retrieve_multi(g["question"], k=k, tickers=tickers, fiscal_years=years, latest=latest,
-                                mode=mode, max_per_section=max_per_section, expand=expand)
+        plan = None
+        if rewrite:      # Phase 1b part 2: one focused search per company x year, text written by an LLM
+            plan = plan_searches(g["question"], tickers, years, latest, use_llm=not split_only)
+            chunks = retrieve_planned(plan["searches"], k=k, latest=latest, mode=mode,
+                                      max_per_section=max_per_section)
+        else:
+            chunks = retrieve_multi(g["question"], k=k, tickers=tickers, fiscal_years=years, latest=latest,
+                                    mode=mode, max_per_section=max_per_section, expand=expand)
         answer = call_llm(build_prompt(g["question"], chunks, prompt_version), temperature=0) if use_llm else None
         graded = judge(g["question"], g["answer"], answer, rubric, g.get("required")) if answer is not None else None
         rows.append({
@@ -47,6 +56,8 @@ def run(k: int, use_llm: bool, mode: str = "hybrid", max_per_section: int | None
             "type": g["type"],
             "question": g["question"],
             "filters": {"tickers": tickers, "fiscal_years": years, "latest": latest},
+            "searches": plan["searches"] if plan else None,
+            "rewritten": plan["rewritten"] if plan else None,
             "retrieved": [f"{c['ticker']} {c['period_end']} Item {c['item']}" for c in chunks],
             "chunk_ids": [c["id"] for c in chunks],
             "chunk_texts": [c["text"] for c in chunks],
@@ -153,7 +164,12 @@ def main():
                    help="judge rubric: v2.1 (default) grades against each question's required facts")
     p.add_argument("--index", default="tables_hdr",
                    help='"tables_hdr" (default since Phase 1a), "main" (original paragraph chunks), "fixed", ...')
-    p.add_argument("--expand", action="store_true", help="Phase 1b: expand abbreviations in the search text")
+    p.add_argument("--no-expand", action="store_true",
+                   help="turn OFF abbreviation expansion (default on since Phase 1b; off reproduces earlier runs)")
+    p.add_argument("--rewrite", action="store_true",
+                   help="Phase 1b part 2: LLM writes one focused search per company x year (+1 LLM call per question)")
+    p.add_argument("--split-only", action="store_true",
+                   help="with --rewrite: split per company x year but search the original question (no LLM)")
     p.add_argument("--store", default="numpy", choices=["numpy", "pgvector"], help="where vectors are searched")
     p.add_argument("--mode", default="hybrid", choices=["dense", "hybrid"], help="Experiment 3b: hybrid won (0.65 vs 0.55)")
     p.add_argument("--max-per-section", type=int, default=None, help="Experiment 3a, e.g. 3 (off by default: lost answers)")
@@ -164,12 +180,13 @@ def main():
     set_store(a.store)
 
     rows = (rejudge(a.rejudge, a.rubric) if a.rejudge
-            else run(a.k, not a.no_llm, a.mode, a.max_per_section, a.prompt, a.rubric, a.expand))
+            else run(a.k, not a.no_llm, a.mode, a.max_per_section, a.prompt, a.rubric,
+                     not a.no_expand, a.rewrite, a.split_only))
     report(rows, a.k, rejudged=bool(a.rejudge), labels=a.labels)
     if a.out:
         a.out.parent.mkdir(parents=True, exist_ok=True)
         a.out.write_text(json.dumps({"k": a.k, "index": a.index, "store": a.store, "mode": a.mode,
-                                          "max_per_section": a.max_per_section, "expand": a.expand,
+                                          "max_per_section": a.max_per_section, "expand": not a.no_expand, "rewrite": a.rewrite, "split_only": a.split_only,
                                           "prompt": a.prompt, "rubric": a.rubric,
                                           "judge_model": JUDGE_MODEL if a.rubric == "v2.1" else "answer model", "rows": rows}, indent=1, ensure_ascii=False), encoding="utf-8")
         print(f"\nSaved {a.out}")
