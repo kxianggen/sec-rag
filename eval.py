@@ -11,7 +11,7 @@
     uv run python eval.py --rewrite 1 --out results/p1b_rewrite.json     # Phase 1b part 2 v1 (per company x year)
     uv run python eval.py --rewrite 2 --out results/p1b_rewrite2.json    # v2 (per company, keeps key words)
     uv run python eval.py --prompt 3 --out results/p1b_prompt3.json      # answer prompt + exact-number rule
-    uv run python eval.py --facts --out results/p2_facts.json            # Phase 2: + exact XBRL figures
+    uv run python eval.py --out results/p2_facts.json                    # Phase 2: + exact XBRL figures (default on)
 
 Uses YOUR scoring functions from metrics.py. Answer correctness is graded by an
 LLM judge (judge.py) and checked against your own labels in human_labels.json.
@@ -36,7 +36,7 @@ HUMAN = Path("human_labels.json")
 
 def run(k: int, use_llm: bool, mode: str = "hybrid", max_per_section: int | None = None,
         prompt_version: int = 1, rubric: str = "v2.1", expand: bool = True,
-        rewrite: int | None = None, split_only: bool = False, facts: bool = False) -> list[dict]:
+        rewrite: int | None = None, split_only: bool = False, facts: bool = True) -> list[dict]:
     rows = []
     for n, line in enumerate(GOLDEN.read_text(encoding="utf-8").splitlines(), 1):
         if not line.strip():
@@ -175,8 +175,8 @@ def main():
     p.add_argument("--rewrite", type=int, choices=[1, 2], default=None,
                    help="Phase 1b part 2: LLM writes one focused search per target (+1 LLM call per question). "
                         "1 = per company x year (16 Oct: 0.68, 5 wrong, not adopted), 2 = per company")
-    p.add_argument("--facts", action="store_true",
-                   help="Phase 2: add exact XBRL figures (facts.py) to the prompt after the passages")
+    p.add_argument("--no-facts", action="store_true",
+                   help="turn OFF the exact XBRL figures (default on since Phase 2: 0.67 -> 0.77); off reproduces earlier runs")
     p.add_argument("--split-only", action="store_true",
                    help="with --rewrite: split per company x year but search the original question (no LLM)")
     p.add_argument("--store", default="numpy", choices=["numpy", "pgvector"], help="where vectors are searched")
@@ -191,12 +191,12 @@ def main():
 
     rows = (rejudge(a.rejudge, a.rubric) if a.rejudge
             else run(a.k, not a.no_llm, a.mode, a.max_per_section, a.prompt, a.rubric,
-                     not a.no_expand, a.rewrite, a.split_only, a.facts))
+                     not a.no_expand, a.rewrite, a.split_only, not a.no_facts))
     report(rows, a.k, rejudged=bool(a.rejudge), labels=a.labels)
     if a.out:
         a.out.parent.mkdir(parents=True, exist_ok=True)
         a.out.write_text(json.dumps({"k": a.k, "index": a.index, "store": a.store, "mode": a.mode,
-                                          "max_per_section": a.max_per_section, "expand": not a.no_expand, "rewrite": a.rewrite, "split_only": a.split_only, "facts": a.facts,
+                                          "max_per_section": a.max_per_section, "expand": not a.no_expand, "rewrite": a.rewrite, "split_only": a.split_only, "facts": not a.no_facts,
                                           "prompt": a.prompt, "rubric": a.rubric,
                                           "judge_model": JUDGE_MODEL if a.rubric == "v2.1" else "answer model", "rows": rows}, indent=1, ensure_ascii=False), encoding="utf-8")
         print(f"\nSaved {a.out}")

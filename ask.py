@@ -91,6 +91,8 @@ def main():
     years = detect_fiscal_years(question)
     latest = detect_latest(question)
     chunks = retrieve_multi(question, k=10, tickers=tickers, fiscal_years=years, latest=latest, mode="hybrid")
+    from facts import lookup as lookup_facts       # Phase 2: exact XBRL figures after the passages
+    chunks = chunks + lookup_facts(question, tickers, years, latest)
     print(f"\nCOMPANY FILTER: {tickers or 'none (searching all companies)'}")
     print(f"FISCAL YEAR FILTER: {years or ('latest filing per company' if latest else 'none (all years)')}")
     answer = call_llm(build_prompt(question, chunks), temperature=0)
@@ -98,7 +100,8 @@ def main():
     print("\nANSWER\n" + (answer or "(no API key set — showing retrieved chunks only)"))
     print("\nSOURCES")
     for i, c in enumerate(chunks, 1):
-        print(f"[{i}] {c['score']:.3f}  {c['ticker']} {c['period_end']} Item {c['item']}")
+        print(f"[{i}] {c.get('score', 1.0):.3f}  {c['ticker']} {c['period_end']} Item {c['item']}"
+              + (f"  {c['text']}" if c["item"] == "XBRL" else ""))
 
 
 if __name__ == "__main__":

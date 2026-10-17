@@ -159,8 +159,9 @@ function render(r) {
     d.id = "source-" + s.n;
     const sum = el("summary");
     sum.append(el("b", null, `[${s.n}]`),
-               document.createTextNode(`${NAMES[s.ticker] || s.ticker} · fiscal ${s.fiscal_year} · Item ${s.item}` +
-                                       (ITEMS[s.item] ? ` (${ITEMS[s.item]})` : "")));
+               document.createTextNode(`${NAMES[s.ticker] || s.ticker} · fiscal ${s.fiscal_year} · ` +
+                                       (s.item === "XBRL" ? "exact figure from the filing's XBRL financial data"
+                                        : `Item ${s.item}` + (ITEMS[s.item] ? ` (${ITEMS[s.item]})` : ""))));
     d.append(sum, el("p", null, s.text));
     out.append(d);
   }

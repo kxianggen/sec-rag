@@ -32,6 +32,7 @@ load_dotenv()
 import retrieve  # noqa: E402  (after load_dotenv, so SEC_RAG_STORE is read)
 from ask import build_prompt, call_llm  # noqa: E402
 from companies import detect_fiscal_years, detect_latest, detect_tickers  # noqa: E402
+from facts import lookup as lookup_facts  # noqa: E402  (Phase 2: exact XBRL figures)
 from metrics import REFUSAL, is_refusal  # noqa: E402
 
 K = 10
@@ -138,6 +139,8 @@ def ask(body: AskRequest, request: Request):
     latest = detect_latest(question)
     chunks = retrieve.retrieve_multi(question, k=K, tickers=tickers, fiscal_years=years,
                                      latest=latest, mode="hybrid")
+    # exact figures from the filings' XBRL data, numbered after the passages (0.67 -> 0.77 in eval)
+    chunks = chunks + lookup_facts(question, tickers, years, latest) if chunks else chunks
     if not chunks:
         # e.g. "fiscal 2028": the filters matched no filing, so skip the paid LLM call
         return AskResponse(question=question, answer=REFUSAL, refused=True,
