@@ -168,8 +168,9 @@ def main():
     p.add_argument("--labels", type=Path, default=HUMAN, help="your hand labels for the --rejudge file")
     p.add_argument("--rubric", default="v2.1", choices=["v1", "v2", "v2.1"],
                    help="judge rubric: v2.1 (default) grades against each question's required facts")
-    p.add_argument("--index", default="tables_hdr",
-                   help='"tables_hdr" (default since Phase 1a), "main" (original paragraph chunks), "fixed", ...')
+    p.add_argument("--index", default="final",
+                   help='"final" (default: tables + headers, Intel removed), "tables_hdr" (16 Oct runs), '
+                        '"main" (original paragraph chunks), "fixed", ...')
     p.add_argument("--no-expand", action="store_true",
                    help="turn OFF abbreviation expansion (default on since Phase 1b; off reproduces earlier runs)")
     p.add_argument("--rewrite", type=int, choices=[1, 2], default=None,

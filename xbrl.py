@@ -33,6 +33,7 @@ from bs4 import BeautifulSoup, XMLParsedAsHTMLWarning
 warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning)
 
 RAW = Path("data/raw")
+DESCOPED = {"INTC"}     # Intel was dropped from the corpus (finalize_index.py); no facts either
 TEXT = Path("data/text")
 OUT = Path("data/facts.jsonl")
 
@@ -120,6 +121,8 @@ def main():
     with OUT.open("w", encoding="utf-8") as f:
         for path in sorted(RAW.glob("*/*.html")):
             ticker, period_end = path.parent.name, path.stem
+            if ticker in DESCOPED:
+                continue
             text = TEXT / ticker / f"{period_end}.json"
             fy = json.loads(text.read_text(encoding="utf-8"))["fiscal_year"] if text.exists() else None
             if fy is None:

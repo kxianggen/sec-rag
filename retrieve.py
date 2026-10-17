@@ -30,10 +30,10 @@ from pathlib import Path
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-# Default index since Phase 1a (16 Oct): table rows (Exp 4) + contextual headers.
-# 0.67 / CRAG +0.60 / 2 wrong vs the old paragraph index 0.63 / +0.47 / 5 (rubric v2.1).
-CHUNKS = Path("data/chunks_tables_hdr.jsonl")
-VECTORS = Path("data/embeddings_tables_hdr.npy")
+# Default index: "final" = table rows (Exp 4) + contextual headers (Phase 1a), Intel removed
+# (finalize_index.py, 17 Oct). "tables_hdr" = the same with Intel (all runs of 16 Oct).
+CHUNKS = Path("data/chunks_final.jsonl")
+VECTORS = Path("data/embeddings_final.npy")
 MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 
 _model = None
@@ -55,7 +55,7 @@ STOPWORDS = {"the", "a", "an", "of", "in", "its", "it", "to", "and", "or", "what
 def set_index(name: str) -> None:
     """Switch to another chunk/vector index, e.g. "fixed" -> data/chunks_fixed.jsonl +
     data/embeddings_fixed.npy. "main" = the original paragraph index (data/chunks.jsonl),
-    "tables_hdr" = the default since Phase 1a."""
+    "final" = the default (tables + headers, Intel removed), "tables_hdr" = the same with Intel."""
     global CHUNKS, VECTORS, _model
     if name == "main":
         CHUNKS, VECTORS = Path("data/chunks.jsonl"), Path("data/embeddings.npy")
@@ -97,9 +97,10 @@ def _load():
             # Chunk text + metadata still come into memory: BM25 (hybrid) needs every text.
             # Vectors stay in the database; only the search runs there.
             rows = _connect().execute(
-                "select chunk_id, ticker, period_end, fiscal_year, item, text from chunks order by idx"
+                "select chunk_id, ticker, period_end, fiscal_year, item, text, header from chunks order by idx"
             ).fetchall()
-            _chunks = [dict(zip(("id", "ticker", "period_end", "fiscal_year", "item", "text"), r)) for r in rows]
+            _chunks = [dict(zip(("id", "ticker", "period_end", "fiscal_year", "item", "text", "header"), r))
+                       for r in rows]
             _vectors = None
         else:
             _chunks = [json.loads(line) for line in CHUNKS.open(encoding="utf-8")]
