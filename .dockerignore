@@ -1,0 +1,13 @@
+# Never send these into the image
+.env
+.venv/
+.git/
+__pycache__/
+*.pyc
+results/
+
+# From data/, keep only the three files the web app reads
+data/*
+!data/chunks_final.jsonl
+!data/embeddings_final.npy
+!data/facts.jsonl

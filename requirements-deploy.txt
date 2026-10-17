@@ -1,0 +1,12 @@
+# What the web app (app.py) needs at runtime -- the offline pipeline (extract, chunk, embed, xbrl, eval)
+# is not in the image. torch is installed separately in the Dockerfile (CPU-only build).
+# Versions pinned to match uv.lock.
+sentence-transformers==6.1.0
+transformers==5.17.0
+numpy==2.4.6
+fastapi==0.143.1
+uvicorn==0.54.0
+pydantic==2.13.5
+psycopg[binary]==3.3.6
+python-dotenv==1.2.3
+openai==3.19.2
