@@ -1,12 +1,14 @@
 """Check golden.jsonl before running any evaluation on it.
 
     uv run python check_golden.py
+    uv run python check_golden.py heldout.jsonl
 
 Checks format only: valid JSON, required fields, types, sources point at real
 filings. It does NOT check whether your answers are correct - only you can do that.
 """
 
 import json
+import sys
 from collections import Counter
 from pathlib import Path
 
@@ -17,7 +19,7 @@ TARGET = {"fact": 7, "cross-period": 6, "cross-company": 6, "narrative": 7, "una
 ITEMS = {"1", "1A", "1B", "1C", "2", "3", "4", "5", "6", "7", "7A", "8", "9", "9A", "9B", "9C",
          "10", "11", "12", "13", "14", "15", "16"}
 FIELDS = {"question", "answer", "type", "sources"}
-OPTIONAL = {"evidence", "required"}   # exact quote from the filing, for spot-checking
+OPTIONAL = {"evidence", "required", "heldout_id"}   # exact quote from the filing, for spot-checking
 REFUSAL = "Not in the filings."
 
 
@@ -65,6 +67,9 @@ def check(n: int, row: dict) -> list[str]:
 
 
 def main():
+    global GOLDEN
+    if len(sys.argv) > 1:
+        GOLDEN = Path(sys.argv[1])
     rows, problems = [], 0
     for n, line in enumerate(GOLDEN.read_text(encoding="utf-8").splitlines(), 1):
         if not line.strip():
@@ -86,9 +91,9 @@ def main():
         problems += 1
 
     counts = Counter(r.get("type") for r in rows)
-    print("\ntype            have  target")
+    print("\ntype            have" + ("  target" if GOLDEN.name == "golden.jsonl" else ""))
     for t, want in TARGET.items():
-        print(f"{t:<15} {counts[t]:>4}  {want:>6}")
+        print(f"{t:<15} {counts[t]:>4}" + (f"  {want:>6}" if GOLDEN.name == "golden.jsonl" else ""))
     print(f"\n{len(rows)} questions, {problems} problem(s)")
 
 

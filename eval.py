@@ -12,6 +12,7 @@
     uv run python eval.py --rewrite 2 --out results/p1b_rewrite2.json    # v2 (per company, keeps key words)
     uv run python eval.py --prompt 3 --out results/p1b_prompt3.json      # answer prompt + exact-number rule
     uv run python eval.py --out results/p2_facts.json                    # Phase 2: + exact XBRL figures (default on)
+    uv run python eval.py --golden heldout.jsonl --out results/heldout.json   # held-out set (run ONCE)
 
 Uses YOUR scoring functions from metrics.py. Answer correctness is graded by an
 LLM judge (judge.py) and checked against your own labels in human_labels.json.
@@ -160,6 +161,7 @@ def report(rows: list[dict], k: int, rejudged: bool = False, labels: Path = HUMA
 
 
 def main():
+    global GOLDEN      # --golden switches the question set for run() and report()
     p = argparse.ArgumentParser()
     p.add_argument("--k", type=int, default=10)   # Experiment 2: k=10 chosen
     p.add_argument("--no-llm", action="store_true")
@@ -168,6 +170,8 @@ def main():
     p.add_argument("--labels", type=Path, default=HUMAN, help="your hand labels for the --rejudge file")
     p.add_argument("--rubric", default="v2.1", choices=["v1", "v2", "v2.1"],
                    help="judge rubric: v2.1 (default) grades against each question's required facts")
+    p.add_argument("--golden", type=Path, default=GOLDEN,
+                   help="question set: golden.jsonl (default, 30 dev questions) or heldout.jsonl (held-out, run once)")
     p.add_argument("--index", default="final",
                    help='"final" (default: tables + headers, Intel removed), "tables_hdr" (16 Oct runs), '
                         '"main" (original paragraph chunks), "fixed", ...')
@@ -187,6 +191,7 @@ def main():
                    help="1 = T07 rules (default), 2 = + company-total rule (step 4: 0.63 vs 0.65, not adopted), "
                         "3 = + copy numbers exactly (Phase 1b)")
     a = p.parse_args()
+    GOLDEN = a.golden
     set_index(a.index)
     set_store(a.store)
 
@@ -197,7 +202,7 @@ def main():
     if a.out:
         a.out.parent.mkdir(parents=True, exist_ok=True)
         a.out.write_text(json.dumps({"k": a.k, "index": a.index, "store": a.store, "mode": a.mode,
-                                          "max_per_section": a.max_per_section, "expand": not a.no_expand, "rewrite": a.rewrite, "split_only": a.split_only, "facts": not a.no_facts,
+                                          "max_per_section": a.max_per_section, "expand": not a.no_expand, "rewrite": a.rewrite, "split_only": a.split_only, "facts": not a.no_facts, "golden": str(a.golden),
                                           "prompt": a.prompt, "rubric": a.rubric,
                                           "judge_model": JUDGE_MODEL if a.rubric == "v2.1" else "answer model", "rows": rows}, indent=1, ensure_ascii=False), encoding="utf-8")
         print(f"\nSaved {a.out}")

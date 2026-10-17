@@ -1,0 +1,701 @@
+{
+ "k": 10,
+ "index": "final",
+ "store": "numpy",
+ "mode": "hybrid",
+ "max_per_section": null,
+ "expand": true,
+ "rewrite": null,
+ "split_only": false,
+ "facts": true,
+ "golden": "heldout.jsonl",
+ "prompt": 1,
+ "rubric": "v2.1",
+ "judge_model": "gpt-4o",
+ "rows": [
+  {
+   "n": 1,
+   "type": "fact",
+   "question": "What was Marvell's gross profit in fiscal 2026?",
+   "filters": {
+    "tickers": [
+     "MRVL"
+    ],
+    "fiscal_years": [
+     2026
+    ],
+    "latest": false
+   },
+   "searches": null,
+   "facts": [
+    "MRVL Gross profit (company-wide), fiscal 2026 (year ended 2026-01-31): $4,180.7 million"
+   ],
+   "rewritten": null,
+   "retrieved": [
+    "MRVL 2026-01-31 Item 7",
+    "MRVL 2026-01-31 Item 7",
+    "MRVL 2026-01-31 Item 7",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 7",
+    "MRVL 2026-01-31 Item 7",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 7",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 8"
+   ],
+   "chunk_ids": [
+    "MRVL-2026-01-31-7-41",
+    "MRVL-2026-01-31-7-42",
+    "MRVL-2026-01-31-7-39",
+    "MRVL-2026-01-31-8-10",
+    "MRVL-2026-01-31-7-40",
+    "MRVL-2026-01-31-7-45",
+    "MRVL-2026-01-31-8-142",
+    "MRVL-2026-01-31-7-43",
+    "MRVL-2026-01-31-8-11",
+    "MRVL-2026-01-31-8-153"
+   ],
+   "chunk_texts": [
+    "Cost of goods sold (in millions): January 31, 2026 = $4,013.9; February 1, 2025 = $3,385.1; % Change in fiscal 2026 = 18.6%\n% of net revenue (in millions): February 1, 2025 = 49.0%; % Change in fiscal 2026 = 58.7%\nGross profit (in millions): January 31, 2026 = $4,180.7; February 1, 2025 = $2,382.2; % Change in fiscal 2026 = 75.5%\n% of net revenue (in millions): February 1, 2025 = 51.0%; % Change in fiscal 2026 = 41.3%",
+    "Cost of goods sold as a percentage of net revenue decreased for fiscal 2026 compared to fiscal 2025, which was primarily due to impairment charges of $357.9 million for acquired intangible assets, inventories, property and equipment, and other non-current assets associated with restructuring actions during fiscal 2025. See “Note 4 – Restructuring” in the Notes to Consolidated Financial Statements for further information. The decrease in cost of goods sold as a percentage of net revenue was also due to better cost absorption driven by higher revenues, partially offset by a shift in product mix. As a result, gross margin for fiscal 2026 increased by 9.7 percentage points compared to fiscal 2025.\nResearch and Development\nYear Ended\nJanuary 31, 2026 | February 1, 2025 | % Change in fiscal 2026\n(in millions, except percentages)\nResearch and development (in millions): January 31, 2026 = $2,075.2; February 1, 2025 = $1,950.4; % Change in fiscal 2026 = 6.4%",
+    "January 31, 2026 | February 1, 2025\nNet revenue: January 31, 2026 = 100.0%; February 1, 2025 = 100.0%\nCost of goods sold: January 31, 2026 = 49.0; February 1, 2025 = 58.7\nGross profit: January 31, 2026 = 51.0; February 1, 2025 = 41.3\nOperating expenses:\nResearch and development: January 31, 2026 = 25.3; February 1, 2025 = 33.9\nSelling, general and administrative: January 31, 2026 = 9.4; February 1, 2025 = 13.8\nRestructuring related charges, net: January 31, 2026 = 0.2; February 1, 2025 = 6.1\nTotal operating expenses: January 31, 2026 = 34.9; February 1, 2025 = 53.8\nOperating income (loss): January 31, 2026 = 16.1; February 1, 2025 = (12.5)\nInterest and other income (loss), net: January 31, 2026 = 21.1; February 1, 2025 = (3.0)\nIncome (loss) before income taxes: January 31, 2026 = 37.2; February 1, 2025 = (15.5)\nProvision (benefit) for income taxes: January 31, 2026 = 4.6; February 1, 2025 = (0.2)\nNet income (loss): January 31, 2026 = 32.6%; February 1, 2025 = (15.3)%\nNet Revenue",
+    "Accumulated other comprehensive income: January 31, 2026 = —; February 1, 2025 = 0.4\nRetained earnings (Accumulated deficit): January 31, 2026 = 1,355.8; February 1, 2025 = ( 1,109.2 )\nTotal stockholders’ equity: January 31, 2026 = 14,308.4; February 1, 2025 = 13,427.0\nTotal liabilities and stockholders’ equity: January 31, 2026 = $22,285.3; February 1, 2025 = $20,204.5\nSee accompanying Notes to Consolidated Financial Statements.\nMARVELL TECHNOLOGY, INC.\nCONSOLIDATED STATEMENTS OF OPERATIONS\n(In millions, except per share amounts)\nYear Ended\nJanuary 31, 2026 | February 1, 2025 | February 3, 2024\nNet revenue: January 31, 2026 = $8,194.6; February 1, 2025 = $5,767.3; February 3, 2024 = $5,507.7\nCost of goods sold: January 31, 2026 = 4,013.9; February 1, 2025 = 3,385.1; February 3, 2024 = 3,214.1\nGross profit: January 31, 2026 = 4,180.7; February 1, 2025 = 2,382.2; February 3, 2024 = 2,293.6\nOperating expenses:",
+    "Year Ended\nJanuary 31, 2026 | February 1, 2025 | % Change in fiscal 2026\n(in millions, except percentage)\nNet revenue (in millions): January 31, 2026 = $8,194.6; February 1, 2025 = $5,767.3; % Change in fiscal 2026 = 42.1%\nOur net revenue for fiscal 2026 increased by $2.4 billion compared to net revenue for fiscal 2025. This was primarily due to a 46% increase in sales from the data center end market which benefited from strong AI-related demand. Sales from the communications and other end market also increased by 31%, which has continued to recover due to normalizing customer inventory levels and strong adoption of our products, partially offset by a decrease in sales from our automotive ethernet product portfolio due to the divestiture of our automotive ethernet business at the beginning of the third quarter of fiscal 2026.\nCost of Goods Sold and Gross Profit\nYear Ended\nJanuary 31, 2026 | February 1, 2025 | % Change in fiscal 2026\n(in millions, except percentages)",
+    "% of net revenue (in millions): January 31, 2026 = 0.2%; February 1, 2025 = 6.1%\nWe recognized net restructuring related charges of $15.5 million in fiscal 2026 as we continued to evaluate our existing operations to increase operational efficiency, decrease costs and increase profitability. See “Note 4 – Restructuring” in the Notes to Consolidated Financial Statements for further information.\nInterest and Other Income (Loss), Net\nYear Ended\nJanuary 31, 2026 | February 1, 2025 | % Change in fiscal 2026\n(in millions, except percentages)\nInterest expense (in millions): January 31, 2026 = $(202.6); February 1, 2025 = $(189.4); % Change in fiscal 2026 = 7.0%\nInterest income and other, net | 1,926.3 | 15.0 | *\nInterest and other income (loss), net | $1,723.7 | $(174.4) | *\n% of net revenue (in millions): $(174.4) = 21.1%; * = (3.0)%\n*Not meaningful. ",
+    "The Company also has voluntary defined contribution plans in various non-U.S. locations. In connection with these plans, the Company made contributions on behalf of employees totaling $\n10.4\n million, $\n11.0\n million and $\n11.4\n million during fiscal 2026, 2025 and 2024, respectively.\nNote 12 — \nIncome Taxes\nThe U.S. and non-U.S. components of income (loss) from continuing operations before income taxes consist of the following (in millions):\nYear Ended\nJanuary 31, 2026 | February 1, 2025 | February 3, 2024\nU.S. operations: January 31, 2026 = $105.9; February 1, 2025 = $( 402.2 ); February 3, 2024 = $( 383.3 )\nNon-U.S. operations: January 31, 2026 = 2,940.7; February 1, 2025 = ( 492.5 ); February 3, 2024 = ( 375.4 )\nIncome (loss) before income taxes: January 31, 2026 = $3,046.6; February 1, 2025 = $( 894.7 ); February 3, 2024 = $( 758.7 )\nThe provision (benefit) for income taxes consists of the following (in millions):\nYear Ended\nJanuary 31, 2026 | February 1, 2025 | February 3, 2024",
+    "% of net revenue (in millions): February 1, 2025 = 25.3%; % Change in fiscal 2026 = 33.9%\nResearch and development expense increased by $124.8 million in fiscal 2026 compared to fiscal 2025. The increase was primarily due to higher overall spending to support our R&D initiatives, including advanced IP development and customer design win activity.\nSelling, General and Administrative\nYear Ended\nJanuary 31, 2026 | February 1, 2025 | % Change in fiscal 2026\n(in millions, except percentages)\nSelling, general and administrative (in millions): January 31, 2026 = $767.1; February 1, 2025 = $798.2; % Change in fiscal 2026 = (3.9)%\n% of net revenue (in millions): February 1, 2025 = 9.4%; % Change in fiscal 2026 = 13.8%\nSelling, general and administrative expense decreased by $31.1 million in fiscal 2026 compared to fiscal 2025. The decrease was primarily due to lower amortization expense for acquired intangible assets.\nStock-Based Compensation Expense\nYear Ended",
+    "Research and development: January 31, 2026 = 2,075.2; February 1, 2025 = 1,950.4; February 3, 2024 = 1,896.2\nSelling, general and administrative: January 31, 2026 = 767.1; February 1, 2025 = 798.2; February 3, 2024 = 834.0\nRestructuring related charges, net: January 31, 2026 = 15.5; February 1, 2025 = 353.9; February 3, 2024 = 131.1\nTotal operating expenses: January 31, 2026 = 2,857.8; February 1, 2025 = 3,102.5; February 3, 2024 = 2,861.3\nOperating income (loss): January 31, 2026 = 1,322.9; February 1, 2025 = ( 720.3 ); February 3, 2024 = ( 567.7 )\nInterest expense: January 31, 2026 = ( 202.6 ); February 1, 2025 = ( 189.4 ); February 3, 2024 = ( 211.7 )\nInterest income and other, net: January 31, 2026 = 1,926.3; February 1, 2025 = 15.0; February 3, 2024 = 20.7\nInterest and other income (loss), net: January 31, 2026 = 1,723.7; February 1, 2025 = ( 174.4 ); February 3, 2024 = ( 191.0 )",
+    " million from fiscal 2026, for certain federal, state, and foreign tax attributes. The Company maintains a valuation allowance on its U.S. R&D credits based on the factors listed above as well as forecasted R&D credit utilization and expected R&D credit generation in future years. In future periods, it is possible that significant positive or negative evidence could arise that results in a change in the Company’s judgment with respect to the need for a valuation allowance, which could result in a tax benefit, or adversely affect the Company’s income tax provision, in the period of such change in judgment.\nMARVELL TECHNOLOGY, INC.\nNOTES TO CONSOLIDATED FINANCIAL STATEMENTS — (Continued)\nAs of January 31, 2026, the Company had net operating loss carryforwards available to offset future taxable income of approximately $\n358.7\n million, $\n804.6\n million, $\n198.1\n million and \nnone"
+   ],
+   "recall": 1.0,
+   "answer": "Marvell's gross profit in fiscal 2026 was $4,180.7 million [1][11].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "correct",
+   "category": "C",
+   "judge_reason": "The system answer contains the required fact about Marvell's gross profit in fiscal 2026.",
+   "answer_score": 1.0,
+   "crag": 1.0
+  },
+  {
+   "n": 2,
+   "type": "fact",
+   "question": "How much did Qualcomm pay in dividends in fiscal 2025?",
+   "filters": {
+    "tickers": [
+     "QCOM"
+    ],
+    "fiscal_years": [
+     2025
+    ],
+    "latest": false
+   },
+   "searches": null,
+   "facts": [],
+   "rewritten": null,
+   "retrieved": [
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 5",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 5",
+    "QCOM 2025-09-28 Item 16",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 5",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 16"
+   ],
+   "chunk_ids": [
+    "QCOM-2025-09-28-7-31",
+    "QCOM-2025-09-28-7-33",
+    "QCOM-2025-09-28-5-6",
+    "QCOM-2025-09-28-7-26",
+    "QCOM-2025-09-28-5-1",
+    "QCOM-2025-09-28-16-29",
+    "QCOM-2025-09-28-7-30",
+    "QCOM-2025-09-28-5-0",
+    "QCOM-2025-09-28-7-12",
+    "QCOM-2025-09-28-16-76"
+   ],
+   "chunk_texts": [
+    "Stock Repurchase Program | Dividends | Total\nShares | Average Price Paid Per Share | Amount | Per Share | Amount | Amount\n2025 | 56 | $155.43 | $8,791 | $3.48 | $3,805 | $12,596\n2024 | 25 | 161.37 | 4,121 | 3.30 | 3,687 | 7,808",
+    "We currently intend to continue to use cash dividends as a means of returning capital to stockholders, subject to capital availability and our view that cash dividends are in the best interests of our stockholders, among other factors. Additional information regarding our capital returns is provided in this Annual Report in “Notes to Consolidated Financial Statements, Note 4. Capital Stock.”\nAdditional Capital Requirements\n.\n Recent and expected working and other capital requirements, in addition to the above matters, also include the items described below:\n•\nOur purchase obligations at \nSeptember 28, 2025\n, which primarily relate to purchase commitments with certain suppliers of our integrated circuit products, including those under multi-year capacity commitments, totaled $15.1 billion, of which, $10.5 billion is expected to be paid in the next 12 months. \n•\nOur research and development expenditures were $9.0 billion in fiscal 2025 and $8.9 billion in fiscal 2024. \n•",
+    "The total return for our stock and for each index assumes that $100 was invested at the market close on the last trading day for our fiscal year ended September 27, 2020 and that all dividends were reinvested. All returns are reported as of our fiscal year end, which is the last Sunday in September. Stockholder returns over the indicated period are based on historical data and should not be considered indicative of future stockholder returns.\n37",
+    "Net cash used by financing activities: 2025 = (13,196); 2024 = (9,269); Change = (3,927)\nCash, cash equivalents and marketable securities (including restricted cash). \nThe net decrease in cash, cash equivalents and marketable securities (including restricted cash) in fiscal 2025 was primarily due to $8.8 billion in payments to repurchase shares of our common stock, $3.8 billion in cash dividends paid, $1.4 billion repayment of unsecured fixed-rate notes that matured in May 2025, $1.2 billion in capital expenditures, $1.1 billion in payments of tax withholdings related to the vesting of share-based awards and $743 million in cash paid for acquisitions and other investments. This was partially offset by cash provided by operating activities, proceeds from the issuance of $1.5 billion of unsecured fixed-rate notes in May 2025 and $404 million in proceeds from the issuance of common stock (primarily under our Employee Stock Purchase Plan).",
+    "We currently intend to continue to pay quarterly cash dividends, subject to capital availability and our view that cash dividends are in the best interests of our stockholders. Future dividends may be affected by, among other items, our views on potential future capital availability and requirements, including those relating to research and development, creation and expansion of sales and distribution channels, investments and acquisitions, legal and regulatory risks, withholding of payments by one or more of our significant licensees and/or customers, fines and/or adverse rulings by government agencies, courts or arbitrators in legal or regulatory matters, stock repurchase programs, debt issuances, changes in federal, state or foreign income tax law, trade and/or national security protection policies, volatility in economies and financial markets or other macroeconomic conditions, and changes to our business model.\nIssuer Purchases of Equity Securities",
+    "Dividends: September 28, 2025 = ( 3,913 ); September 29, 2024 = ( 3,794 ); September 24, 2023 = ( 3,584 )\nBalance at end of period: September 28, 2025 = 20,646; September 29, 2024 = 25,687; September 24, 2023 = 20,733\nAccumulated other comprehensive income (loss):\nBalance at beginning of period: September 28, 2025 = 587; September 29, 2024 = 358; September 24, 2023 = ( 22 )\nOther comprehensive (loss) income: September 28, 2025 = ( 27 ); September 29, 2024 = 229; September 24, 2023 = 380\nBalance at end of period: September 28, 2025 = 560; September 29, 2024 = 587; September 24, 2023 = 358\nTotal stockholders’ equity, ending balance: September 28, 2025 = $21,206; September 29, 2024 = $26,274; September 24, 2023 = $21,581\nDividends per share announced: September 28, 2025 = $3.48; September 29, 2024 = $3.30; September 24, 2023 = $3.10\nSee accompanying notes.\nF-7\nQUALCOMM Incorporated\nNOTES TO CONSOLIDATED FINANCIAL STATEMENTS\nNote 1. \nSignificant Accounting Policies",
+    ", we had no amounts of commercial paper outstanding. We also have a Revolving Credit Facility that provides for unsecured revolving facility loans, swing line loans and letters of credit in an aggregate amount of up to $4.0 billion, which expires on August 8, 2029. At \nSeptember 28, 2025\n, no amounts were outstanding under the Revolving Credit Facility. \n44\n We expect to issue new debt in the future. The amount and timing of any such new debt will depend on a number of factors, including but not limited to maturities of our existing debt, acquisitions and strategic investments, favorable and/or acceptable interest rates and changes in corporate income tax law. Additional information regarding our debt is provided in this Annual Report in “Notes to Consolidated Financial Statements, Note 6. Debt.” \nCapital Return Program. \nThe following table summarizes stock repurchases (including excise taxes paid) and dividends paid during fiscal 2025 and 2024 (in millions, except per-share amounts):",
+    "Item 5. Market for Registrant’s Common Equity, Related Stockholder Matters and Issuer Purchases of Equity Securities\nMarket Information and Dividends\nOur common stock is traded on the NASDAQ Global Select Market (NASDAQ) under the symbol “QCOM.” At November 3, 2025, there were 5,564 holders of record of our common stock. ",
+    "and development credits. As we expect to perpetually be subject to CAMT, we no longer expect to realize substantially all of our existing federal deferred tax assets and recognized a charge of $5.7 billion to income tax expense to establish a valuation allowance in the fourth quarter of fiscal 2025.",
+    "become known. We account for accrued interest and penalties related to uncertain tax benefits as a component of income tax expense."
+   ],
+   "recall": 1.0,
+   "answer": "Qualcomm paid $3.8 billion in dividends in fiscal 2025 [1][4].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "correct",
+   "category": "E",
+   "judge_reason": "The system answer contains all required facts, differing only in formatting.",
+   "answer_score": 1.0,
+   "crag": 1.0
+  },
+  {
+   "n": 3,
+   "type": "fact",
+   "question": "What were Micron's capital expenditures in fiscal 2025?",
+   "filters": {
+    "tickers": [
+     "MU"
+    ],
+    "fiscal_years": [
+     2025
+    ],
+    "latest": false
+   },
+   "searches": null,
+   "facts": [
+    "MU Capital expenditures: purchases of property and equipment (company-wide), fiscal 2025 (year ended 2025-08-28): $15,857 million"
+   ],
+   "rewritten": null,
+   "retrieved": [
+    "MU 2025-08-28 Item 7",
+    "MU 2025-08-28 Item 7",
+    "MU 2025-08-28 Item 7",
+    "MU 2025-08-28 Item 8",
+    "MU 2025-08-28 Item 7",
+    "MU 2025-08-28 Item 7",
+    "MU 2025-08-28 Item 7",
+    "MU 2025-08-28 Item 1A",
+    "MU 2025-08-28 Item 1",
+    "MU 2025-08-28 Item 1A"
+   ],
+   "chunk_ids": [
+    "MU-2025-08-28-7-22",
+    "MU-2025-08-28-7-21",
+    "MU-2025-08-28-7-32",
+    "MU-2025-08-28-8-85",
+    "MU-2025-08-28-7-41",
+    "MU-2025-08-28-7-44",
+    "MU-2025-08-28-7-33",
+    "MU-2025-08-28-1A-35",
+    "MU-2025-08-28-1-60",
+    "MU-2025-08-28-1A-39"
+   ],
+   "chunk_texts": [
+    "To develop new product and process technology, support future growth, achieve operating efficiencies, and maintain product quality, we must continue to invest in manufacturing technologies, facilities and equipment, and R&D. We estimate capital expenditures for property, plant, and equipment, net of proceeds from government incentives, to be approximately $4.5 billion in first quarter of 2026. While quarterly expenditures may fluctuate, this level serves as a reasonable quarterly baseline for the planned capital expenditures for 2026. Actual amounts for 2026 will vary depending on market conditions and may vary from quarter to quarter due to the timing of expenditures and proceeds from government incentives. As of August 28, 2025, we had purchase obligations of approximately $1.77 billion for the acquisition of property, plant, and equipment, substantially all of which is expected to be paid within one year. For a description of other contractual obligations, such as leases, debt, and",
+    "We continuously evaluate alternatives for efficiently funding our capital expenditures and ongoing operations. We expect to engage in a variety of financing transactions, from time to time, for such purposes, as well as to refinance our existing indebtedness, including the issuance of securities. As of August 28, 2025, $3.50 billion was available to draw under our Revolving Credit Facility. Funding of certain significant capital projects is also dependent on the receipt of government incentives. Our incentives are conditioned upon achieving or maintaining certain outcomes and satisfying compliance requirements and are subject to reduction, termination, or clawback.",
+    "roduct supply, partially offset by an increase in receivables.\nInvesting Activities:\n For 2025, net cash used for investing activities consisted primarily of $15.86 billion of expenditures for property, plant, and equipment and $192 million of net outflows from purchases, maturities, and sales of available-for-sale securities, partially offset by $2.01 billion of proceeds from government incentives to offset capital expenditures.\nFor 2024, net cash used for investing activi\nties consisted primarily of $8.39 billion of expenditures for property, plant, and equipment, and $205 million of net outflows from purchases, maturities, and sales of available-for-sale securities, partially offse\nt by $315 million of proceeds from government incentives to offset capital expenditures.",
+    "We receive incentives from governmental entities primarily in India, Japan, Singapore, and the United States principally in the form of cash grants and tax credits. These incentives primarily relate to capital expenditures and may be subject to reimbursement if certain conditions are not met or maintained. The conditions attached to these incentives require us to incur expenditures related to the construction of new manufacturing facilities, the purchase and installation of specialized tools and equipment, R&D expenditures, meet and/or maintain operational metrics, and/or maintain certain levels of fixed asset investment or employee headcount during the incentive terms. \n87 |\n2025 10-K\nGovernment incentives related to capital expenditures have reduced \nproperty, plant and equipment\n by $\n5.04\n billion as of August 28, 2025, of which $\n3.11\n billion pertained to 2025 expenditures. \nIn 2025, operating income (loss) benefited by $\n588\n million (\napproximately \n87\n% in COGS and \n13",
+    "We assess the reasonableness of our methodology, forecasts, and assumptions by comparing the aggregate calculated fair value of our reporting units to our market capitalization.\nGovernment incentives:\n We receive incentives from governmental entities related to capital expenditures, expenses, and other activities. The government incentives we receive may require that we meet or maintain specified spending levels and other operational metrics and may be subject to reimbursement if such conditions are not met or maintained. Failure to comply with these terms and conditions could result in termination of incentive programs or clawbacks of incentive amounts received. ",
+    "selling prices and sales volumes, manufacturing and overhead costs, levels of capital spending, and other factors that significantly impact our analyses of the amount of net deferred tax assets that are more likely than not to be realized.\nInventories:",
+    "For 2023, net cash used for investing activities consisted primarily of $7.68 billion of expenditures for property, plant, and equipment, partially offset by $710 million of proceeds from government incentives to offset capital expenditures, and $868 million of net inflows from maturities, sales, and purchases of available-for-sale securities.\nFinancing Activities:\n For 2025, net cash used for financing activities consisted primarily of $4.62 billion of repayments of debt, which included the prepayment of the 2026 Notes, 2026 Term Loan A, 2027 Notes, 2027 Term Loan A, and a portion of the 2029 Term Loan A borrowings; and $522 million for payments of dividends to shareholders; partially offset by approximately $4.43 billion of proceeds from the issuance of the 2029 Term Loan A, 2032 Notes, 2035 A Notes, and 2035 B Notes. See Item 8. Financial Statements and Supplementary Data, Notes to Consolidated Financial Statements, Note 12. Debt.\nFor 2024, net cash used for financing activi",
+    "the efficiency of our fabrication facilities to support demand from leading edge notes, any delays in completion and ramping of new production facilities, or failure to optimize our investment choices, could significantly impact our ability to realize expected returns on our capital expenditures.\nAny of the above factors could have a material adverse effect on our business, results of operations, or financial condition.\nOur incentives from various governments are conditioned upon achieving or maintaining certain outcomes and satisfying compliance requirements and are subject to reduction, termination, or clawback, and could impose certain limitations on our business. ",
+    "Our worldwide business activities are subject to various federal, state, local, and foreign laws, and our products are governed by a number of rules and regulations and customer expectations. The efforts and expenditures needed to comply with these laws, rules, and regulations do not presently have a material impact on our results of operations, capital expenditures, or competitive position. Nevertheless, compliance with existing or future government laws, including, but not limited to, our operations, products, global trade, business acquisitions, employee health and safety, and taxes could have a material adverse effect on our future results of operations, capital expenditures, or competitive position. See Item 1A. Risk Factors for a discussion of these potential impacts.\nEnvironmental Compliance",
+    "We may be unable to obtain sufficient future incentives to continue to fund a portion of our capital expenditures and operating costs, without which our cost structure may be adversely impacted and planned capital expenditures and research and development expenditures may be affected. For example, in December 2024, we entered into direct funding agreements, providing funds for the construction of fab facilities in Idaho and New York, with the United States Department of Commerce (the “Department”) under the Department’s CHIPS Incentives Program established pursuant to the CHIPS Act. In June 2025, such agreements were subsequently amended to expand our investments, and we entered into a direct funding agreement to provide funds to expand and modernize our fab in Virginia. The awards under the direct funding agreements are subject to various conditions and we may not receive the funding expected on the same terms or at all. We cannot guarantee that we will successfully achieve or"
+   ],
+   "recall": 1.0,
+   "answer": "Micron's capital expenditures in fiscal 2025 were $15.86 billion for property, plant, and equipment [3][11].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "correct",
+   "category": "C",
+   "judge_reason": "The system answer contains all required facts and nothing beyond them.",
+   "answer_score": 1.0,
+   "crag": 1.0
+  },
+  {
+   "n": 4,
+   "type": "cross-period",
+   "question": "How did Qualcomm's operating income change from fiscal 2024 to fiscal 2025?",
+   "filters": {
+    "tickers": [
+     "QCOM"
+    ],
+    "fiscal_years": [
+     2024,
+     2025
+    ],
+    "latest": false
+   },
+   "searches": null,
+   "facts": [
+    "QCOM Operating income (company-wide), fiscal 2024 (year ended 2024-09-29): $10,071 million",
+    "QCOM Operating income (company-wide), fiscal 2025 (year ended 2025-09-28): $12,355 million"
+   ],
+   "rewritten": null,
+   "retrieved": [
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2024-09-29 Item 7",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2024-09-29 Item 7",
+    "QCOM 2025-09-28 Item 16",
+    "QCOM 2024-09-29 Item 7",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 7"
+   ],
+   "chunk_ids": [
+    "QCOM-2025-09-28-7-4",
+    "QCOM-2024-09-29-7-8",
+    "QCOM-2025-09-28-7-7",
+    "QCOM-2025-09-28-7-8",
+    "QCOM-2025-09-28-7-14",
+    "QCOM-2024-09-29-7-24",
+    "QCOM-2025-09-28-16-21",
+    "QCOM-2024-09-29-7-7",
+    "QCOM-2025-09-28-7-16",
+    "QCOM-2025-09-28-7-5"
+   ],
+   "chunk_texts": [
+    "Revenues were $44.3 billion, an increase of 14% compared to revenues of $39.0 billion in fiscal 2024, with net income of $5.5 billion, a decrease of 45% compared to net income of $10.1 billion in fiscal 2024. Key items from fiscal 2025 included: \n•\nQCT revenues increased by 16% in fiscal 2025 compared to the prior year, primarily due to higher handsets, IoT and automotive revenues.\n•\nQTL revenues remained approximately flat in fiscal 2025 compared to the prior year. \n•\nWe recorded a charge of $5.7 billion to income tax expense to establish a valuation allowance in the fourth quarter of fiscal 2025 as we no longer expect to realize substantially all of our existing federal deferred tax assets as a result of the tax reform legislation included in the One Big Beautiful Bill Act (OBBB) enacted on July 4, 2025.\nResults of Operations\nRevenues (in millions)\n2025 | 2024 | Change\nEquipment and services (in millions): 2025 = $37,869; 2024 = $32,791; Change = $5,078",
+    "Other (in millions): 2024 = (21); 2023 = (14); Change = (7)\n: 2024 = $962; 2023 = $349; Change = $613\n2024 vs. 2023\nThe increase in interest and dividend income in fiscal 2024 was primarily due to higher interest rates earned on higher balances of interest-bearing securities. Net gains on other investments in fiscal 2024 was primarily driven by certain of our QSI non-marketable equity investments. \n42\nIncome Tax Expense (in millions, except percentages)",
+    "Other expenses: 2025 = $39; 2024 = $179; Change = $(140)\n2025 vs. 2024\nOther expenses in fiscal 2025 consisted of restructuring and restructuring-related charges.\nOther expenses in fiscal 2024 primarily consisted of $107 million in restructuring and restructuring-related charges (substantially all of which related to severance costs) and a $75 million charge related to the settlement of a securities class action lawsuit.\nInterest Expense and Investment and Other Income, Net (in millions)\n2025 | 2024 | Change\nInterest expense (in millions): 2025 = $664; 2024 = $697; Change = $(33)\nInvestment and other income, net\nInterest and dividend income (in millions): 2025 = $639; 2024 = $675; Change = $(36)\nNet gains on marketable securities (in millions): 2025 = 254; 2024 = 14; Change = 240\nNet gains on other investments (in millions): 2025 = 44; 2024 = 175; Change = (131)\nNet gains on deferred compensation plan assets (in millions): 2025 = 127; 2024 = 198; Change = (71)",
+    "Impairment losses on other investments (in millions): 2025 = (113); 2024 = (79); Change = (34)\nOther (in millions): 2025 = 21; 2024 = (21); Change = 42\n: 2025 = $972; 2024 = $962; Change = $10\n2025 vs. 2024\nNet gains on marketable securities in fiscal 2025 was primarily driven by the initial public offerings of certain QSI equity investments. \nNet gains on other investments in fiscal 2024 was primarily driven by observable price changes on certain of our QSI non-marketable equity investments. \n40\nIncome Tax Expense (in millions, except percentages)",
+    "able to realize our deferred tax assets.\n41\nSegment Results\nThe following should be read in conjunction with the fiscal 2025 and 2024 results of operations for each reportable segment included in this Annual Report in “Notes to Consolidated Financial Statements, Note 8. Segment Information.”\nQCT Segment (in millions, except percentages)\n2025 | 2024 | Change\nRevenues\nHandsets: 2025 = $27,793; 2024 = $24,863; Change = $2,930\nAutomotive: 2025 = 3,957; 2024 = 2,910; Change = 1,047\nIoT (internet of things): 2025 = 6,617; 2024 = 5,423; Change = 1,194\nTotal revenues (1): 2025 = $38,367; 2024 = $33,196; Change = $5,171\nEBT (2): 2025 = $11,670; 2024 = $9,527; Change = $2,143\nEBT as a % of revenues | 30% | 29% | 1 point\n(1) Descriptions of our three QCT revenue streams can be found in this Annual Report in “Notes to Consolidated Financial Statements, Note 2. Composition of Certain Financial Statement Items.”\n(2) Earnings before income taxes.",
+    "During fiscal 2024, income taxes paid were in excess of our provision, negatively impacting net cash provided by operating activities. This was primarily driven by the adverse impact of the requirement to capitalize and amortize research and development expenditures for federal income tax purposes, our payment of $1.0 billion related to certain previously postponed U.S. federal income tax payments from fiscal 2023 and an installment payment for a one-time U.S. repatriation tax accrued in fiscal 2018 of $414 million.\nNet changes in our operating assets and liabilities positively impacted our operating cash flows in fiscal 2024 primarily from an increase in accrued customer incentives, which included the impact of timing of related payments, and an increase in accounts payable due to timing and amount of inventory purchases, partially offset by an increase in accounts receivable due to higher revenues.\nDebt.\nAt September 29, 2024",
+    "Other reclassifications included in net income: September 28, 2025 = ( 31 ); September 29, 2024 = ( 1 ); September 24, 2023 = 77\nTotal other comprehensive (loss) income: September 28, 2025 = ( 27 ); September 29, 2024 = 229; September 24, 2023 = 380\nComprehensive income: September 28, 2025 = $5,514; September 29, 2024 = $10,371; September 24, 2023 = $7,612\nSee accompanying notes.\nF-5\nQUALCOMM Incorporated\nCONSOLIDATED STATEMENTS OF CASH FLOWS \n(In millions)\nYear Ended\nSeptember 28, 2025 | September 29, 2024 | September 24, 2023\nOperating Activities:\nNet income from continuing operations: September 28, 2025 = $5,541; September 29, 2024 = $10,110; September 24, 2023 = $7,339\nAdjustments to reconcile net income to net cash provided by operating activities:\nDepreciation and amortization expense: September 28, 2025 = 1,602; September 29, 2024 = 1,706; September 24, 2023 = 1,809",
+    "Other expenses in fiscal 2023 consisted of $712 million in total restructuring and restructuring-related charges (substantially all of which related to severance costs, resulting from certain cost reduction actions committed to in fiscal 2023 and a $150 million intangible asset impairment charge related to in-process research and development.\nInterest Expense and Investment and Other Income, Net (in millions)\n2024 | 2023 | Change\nInterest expense (in millions): 2024 = $697; 2023 = $694; Change = $3\nInvestment and other income, net\nInterest and dividend income (in millions): 2024 = $675; 2023 = $313; Change = $362\nNet gains on marketable securities (in millions): 2024 = 14; 2023 = 75; Change = (61)\nNet gains on other investments (in millions): 2024 = 175; 2023 = 21; Change = 154\nNet gains on deferred compensation plan assets (in millions): 2024 = 198; 2023 = 86; Change = 112\nImpairment losses on other investments (in millions): 2024 = (79); 2023 = (132); Change = 53",
+    "higher IoT revenues due to $1.5 billion in higher shipments across edge networking, consumer and industrial products, partially offset by unfavorable mix\n+ \nhigher automotive revenues, primarily driven by an increase in shipments from new vehicle launches with our Snapdragon digital cockpit products\nQCT EBT as a percentage of revenues increased in fiscal 2025 primarily due to: \n+ \nhigher revenues\n- \nhigher operating expenses, primarily driven by higher selling, general and administrative expenses\nGross margin percentage remained approximately flat in fiscal 2025, primarily driven by higher product costs, partially offset by higher average selling prices. \nQTL Segment (in millions, except percentages)\n2025 | 2024 | Change\nLicensing revenues: 2025 = $5,582; 2024 = $5,572; Change = $10\nEBT: 2025 = 4,043; 2024 = 4,027; Change = 16\nEBT as a % of revenues: 2025 = 72%; 2024 = 72%; Change = —\n2025 vs. 2024",
+    "Licensing (in millions): 2025 = 6,415; 2024 = 6,171; Change = 244\n: 2025 = $44,284; 2024 = $38,962; Change = $5,322\n2025 vs. 2024\nThe increase in revenues in fiscal 2025 was primarily due to: \n+\n $5.1 billion in higher equipment and services revenue from our QCT segment\n+\n $143 million in licensing revenues resulting from a settlement of a licensing dispute in the second quarter of fiscal 2025, which was not allocated to our segment results\nCosts and Expenses (in millions, except percentages)\n2025 | 2024 | Change\nCost of revenues (in millions): 2025 = $19,738; 2024 = $17,060; Change = $2,678\nGross margin (in millions): 2024 = 55%; Change = 56%\n2025 vs. 2024\nGross margin percentage decreased in fiscal 2025 primarily due to a decrease in the proportion of total revenues related to QTL licensing revenues (which have a higher margin percentage contribution).\n2025 | 2024 | Change\nResearch and development: 2025 = $9,042; 2024 = $8,893; Change = $149\n% of revenues: 2024 = 20%; Change = 23%"
+   ],
+   "recall": 0.5,
+   "answer": "Qualcomm's operating income increased from $10,071 million in fiscal 2024 to $12,355 million in fiscal 2025, representing a change of $2,284 million [11][12].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "correct",
+   "category": "B",
+   "judge_reason": "The system answer includes all required facts and additional consistent information about the change in operating income.",
+   "answer_score": 1.0,
+   "crag": 1.0
+  },
+  {
+   "n": 5,
+   "type": "cross-period",
+   "question": "How did NVIDIA's gross margin change from fiscal 2025 to fiscal 2026?",
+   "filters": {
+    "tickers": [
+     "NVDA"
+    ],
+    "fiscal_years": [
+     2025,
+     2026
+    ],
+    "latest": false
+   },
+   "searches": null,
+   "facts": [],
+   "rewritten": null,
+   "retrieved": [
+    "NVDA 2026-01-25 Item 7",
+    "NVDA 2025-01-26 Item 7",
+    "NVDA 2026-01-25 Item 7",
+    "NVDA 2026-01-25 Item 7",
+    "NVDA 2025-01-26 Item 7",
+    "NVDA 2026-01-25 Item 7",
+    "NVDA 2026-01-25 Item 7",
+    "NVDA 2025-01-26 Item 7",
+    "NVDA 2026-01-25 Item 7",
+    "NVDA 2026-01-25 Item 15"
+   ],
+   "chunk_ids": [
+    "NVDA-2026-01-25-7-33",
+    "NVDA-2025-01-26-7-39",
+    "NVDA-2026-01-25-7-11",
+    "NVDA-2026-01-25-7-34",
+    "NVDA-2025-01-26-7-38",
+    "NVDA-2026-01-25-7-16",
+    "NVDA-2026-01-25-7-32",
+    "NVDA-2025-01-26-7-23",
+    "NVDA-2026-01-25-7-24",
+    "NVDA-2026-01-25-15-14"
+   ],
+   "chunk_texts": [
+    "Provisions for inventory and excess inventory purchase obligations totaled $7.2 billion and $3.7 billion for fiscal years 2026 and 2025, respectively, including $4.5 billion associated with H20 excess inventory and purchase obligations for the first quarter of fiscal year 2026. Sales of previously reserved inventory and settlements of excess inventory purchase obligations resulted in a provision release of $1.5 billion and $689 million for fiscal years 2026 and 2025, respectively. The net effect on our gross margin was an unfavorable impact of 2.6% and 2.3% in fiscal years 2026 and 2025, respectively.\nOperating Expenses\nYear Ended\nJan 25, 2026 | Jan 26, 2025 | $ Change | % Change\n($ in millions)\nResearch and development: Jan 25, 2026 = $18,497; Jan 26, 2025 = $12,914; $ Change = $5,583; % Change = 43%\nSales, general and administrative: Jan 25, 2026 = 4,579; Jan 26, 2025 = 3,491; $ Change = 1,088; % Change = 31%",
+    "Provisions for inventory and excess inventory purchase obligations totaled $3.7 billion and $2.2 billion for fiscal years 2025 and 2024, respectively. Sales of previously reserved inventory and settlements of excess inventory purchase obligations resulted in a provision release of $689 million and $540 million for fiscal years 2025 and 2024, respectively. The net effect on our gross margin was an unfavorable impact of 2.3% and 2.7% in fiscal years 2025 and 2024, respectively.\nOperating Expenses\nYear Ended\nJan 26, 2025 | Jan 28, 2024 | $ Change | % Change\n($ in millions)\nResearch and development expenses: Jan 26, 2025 = $12,914; Jan 28, 2024 = $8,675; $ Change = $4,239; % Change = 49%\n% of net revenue: $ Change = 9.9%; % Change = 14.2%\nSales, general and administrative expenses: Jan 26, 2025 = 3,491; Jan 28, 2024 = 2,654; $ Change = 837; % Change = 32%\n% of net revenue: $ Change = 2.7%; % Change = 4.4%",
+    "Automotive revenue for fiscal year 2026 was up 39% from a year ago, driven by continued adoption of our self-driving platforms.\nGross margin decreased in fiscal year 2026 as our business model transitioned from offering Hopper HGX systems to Blackwell full-scale datacenter solutions. The gross margin decrease was also impacted by a $4.5 billion charge associated with H20 excess inventory and purchase obligations.\nOperating expenses for fiscal year 2026 were up 41% from a year ago, driven by higher compensation and benefits expenses due to employee growth and compute and infrastructure costs. \nCritical Accounting Estimates",
+    "Total operating expenses: Jan 25, 2026 = $23,076; Jan 26, 2025 = $16,405; $ Change = $6,671; % Change = 41%\nThe increases in research and development expenses for fiscal year 2026 were driven by a 29% increase in compensation and benefits expense, including stock-based compensation, reflecting employee growth and compensation increases and a 79% increase in compute and infrastructure.\nThe increases in sales, general and administrative expenses for fiscal year 2026 were primarily driven by compensation and benefits expense, including stock-based compensation, reflecting employee growth and compensation increases.\nTotal Other Income, Net\nYear Ended\nJan 25, 2026 | Jan 26, 2025 | $ Change\n($ in millions)\nInterest income: Jan 25, 2026 = $2,300; Jan 26, 2025 = $1,786; $ Change = $514\nInterest expense: Jan 25, 2026 = (259); Jan 26, 2025 = (247); $ Change = (12)\nOther income, net: Jan 25, 2026 = 9,022; Jan 26, 2025 = 1,034; $ Change = 7,988",
+    "Gross profit consists of total net revenue less cost of revenue. Cost of revenue consists primarily of the cost of semiconductors, including wafer fabrication, assembly, testing and packaging, board and device costs, manufacturing support costs, including labor and overhead associated with such purchases, final test yield fallout, inventory and warranty provisions, memory and component costs, tariffs, and shipping costs. Cost of revenue also includes acquisition-related intangible amortization expense, costs for license and development and service arrangements, IP-related costs, and stock-based compensation related to personnel associated with manufacturing operations.\nGross margins increased to 75.0% in fiscal year 2025 from 72.7% in fiscal year 2024. The year over year increase was primarily driven by a higher mix of Data Center revenue.",
+    "Refer to the Gross Profit and Gross Margin discussion below in this Management's Discussion and Analysis for further discussion.\nIncome Taxes",
+    "Gross profit consists of total net revenue less cost of revenue. Cost of revenue consists of the cost of semiconductors, including wafer fabrication, assembly, testing and packaging, board and device costs, manufacturing support costs, including labor and overhead associated with such purchases, final test yield fallout, inventory and warranty provisions, memory and component costs, tariffs, and shipping costs. Cost of revenue also includes acquisition-related intangible amortization expense, costs for license and development and service arrangements, IP-related costs, and stock-based compensation related to personnel associated with manufacturing operations.\nGross margins decreased to 71.1% in fiscal year 2026 from 75.0% in fiscal year 2025 as our business model transitioned from offering Hopper HGX systems to Blackwell full-scale datacenter solutions and a $4.5 billion charge associated with H20 excess inventory and purchase obligations in the first quarter of fiscal year 2026.",
+    "Refer to the Gross Profit and Gross Margin discussion below in this Management's Discussion and Analysis for further discussion.\nIncome Taxes",
+    "A discussion regarding our financial condition and results of operations for fiscal year 2026 compared to fiscal year 2025 is presented below. A discussion regarding our financial condition and results of operations for fiscal year 2025 compared to fiscal year 2024 can be found under Item 7 in our Annual Report on Form 10-K for the fiscal year ended January 26, 2025, filed with the SEC on February 26, 2025, which is available free of charge on the SEC’s website at http://www.sec.gov and at our investor relations website, http://investor.nvidia.com.\nThe following table sets forth, for the periods indicated, certain items in our Consolidated Statements of Income expressed as a percentage of revenue.\nYear Ended\nJan 25, 2026 | Jan 26, 2025\nRevenue: Jan 25, 2026 = 100.0%; Jan 26, 2025 = 100.0%\nCost of revenue: Jan 25, 2026 = 28.9; Jan 26, 2025 = 25.0\nGross profit: Jan 25, 2026 = 71.1; Jan 26, 2025 = 75.0\nOperating expenses\nResearch and development: Jan 25, 2026 = 8.6; Jan 26, 2025 = 9.9",
+    "used by management were reasonable considering (i) current and past results, including historical product life cycle, (ii) the consistency with external market and industry data, and (iii) changes in technology.\n/s/\nPricewaterhouseCoopers LLP\nSan Jose, California\nFebruary 25, 2026\nWe have served as the Company’s auditor since 2004. \nNVIDIA Corporation and Subsidiaries\nConsolidated Statements of Income\n(In millions, except per share data)\nYear Ended\nJan 25, 2026 | Jan 26, 2025 | Jan 28, 2024\nRevenue: Jan 25, 2026 = $215,938; Jan 26, 2025 = $130,497; Jan 28, 2024 = $60,922\nCost of revenue: Jan 25, 2026 = 62,475; Jan 26, 2025 = 32,639; Jan 28, 2024 = 16,621\nGross profit: Jan 25, 2026 = 153,463; Jan 26, 2025 = 97,858; Jan 28, 2024 = 44,301\nOperating expenses\nResearch and development: Jan 25, 2026 = 18,497; Jan 26, 2025 = 12,914; Jan 28, 2024 = 8,675\nSales, general and administrative: Jan 25, 2026 = 4,579; Jan 26, 2025 = 3,491; Jan 28, 2024 = 2,654"
+   ],
+   "recall": 1.0,
+   "answer": "NVIDIA's gross margin decreased from 75.0% in fiscal year 2025 to 71.1% in fiscal year 2026. This change was attributed to the transition of their business model and a $4.5 billion charge associated with H20 excess inventory and purchase obligations in the first quarter of fiscal year 2026 [7].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "correct",
+   "category": "B",
+   "judge_reason": "The system answer includes all required facts and provides additional consistent context about the business model transition and the $4.5 billion charge.",
+   "answer_score": 1.0,
+   "crag": 1.0
+  },
+  {
+   "n": 6,
+   "type": "cross-company",
+   "question": "Which had higher operating income in its latest fiscal year, Broadcom or Qualcomm?",
+   "filters": {
+    "tickers": [
+     "AVGO",
+     "QCOM"
+    ],
+    "fiscal_years": [],
+    "latest": true
+   },
+   "searches": null,
+   "facts": [
+    "AVGO Operating income (company-wide), fiscal 2025 (year ended 2025-11-02): $25,484 million",
+    "QCOM Operating income (company-wide), fiscal 2025 (year ended 2025-09-28): $12,355 million"
+   ],
+   "rewritten": null,
+   "retrieved": [
+    "AVGO 2025-11-02 Item 7",
+    "AVGO 2025-11-02 Item 7",
+    "AVGO 2025-11-02 Item 7",
+    "AVGO 2025-11-02 Item 7",
+    "AVGO 2025-11-02 Item 8",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 7",
+    "QCOM 2025-09-28 Item 1",
+    "QCOM 2025-09-28 Item 1"
+   ],
+   "chunk_ids": [
+    "AVGO-2025-11-02-7-60",
+    "AVGO-2025-11-02-7-48",
+    "AVGO-2025-11-02-7-46",
+    "AVGO-2025-11-02-7-47",
+    "AVGO-2025-11-02-8-19",
+    "QCOM-2025-09-28-7-4",
+    "QCOM-2025-09-28-7-16",
+    "QCOM-2025-09-28-7-15",
+    "QCOM-2025-09-28-1-19",
+    "QCOM-2025-09-28-1-31"
+   ],
+   "chunk_texts": [
+    "Net change in cash and cash equivalents (in millions): November 2, 2025 = $6,830; November 3, 2024 = $(4,841)\nOperating Activities\nCash flows from operating activities consist of net income adjusted for certain non-cash and other items and changes in assets and liabilities. The $7,575 million increase in cash provided by operations during fiscal year 2025 compared to fiscal year 2024 was primarily due to $17,231 million higher net income, offset in part by $5,973 million lower non-cash adjustments for deferred taxes and other non-cash taxes, as well as $3,863 million from changes in operating assets and liabilities. \nInvesting Activities ",
+    " Interest expense was $3,210 million and $3,953 million for fiscal years 2025 and 2024, respectively. The decrease was primarily from a reduction in outstanding debt balances and debt refinancing activities that drove lower effective interest rates compared to the prior fiscal year. \nOther income, net. \nOther income, net includes interest income, gains and losses on investments, foreign currency remeasurement and other miscellaneous items. Other income, net, was $455 million and $406 million for fiscal years 2025 and 2024, respectively. The increase was primarily due to a gain on the sale of a business, partially offset by lower interest income as a result of lower interest rates on lower invested balances.\nProvision for (benefit from) income taxes.",
+    "(In millions, except percentages)\nSemiconductor solutions (in millions): November 2, 2025 = $21,232; November 3, 2024 = $16,759; $ Change = $4,473; % Change = 27%\nInfrastructure software (in millions): November 2, 2025 = 20,765; November 3, 2024 = 13,977; $ Change = 6,788; % Change = 49%\nUnallocated expenses (in millions): November 2, 2025 = (16,513); November 3, 2024 = (17,273); $ Change = 760; % Change = (4)%\nTotal operating income (in millions): November 2, 2025 = $25,484; November 3, 2024 = $13,463; $ Change = $12,021; % Change = 89%\nOperating income from our semiconductor solutions segment increased due to strong demand for our networking solutions, primarily custom AI accelerators and AI networking products. ",
+    "Higher operating income from our infrastructure software segment was primarily due to strong demand for our VCF product, including license revenue recognized on contracts where customers do not have the right to terminate and the transition to a subscription license model. In addition, labor costs were lower following our integration of the VMware business. \nUnallocated expenses include amortization of acquisition-related intangible assets, stock-based compensation expense, restructuring and other charges, and acquisition-related costs which are not used in evaluating the results of, or in allocating resources to, our segments. Unallocated expenses decreased 4% in fiscal year 2025, compared to the prior fiscal year, primarily due to lower amortization of acquisition-related intangible assets, restructuring and other charges, and acquisition-related costs, partially offset by higher stock-based compensation expense. \nNon-Operating Income and Expenses\nInterest expense.",
+    "Restructuring and other charges (in millions): November 2, 2025 = 591; November 3, 2024 = 1,533; October 29, 2023 = 244\nTotal operating expenses (in millions): November 2, 2025 = 17,810; November 3, 2024 = 19,046; October 29, 2023 = 8,483\nOperating income (in millions): November 2, 2025 = 25,484; November 3, 2024 = 13,463; October 29, 2023 = 16,207\nInterest expense (in millions): November 2, 2025 = ( 3,210 ); November 3, 2024 = ( 3,953 ); October 29, 2023 = ( 1,622 )\nOther income, net (in millions): November 2, 2025 = 455; November 3, 2024 = 406; October 29, 2023 = 512\nIncome from continuing operations before income taxes (in millions): November 2, 2025 = 22,729; November 3, 2024 = 9,916; October 29, 2023 = 15,097\nProvision for (benefit from) income taxes (in millions): November 2, 2025 = ( 397 ); November 3, 2024 = 3,748; October 29, 2023 = 1,015\nIncome from continuing operations (in millions): November 2, 2025 = 23,126; November 3, 2024 = 6,168; October 29, 2023 = 14,082",
+    "Revenues were $44.3 billion, an increase of 14% compared to revenues of $39.0 billion in fiscal 2024, with net income of $5.5 billion, a decrease of 45% compared to net income of $10.1 billion in fiscal 2024. Key items from fiscal 2025 included: \n•\nQCT revenues increased by 16% in fiscal 2025 compared to the prior year, primarily due to higher handsets, IoT and automotive revenues.\n•\nQTL revenues remained approximately flat in fiscal 2025 compared to the prior year. \n•\nWe recorded a charge of $5.7 billion to income tax expense to establish a valuation allowance in the fourth quarter of fiscal 2025 as we no longer expect to realize substantially all of our existing federal deferred tax assets as a result of the tax reform legislation included in the One Big Beautiful Bill Act (OBBB) enacted on July 4, 2025.\nResults of Operations\nRevenues (in millions)\n2025 | 2024 | Change\nEquipment and services (in millions): 2025 = $37,869; 2024 = $32,791; Change = $5,078",
+    "higher IoT revenues due to $1.5 billion in higher shipments across edge networking, consumer and industrial products, partially offset by unfavorable mix\n+ \nhigher automotive revenues, primarily driven by an increase in shipments from new vehicle launches with our Snapdragon digital cockpit products\nQCT EBT as a percentage of revenues increased in fiscal 2025 primarily due to: \n+ \nhigher revenues\n- \nhigher operating expenses, primarily driven by higher selling, general and administrative expenses\nGross margin percentage remained approximately flat in fiscal 2025, primarily driven by higher product costs, partially offset by higher average selling prices. \nQTL Segment (in millions, except percentages)\n2025 | 2024 | Change\nLicensing revenues: 2025 = $5,582; 2024 = $5,572; Change = $10\nEBT: 2025 = 4,043; 2024 = 4,027; Change = 16\nEBT as a % of revenues: 2025 = 72%; 2024 = 72%; Change = —\n2025 vs. 2024",
+    "Substantially all of QCT’s revenues consist of equipment and services revenues, which were $37.7 billion and $32.6 billion in fiscal 2025 and 2024, respectively. QCT revenues mostly relate to sales of our Snapdragon and Dragonwing platforms (which include processors and modems), stand-alone Mobile Data Modems, radio frequency transceiver, power management and wireless connectivity integrated chipsets as well as sales of 4G, 5G sub 6 and 5G millimeter wave RFFE products.\n2025 vs. 2024\nThe increase in QCT revenues in fiscal 2025 was primarily due to:\n+ \nhigher handsets revenues, due to $2.5 billion in higher revenues per chipset primarily driven by higher average selling prices and favorable mix, and $423 million in higher chipset shipments by certain major OEMs, both of which benefited from an increase in demand for premium-tier Snapdragon platforms in Android devices\n+ ",
+    " Advances in wireless technology are helping to drive demand for edge networking products (including mobile, fiber broadband and wireless access points). Fiber and 5G technologies continue to grow, delivering not only high speed broadband and infrastructure but also providing the flexibility to support fixed, mobile and fixed wireless users with the delivery of high-performance, low-latency connections. Additionally, advancements in Wi-Fi are driving consumer and enterprise demand for the latest Wi-Fi 6, 6E and 7 access point technologies that leverage increased network speed, capacity and efficiency to support the increased number of connected devices at home and at work. \nIndustrial.",
+    "We have three reportable segments. We conduct business primarily through QCT and QTL, while QSI makes strategic investments. Additional information regarding our operating segments is provided in this Annual Report in “Notes to Consolidated Financial Statements, Note 8. Segment Information.” \nQCT Segment."
+   ],
+   "recall": 0.5,
+   "answer": "Broadcom had higher operating income in its latest fiscal year, with an operating income of $25,484 million for the fiscal year ending November 2, 2025, compared to Qualcomm's operating income of $12,355 million for the fiscal year ending September 28, 2025 [11][12].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "correct",
+   "category": "E",
+   "judge_reason": "The system answer contains all required facts with only minor differences in wording and additional details about fiscal year ending dates.",
+   "answer_score": 1.0,
+   "crag": 1.0
+  },
+  {
+   "n": 7,
+   "type": "cross-company",
+   "question": "Which had more cash and cash equivalents at the end of its latest fiscal year, AMD or Marvell?",
+   "filters": {
+    "tickers": [
+     "AMD",
+     "MRVL"
+    ],
+    "fiscal_years": [],
+    "latest": true
+   },
+   "searches": null,
+   "facts": [],
+   "rewritten": null,
+   "retrieved": [
+    "AMD 2025-12-27 Item 8",
+    "AMD 2025-12-27 Item 8",
+    "AMD 2025-12-27 Item 1",
+    "AMD 2025-12-27 Item 7",
+    "AMD 2025-12-27 Item 7",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 8",
+    "MRVL 2026-01-31 Item 8"
+   ],
+   "chunk_ids": [
+    "AMD-2025-12-27-8-17",
+    "AMD-2025-12-27-8-19",
+    "AMD-2025-12-27-1-2",
+    "AMD-2025-12-27-7-30",
+    "AMD-2025-12-27-7-29",
+    "MRVL-2026-01-31-8-22",
+    "MRVL-2026-01-31-8-27",
+    "MRVL-2026-01-31-8-170",
+    "MRVL-2026-01-31-8-29",
+    "MRVL-2026-01-31-8-85"
+   ],
+   "chunk_texts": [
+    "Net cash used in financing activities (in millions): December 27, 2025 = ( 431 ); December 28, 2024 = ( 2,062 ); December 30, 2023 = ( 1,146 )\nNet increase (decrease) in cash, cash equivalents and restricted cash (in millions): December 27, 2025 = 1,745; December 28, 2024 = ( 122 ); December 30, 2023 = ( 902 )\nCash, cash equivalents and restricted cash at beginning of year (in millions): December 27, 2025 = 3,811; December 28, 2024 = 3,933; December 30, 2023 = 4,835\nCash, cash equivalents and restricted cash at end of year (in millions): December 27, 2025 = $5,556; December 28, 2024 = $3,811; December 30, 2023 = $3,933\n62\nTable of Conten\nt\ns\nAdvanced Micro Devices, Inc. Consolidated Statements of Cash Flows\nYear Ended\nDecember 27, 2025 | December 28, 2024 | December 30, 2023\n(In millions)\nSupplemental cash flow information:\nCash paid during the year for:\nInterest (in millions): December 27, 2025 = $91; December 28, 2024 = $72; December 30, 2023 = $84",
+    "Total cash, cash equivalents, and restricted cash (in millions): $486 = $5,556; $— = $3,811; $— = $3,933\nSee accompanying notes to the Consolidated Financial Statements.\n63\nTable of Conten\nt\ns\nAdvanced Micro Devices, Inc.\nNotes to Consolidated Financial Statements\nNOTE 1 – \nThe Company",
+    "to, among other things: possible impact of future accounting rules on AMD’s consolidated financial statements; demand for AMD’s products; AMD’s strategy and expected benefits; the growth, change and competitive landscape of the markets in which AMD participates; international sales will continue to be a significant portion of total sales in the foreseeable future; the expectation that AMD’s cash, cash equivalents, and short-term investments together with the availability under that certain revolving credit facility (the Revolving Credit Agreement) made available to AMD and certain of its subsidiaries, our commercial paper program, and our cash flows from operations will be sufficient to fund AMD’s operations, including capital expenditures, purchase and lease commitments and strategic activities over the next 12 months and beyond; AMD’s ability to obtain sufficient external financing on favorable terms, or at all; AMD’s expectation that based on management’s current knowledge, the",
+    "Client and Gaming net revenue of $14.6 billion in 2025 increased by 51%, compared to net revenue of $9.6 billion in 2024. \nClient net revenue of $10.6 billion in 2025 increased by 51%, compared to net revenue of $7.1 billion in 2024, primarily driven by a 31% increase in unit shipments of processors and a 15% increase in average selling price of processors, reflecting strong demand for AMD desktop and mobile Ryzen processors. \nGaming net revenue of $3.9 billion in 2025 increased by 51%, compared to net revenue of $2.6 billion in 2024. The increase was primarily driven by higher semi-custom revenue and strong demand of our Radeon™ gaming GPUs. \nClient and Gaming operating income was $2.9 billion in 2025, compared to operating income of $1.2 billion in 2024. The increase in operating income was primarily driven by higher revenue, partially offset by higher cost of sales and operating expenses. \n52\nTable of Conten\nt\ns\nEmbedded",
+    "Embedded (in millions): December 27, 2025 = 1,243; December 28, 2024 = 1,421\nAll other (in millions): December 27, 2025 = (4,007); December 28, 2024 = (4,190)\nTotal operating income (in millions): December 27, 2025 = $3,694; December 28, 2024 = $1,900\nData Center\nData Center net revenue of $16.6 billion in 2025 increased by 32%, compared to net revenue of $12.6 billion in 2024. The increase was primarily driven by strong demand for our AMD EPYC™ processors and AMD Instinct™ GPU accelerators.\nData Center operating income was $3.6 billion in 2025, compared to operating income of $3.5 billion in 2024. The increase in operating income was primarily due to higher revenue, partially offset by higher cost of sales, approximately $440 million of net inventory and related charges associated with the U.S. government export control on AMD Instinct™ MI308 Data Center GPU products and higher operating expenses. \nClient and Gaming",
+    "Cash and cash equivalents at beginning of the year: January 31, 2026 = 948.3; February 1, 2025 = 950.8; February 3, 2024 = 911.0\nCash and cash equivalents at end of the year: January 31, 2026 = $2,638.8; February 1, 2025 = $948.3; February 3, 2024 = $950.8\nSee accompanying Notes to Consolidated Financial Statements.\nMARVELL TECHNOLOGY, INC.\nNOTES TO CONSOLIDATED FINANCIAL STATEMENTS\nNote 1 — \nBasis of Presentation\nThe Company",
+    "to evolve and additional information becomes available, these estimates may change materially in future periods.\nPrinciples of Consolidation\nThe consolidated financial statements include the accounts of the Company and its wholly-owned subsidiaries. All inter-company accounts and transactions have been eliminated. The functional currency of the Company and its subsidiaries is the U.S. dollar.\nCash and Cash Equivalents\nThe Company considers all highly liquid investments with an original maturity of three months or less from the date of purchase to be cash equivalents. Cash and cash equivalents consist of cash on deposit with banks and time deposits.\nMARVELL TECHNOLOGY, INC.\nNOTES TO CONSOLIDATED FINANCIAL STATEMENTS — (Continued)\nInvestments in Equity Securities ",
+    "NOTES TO CONSOLIDATED FINANCIAL STATEMENTS — (Continued)\nThe following table presents long-lived asset information by geographic region (in millions):\nJanuary 31, 2026 | February 1, 2025\nProperty and equipment, net:\nUnited States: January 31, 2026 = $495.9; February 1, 2025 = $398.6\nSingapore: January 31, 2026 = 327.8; February 1, 2025 = 321.0\nOther: January 31, 2026 = 111.3; February 1, 2025 = 70.9\n: January 31, 2026 = $935.0; February 1, 2025 = $790.5\nNote 15 — \nSupplemental Financial Information (in millions)\nConsolidated Balance Sheets\nJanuary 31, 2026 | February 1, 2025\nCash and cash equivalents:\nCash: January 31, 2026 = $2,566.1; February 1, 2025 = $891.1\nCash equivalents:\nTime deposits: January 31, 2026 = 72.7; February 1, 2025 = 57.2\nCash and cash equivalents: January 31, 2026 = $2,638.8; February 1, 2025 = $948.3\nShort-term, highly liquid investments of $\n72.7\n million and $\n57.2",
+    "Financial instruments that potentially subject the Company to a significant concentration of credit risk consist principally of cash equivalents and accounts receivable. Cash and cash equivalents are maintained with high-quality financial institutions, the composition and maturities of which are regularly monitored by management. ",
+    "The Company classified the 2026 Senior Notes, MTG/MTI 2028 Senior Notes, 2028 Senior Notes, 2029 Senior Notes, 2030 Senior Notes, 2031 Senior Notes, 2033 Senior Notes, and 2035 Senior Notes as Level 2 in the fair value measurement hierarchy. The estimated aggregate fair value of the unsecured senior notes was $\n4.5\n billion at January 31, 2026 and $\n3.4\n billion at February 1, 2025, and were classified as Level 2 as there are quoted prices from less active markets for the notes. See “Note 7 – Debt” for additional information.\nMARVELL TECHNOLOGY, INC.\nNOTES TO CONSOLIDATED FINANCIAL STATEMENTS — (Continued)\nNote 7 — \nDebt\nSummary of Borrowings and Outstanding Debt\nThe following table summarizes the Company’s outstanding debt at January 31, 2026 and February 1, 2025 (in millions):\nEffective Interest Rate | January 31, 2026 | February 1, 2025\nFace Value Outstanding:\n2026 Term Loan - 5-Year Tranche | $— | $590.6\nTerm Loan Total: $— = —; $590.6 = 590.6"
+   ],
+   "recall": 1.0,
+   "answer": "At the end of its latest fiscal year, AMD had cash, cash equivalents, and restricted cash of $5,556 million as of December 27, 2025 [1]. In comparison, Marvell had cash and cash equivalents of $2,638.8 million as of January 31, 2026 [6]. Therefore, AMD had more cash and cash equivalents than Marvell at the end of their respective latest fiscal years.",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "incorrect",
+   "category": "D",
+   "judge_reason": "The system answer provides an incorrect figure for AMD's cash and cash equivalents, which contradicts the golden answer.",
+   "answer_score": 0.0,
+   "crag": -1.0
+  },
+  {
+   "n": 8,
+   "type": "narrative",
+   "question": "Who does AMD name as its main competitors in its fiscal 2025 10-K?",
+   "filters": {
+    "tickers": [
+     "AMD"
+    ],
+    "fiscal_years": [
+     2025
+    ],
+    "latest": false
+   },
+   "searches": null,
+   "facts": [],
+   "rewritten": null,
+   "retrieved": [
+    "AMD 2025-12-27 Item 1",
+    "AMD 2025-12-27 Item 1A",
+    "AMD 2025-12-27 Item 1",
+    "AMD 2025-12-27 Item 1",
+    "AMD 2025-12-27 Item 1A",
+    "AMD 2025-12-27 Item 1",
+    "AMD 2025-12-27 Item 1",
+    "AMD 2025-12-27 Item 1",
+    "AMD 2025-12-27 Item 1",
+    "AMD 2025-12-27 Item 7"
+   ],
+   "chunk_ids": [
+    "AMD-2025-12-27-1-51",
+    "AMD-2025-12-27-1A-9",
+    "AMD-2025-12-27-1-50",
+    "AMD-2025-12-27-1-6",
+    "AMD-2025-12-27-1A-8",
+    "AMD-2025-12-27-1-78",
+    "AMD-2025-12-27-1-3",
+    "AMD-2025-12-27-1-42",
+    "AMD-2025-12-27-1-47",
+    "AMD-2025-12-27-7-2"
+   ],
+   "chunk_texts": [
+    "We expect continued competition from our primary FPGA competitors such as Altera, Lattice Semiconductor Corporation and Microsemi Corporation, and from ASSP vendors such as Broadcom Corporation, Marvell Technology Group, Ltd., Analog Devices, Texas Instruments Incorporated, NXP Semiconductors N.V., Qualcomm Incorporated and NVIDIA. In addition, we expect continued competition from the ASIC market, which has been ongoing since the inception of FPGAs. Intel is our main competitor for embedded CPUs. Other competitors include manufacturers of high-density programmable logic products characterized by FPGA-type architectures; high-volume and low-cost FPGAs as programmable replacements for ASICs and ASSPs; ASICs and ASSPs with incremental amounts of embedded programmable logic; high-speed, low-density CPLDs; high-performance DSP devices; products with embedded processors; products with embedded multi-gigabit transceivers; discrete general-purpose GPUs targeting data center and automotive",
+    "Our competitors may use their market position and financial resources to market and price their products in a way to dissuade customers from purchasing from us. For example, Intel Corporation (Intel) uses its microprocessor market position to price its products aggressively and target our customers and channel partners with special incentives. These aggressive activities have reduced and may reduce our unit sales and average selling prices for many of our products, adversely affecting our business. Similarly, Nvidia Corporation (Nvidia) leverages its market position in data center GPU, financial resources, and proprietary software ecosystem to promote its systems and influences customers who do business with us. Our competitors’ business practices, including allocation strategies, pricing actions, product mix and introduction schedules, licensing terms, marketing arrangements, product bundling strategies, lack of software inoperability and business acquisitions can limit customers’",
+    "Our principal competitor in the supply of discrete graphics is Nvidia, who is the discrete GPU market share leader, and Intel, who manufactures and sells integrated graphics processors and gaming-focused discrete GPUs. With respect to integrated graphics, higher unit shipments of our APUs and Intel’s integrated graphics may drive computer manufacturers to reduce the number of systems they build paired with discrete graphics components, particularly for notebooks, because they may offer satisfactory graphics performance for most mainstream PC users at a lower cost. We are the market share leader in semi-custom game console products, where graphics performance is critical. \nCompetition in Embedded Segment ",
+    "References in this Annual Report on Form 10-K to “AMD,” “we,” “us,” “management,” “our” or the “Company” mean Advanced Micro Devices, Inc. and our consolidated subsidiaries.\nOverview",
+    "Competition is expected to remain intense, driven by rapid technological change, evolving standards, shifting customer preferences, product obsolescence, and frequent product launches from both established and new competitors. Some of our competitors may possess stronger market positions, larger customer bases, more design wins, and greater financial, sales, marketing, and distribution resources than us. As a result, they may be able to acquire market share or limit our ability to do so, more effectively capitalize on new market opportunities, and transition their products more efficiently than we can. Some competitors are pursuing alternative computing architectures, such as Arm, which could grow the Arm ecosystem and increase competition in consumer, commercial and data center, reducing demand for our products. Additionally, we may encounter competition from customers who internally develop products to support similar AI workloads to those supported by ours.   ",
+    "The information contained on our website is not incorporated by reference in, or considered to be a part of, this report.\n14\nTable of Conten\nt\ns",
+    "potential liability related to AMD’s current litigation will not have a material adverse effect on its financial position, results of operation or cash flows; anticipated ongoing and increased costs related to enhancing and implementing information security controls; revenue allocated to remaining performance obligations that are unsatisfied which will be recognized in the next 12 months; a small number of customers will continue to account for a substantial part of AMD’s revenue and receivables in the future; the expected implications from the development of the legal and regulatory environment relating to emerging technologies such as AI; AMD’s expectation to utilize the cloud service capacity in its operations or assign the capacity; AMD’s expectation that it will not pay dividends in the near future; AMD’s ability to achieve its corporate responsibility initiatives; expected future AI technology trends and developments; the expected benefits of AMD’s acquisitions; and AMD’s",
+    "Our Embedded Segment products are sold to customers in a very wide range of markets such as aerospace and defense, automotive, industrial, vision and healthcare, communications infrastructure, test and measurement, emulation and prototyping, audio, video and broadcasting and data center. For these products, we either sell directly to our customers or through a network of distributors and OEM partners. We are also developing a network of Value Added Resellers (VARs) and Integrated Solution Vendors (ISVs) for our Alveo products.",
+    "We offer component-level graphics and chipset products to AIB manufacturers who in turn build and sell board-level products using our technology to system integrators (SIs), retailers and sub distributors. In most instances, our agreements with AIBs protect their inventory of our products against price reductions. We also sell directly to some SI customers. SIs typically sell from positions of regional or product-based strength in the market. They usually operate on short design cycles and can respond quickly with new technologies. SIs often use discrete graphics solutions as a means to differentiate their products and add value to their customers.\nCompetition",
+    "In 2025, we delivered strong annual revenue growth with net revenue increasing 34% to $34.6 billion, compared to $25.8 billion in 2024. This growth was driven by the performance of our Data Center and Client and Gaming segments. Data Center net revenue of $16.6 billion increased by 32% compared to $12.6 billion in 2024, primarily driven by strong demand for our 5th generation AMD EPYC™ processors and AMD Instinct™ MI350 Series GPUs. Client and Gaming segment net revenue of $14.6 billion in 2025 increased by 51% compared to $9.6 billion in 2024, primarily driven by strong demand for our AMD Ryzen™ processors, semi-custom game consoles SoCs and Radeon™ gaming GPUs. The increase in annual net revenue was partially offset by a decrease in net revenue in our Embedded segment. Embedded net revenue of $3.5 billion decreased by 3% compared to net revenue of $3.6 billion in 2024, as certain end market demand remained mixed."
+   ],
+   "recall": 1.0,
+   "answer": "In its fiscal 2025 10-K, AMD names Intel as its main competitor for embedded CPUs, and Nvidia as its principal competitor in the supply of discrete graphics. Other competitors mentioned include Altera, Lattice Semiconductor Corporation, Microsemi Corporation, Broadcom Corporation, Marvell Technology Group, Ltd., Analog Devices, Texas Instruments Incorporated, NXP Semiconductors N.V., and Qualcomm Incorporated, among others [1][2][3].",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "partial",
+   "category": "A",
+   "judge_reason": "The system answer is missing the mention of Intel and NVIDIA as primary competitors in the Data Center segment and Intel as the primary competitor for client CPUs/APUs.",
+   "answer_score": 0.5,
+   "crag": 0.5
+  },
+  {
+   "n": 9,
+   "type": "narrative",
+   "question": "What does Marvell say about its reliance on third-party foundries like TSMC?",
+   "filters": {
+    "tickers": [
+     "MRVL"
+    ],
+    "fiscal_years": [],
+    "latest": false
+   },
+   "searches": null,
+   "facts": [],
+   "rewritten": null,
+   "retrieved": [
+    "MRVL 2025-02-01 Item 1A",
+    "MRVL 2024-02-03 Item 1A",
+    "MRVL 2026-01-31 Item 1A",
+    "MRVL 2026-01-31 Item 1A",
+    "MRVL 2025-02-01 Item 1A",
+    "MRVL 2026-01-31 Item 1A",
+    "MRVL 2025-02-01 Item 1A",
+    "MRVL 2024-02-03 Item 1A",
+    "MRVL 2026-01-31 Item 1A",
+    "MRVL 2026-01-31 Item 7"
+   ],
+   "chunk_ids": [
+    "MRVL-2025-02-01-1A-42",
+    "MRVL-2024-02-03-1A-50",
+    "MRVL-2026-01-31-1A-52",
+    "MRVL-2026-01-31-1A-88",
+    "MRVL-2025-02-01-1A-40",
+    "MRVL-2026-01-31-1A-50",
+    "MRVL-2025-02-01-1A-49",
+    "MRVL-2024-02-03-1A-152",
+    "MRVL-2026-01-31-1A-178",
+    "MRVL-2026-01-31-7-21"
+   ],
+   "chunk_texts": [
+    "Most of our products are manufactured by third-party foundries located in Taiwan, and other sources are located in China, Germany, South Korea, Singapore and the United States. In addition, most of our third-party assembly, testing and packaging facilities are located in China, Malaysia, Singapore, Taiwan and Canada. Because of the geographic concentration of most of these third-party foundries, as well as most of our assembly, testing and packaging subcontractors, we are exposed to the risk that their operations may be disrupted by regional events including, for example, droughts, earthquakes (particularly in Taiwan and elsewhere in the Pacific Rim close to fault lines), tsunamis or typhoons, severe storms, power outages, or by actual or threatened public health emergencies such as the COVID-19 pandemic and future pandemics, or by political, social or economic instability, or by geopolitical tensions and conflicts. For example, we were impacted by COVID outbreaks in Asia in the first",
+    "Most of our products are manufactured by third-party foundries located in Taiwan, and other sources are located in China, Germany, South Korea, Singapore and the United States. In addition, substantially all of our third-party assembly, testing and packaging facilities are located in China, Malaysia, Singapore, Taiwan and Canada. Because of the geographic concentration of most of these third-party foundries, as well as our assembly, testing and packaging subcontractors, we are exposed to the risk that their operations may be disrupted by regional events including, for example, droughts, earthquakes (particularly in Taiwan and elsewhere in the Pacific Rim close to fault lines), tsunamis or typhoons, severe storms, power outages, or by actual or threatened public health emergencies such as the COVID-19 pandemic and future pandemics, or by political, social or economic instability, or by geopolitical tensions and conflicts. For example, we were impacted by COVID outbreaks in Asia in the",
+    "Most of our products are manufactured by third-party foundries located in Taiwan, and other sources are located in China, Germany, South Korea, Singapore and the United States. In addition, most of our third-party assembly, testing and packaging facilities are located in China, Malaysia, Singapore, Taiwan and Canada. Because of the geographic concentration of most of these third-party foundries, as well as most of our assembly, testing and packaging subcontractors, we are exposed to the risk that their operations may be disrupted by regional events including, for example, droughts, earthquakes (particularly in Taiwan and elsewhere in the Pacific Rim close to fault lines), tsunamis or typhoons, severe storms, power outages, or by actual or threatened public health emergencies such as the COVID-19 pandemic and future pandemics, or by political, social or economic instability, or by geopolitical tensions and conflicts. For example, we were impacted by COVID outbreaks in Asia in the first",
+    "We rely on third-party distributors and manufacturers’ representatives and the failure of these distributors and manufacturers’ representatives to perform as expected could reduce our future sales.",
+    "requires us to use third-party intellectual property and we may lose business or experience reputational harm if third parties, including customers, lose confidence in our ability to protect their intellectual property rights. With respect to risks related to our use of third-party intellectual property, see also, “\nWe have been named as a party to several legal proceedings and may be named in additional ones in the future, including litigation involving our patents and other intellectual property, which could subject us to liability, require us to indemnify our customers, require us to obtain or renew licenses, require us to stop selling our products or force us to redesign our products.\n”\nWE ARE VULNERABLE TO PRODUCT DEVELOPMENT AND MANUFACTURING-RELATED RISKS",
+    "requires us to use third-party intellectual property and we may lose business or experience reputational harm if third parties, including customers, lose confidence in our ability to protect their intellectual property rights. With respect to risks related to our use of third-party intellectual property, see also, “\nWe have been named as a party to several legal proceedings and may be named in additional ones in the future, including litigation involving our patents and other intellectual property, which could subject us to liability, require us to indemnify our customers, require us to obtain or renew licenses, require us to stop selling our products or force us to redesign our products.\n”\nWE ARE VULNERABLE TO PRODUCT DEVELOPMENT AND MANUFACTURING-RELATED RISKS",
+    "While we attempt to create multiple sources for our products, most of our products are not manufactured at more than one foundry at any given time, and our products typically are designed to be manufactured in a specific process at only one of these foundries. Accordingly, if one of our foundries is unable to provide us with components as needed, it would be difficult for us to transition the manufacture of our products to other foundries, and we could experience significant delays in securing sufficient supplies of those components. Any disruption to our foundry partners could result in a material decline in our revenue, net income and cash flow. In addition, our assembly testing and packaging partners may be single sourced and it may be difficult for us to transition to other manufacturing partners for these services.",
+    " Additionally, from time to time, we have agreed to indemnify select customers for claims alleging infringement of third-party intellectual property rights, including, but not limited to, patents, registered trademarks and/or copyrights. If we are required to make a significant payment under any of our indemnification obligations, our results of operations may be harmed.\n37 ",
+    " Additionally, from time to time, we have agreed to indemnify select customers for claims alleging infringement of third-party intellectual property rights, including, but not limited to, patents, registered trademarks and/or copyrights. If we are required to make a significant payment under any of our indemnification obligations, our results of operations may be harmed.",
+    "expected value method derived from historical data, current economic conditions, and contractual terms. Actual variable consideration could differ from these estimates.\nA portion of our net revenue is derived from sales through third-party logistics providers who maintain warehouses in close proximity to our customers’ facilities. Revenue from sales through these third-party logistics providers is not recognized until the product is pulled from stock by the customer."
+   ],
+   "recall": 0.5,
+   "answer": "Marvell states that most of its products are manufactured by third-party foundries located in Taiwan, and other sources are located in China, Germany, South Korea, Singapore, and the United States. The company is exposed to risks that these foundries' operations may be disrupted by regional events, such as natural disasters or public health emergencies. Additionally, Marvell mentions that while it attempts to create multiple sources for its products, most are not manufactured at more than one foundry at any given time, making it difficult to transition manufacturing if a foundry is unable to provide components as needed, which could lead to significant delays and a material decline in revenue, net income, and cash flow [1][2][3][7]. This information is from Marvell's 10-K filings for fiscal years 2024, 2025, and 2026.",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "correct",
+   "category": "B",
+   "judge_reason": "The system answer includes all required facts and provides additional consistent information about other manufacturing locations and potential impacts on revenue.",
+   "answer_score": 1.0,
+   "crag": 1.0
+  },
+  {
+   "n": 10,
+   "type": "cross-company",
+   "question": "Which of these companies mention HBM in their latest 10-K?",
+   "filters": {
+    "tickers": [],
+    "fiscal_years": [],
+    "latest": true
+   },
+   "searches": null,
+   "facts": [],
+   "rewritten": null,
+   "retrieved": [
+    "MU 2025-08-28 Item 1",
+    "MU 2025-08-28 Item 1",
+    "MU 2025-08-28 Item 1A",
+    "MU 2025-08-28 Item 7",
+    "MU 2025-08-28 Item 2",
+    "MU 2025-08-28 Item 1A",
+    "MU 2025-08-28 Item 1",
+    "MU 2025-08-28 Item 1",
+    "AMD 2025-12-27 Item 1",
+    "MU 2025-08-28 Item 1"
+   ],
+   "chunk_ids": [
+    "MU-2025-08-28-1-12",
+    "MU-2025-08-28-1-10",
+    "MU-2025-08-28-1A-27",
+    "MU-2025-08-28-7-27",
+    "MU-2025-08-28-2-5",
+    "MU-2025-08-28-1A-24",
+    "MU-2025-08-28-1-51",
+    "MU-2025-08-28-1-3",
+    "AMD-2025-12-27-1-24",
+    "MU-2025-08-28-1-5"
+   ],
+   "chunk_texts": [
+    "In 2024, we began volume production of our 8-high 24GB HBM3E with increased bandwidth and superior power efficiency enabled by our advanced 1β process node. In the fourth quarter of 2025, HBM3E 12-high represented the majority of our HBM shipments. This enhanced version of HBM delivers faster data rates, improved thermal response, and a higher monolithic die density within the same package footprint as previous generations. In 2025, we delivered samples of HBM4 36GB 12-high to multiple key customers to power next-generation AI platforms.",
+    " NOR products are non-volatile, re-writable semiconductor memory devices that provide fast read speeds. NOR is most commonly used for reliable code storage (e.g., boot, application, operating system, and execute-in-place code in an embedded system) and for frequently changing small data storage and is ideal for automotive, industrial, and consumer applications.\nProducts by Business Unit and Market\nCloud Memory Business Unit (“CMBU”)\nCMBU is focused on memory solutions for large hyperscale cloud customers, and HBM for all data center customers. In addition to HBM, CMBU sales include DDR, LPDDR, and GDDR.\nData Center\n:\n CMBU sales to the data center end market are driven by server demand across the cloud market and includes our portfolio of HBM, high-capacity dual in-line memory modules (“DIMMs”), and low-power server DRAM solutions. ",
+    "In addition, our ability to successfully introduce new products often requires us to make product specification decisions multiple years in advance of when new products enter the market. Recent technologies, such as generative AI models have emerged, and while they have driven increased demand for HBM and other advanced products in the data center and other markets, the long-term trajectory is unknown and associated demand may fluctuate. Due to the higher performance and more complex manufacturing process, HBM requires a higher number of wafers and more cleanroom space to produce the same number of bits as conventional DRAM in the same technology node. If demand for HBM weakens and suppliers shift capacity from HBM to conventional DRAM, this could result in a significant increase in conventional DRAM supply. An oversupplied DRAM market may lead to downward pressure on pricing, which could adversely impact our financial results.",
+    "we are modernizing our Hiroshima manufacturing facility to support the production of DRAM using EUV lithography;\n•\nSingapore:\n we broke ground on an HBM advanced packaging facility to meaningfully expand our total advanced packaging capacity beginning in calendar 2027; and\n•\nTaiwan:\n we are modernizing our production capacity for DRAM and HBM products to meet rising market demand.\nSee Item 8. Financial Statements and Supplementary Data, Notes to Consolidated Financial Statements, Note 20. Government Incentives.",
+    "we are modernizing our Hiroshima manufacturing facility to support the production of DRAM using EUV lithography;\n•\nSingapore:\n we broke ground on an HBM advanced packaging facility to meaningfully expand our total advanced packaging capacity beginning in calendar 2027; and\n•\nTaiwan:\n we are modernizing our production capacity for DRAM and HBM products to meet rising market demand.\nWe do not identify or allocate assets by operating segment, other than goodwill. For a breakout of the carrying value of our long-lived assets by geographic area, see Part II, Item 8. Financial Statements and Supplementary Data, Notes to Consolidated Financial Statements, Note 29. Geographic Information.",
+    "Our key semiconductor memory and storage technologies face technological barriers to continue to meet long-term customer needs. These barriers include achieving acceptable yields and quality for HBM products with their multiple chip layers, potential limitations on stacking additional 3D memory layers, increasing bits per cell (i.e., cell levels), meeting higher density requirements, developing advanced packaging solutions, improving power consumption and reliability, and delivering advanced features and higher performance. We may face technological barriers to continue to shrink our products at our current or historical rate, which has generally reduced per gigabit cost. We have invested and expect to continue to invest in R&D for new and existing products and process technologies, such as EUV lithography, to continue to deliver advanced product requirements. Such new technologies can add complexity and risk to our schedule and may affect our costs and production output. We may be",
+    "HBM, DDR5, LPDDR5, high-capacity MRDIMMs, compute express link (“CXL”) based products, and advanced graphics DRAM; TLC and QLC NAND technologies; storage solutions (including firmware and controllers) in SSDs and managed NAND; and other memory technologies and systems.\nTo compete in the semiconductor memory and storage markets, we must continue to develop technologically advanced products and processes. The continued evolution of our semiconductor product offerings is necessary to meet expected customer requirements for memory and storage products and solutions. Our process, design, firmware, controller, package, and system development efforts occur at multiple locations across the world. Our R&D centers are located in Boise, Idaho; San Jose, California; India; Japan; Taiwan; Singapore; China; Italy; Mexico; Germany; Malaysia; and other sites in the United States.",
+    "In the fourth quarter of 2025, we reorganized our business units. All prior-period segment amounts have been retrospectively adjusted to reflect this reorganization. We have the following four business units, which are our reportable segments:\n•\nCloud Memory Business Unit (“CMBU”): \nFocused on memory solutions for large hyperscale cloud customers, and HBM for all data center customers.\n•\nCore Data Center Business Unit (“CDBU”): \nFocused on memory solutions for mid-tier cloud, enterprise, and OEM data center customers and storage solutions for all data center customers.\n•\nMobile and Client Business Unit (“MCBU”): \nFocused on memory and storage solutions for the mobile and client segments.\n•\nAutomotive and Embedded Business Unit (“AEBU”): \nFocused on memory and storage solutions for the automotive, industrial, and consumer segments.\n7 |\n2025 10-K\nProducts, Market, and Sales\nProduct Technologies",
+    "PRO CPU enables leadership performance, expanded memory bandwidth and platform reliability for premium workstations. \nChipsets.\nWe offer a full suite of chipset products to support our AMD Ryzen and AMD Ryzen Threadripper platforms, for entry level through professional workstation desktop systems. These chipsets complement our latest CPU innovations, supporting robust connectivity and scalability for diverse client computing needs.\nGaming Business\nGraphics Market",
+    "In 2025, we began shipping the industry’s first 1γ (1-gamma) production node, which is our first DRAM node incorporating EUV lithography and offers further improvements in power efficiency, performance, and bit density compared to our prior DRAM node products. The majority of our DRAM bit production in 2025 was on our leading-edge 1ß (1-beta) node.\nHigh-Bandwidth Memory (“HBM”)\n:\n A 3D stacked DRAM architecture that utilizes through-silicon via (“TSV”) connections for more efficient communication giving it the ability to achieve a higher bandwidth while consuming less power compared to other memory types. This makes it ideal for applications that require high data throughput and energy efficiency, such as AI applications and high-performance computing.\nDouble Data Rate (“DDR”)\n:"
+   ],
+   "recall": 0.5,
+   "answer": "Micron Technology, Inc. (MU) mentions HBM in their latest 10-K for the fiscal period ending 2025-08-28, specifically in multiple excerpts discussing their products and business units focused on HBM technology [1][2][8]. Not in the filings.",
+   "refused": false,
+   "refusal_ok": true,
+   "verdict": "partial",
+   "category": "A",
+   "judge_reason": "The system answer mentions Micron but misses Marvell, which is a required fact.",
+   "answer_score": 0.5,
+   "crag": 0.5
+  },
+  {
+   "n": 11,
+   "type": "unanswerable",
+   "question": "What is Micron's share price target for next year?",
+   "filters": {
+    "tickers": [
+     "MU"
+    ],
+    "fiscal_years": [],
+    "latest": false
+   },
+   "searches": null,
+   "facts": [],
+   "rewritten": null,
+   "retrieved": [
+    "MU 2025-08-28 Item 5",
+    "MU 2024-08-29 Item 5",
+    "MU 2025-08-28 Item 7",
+    "MU 2023-08-31 Item 7",
+    "MU 2024-08-29 Item 7",
+    "MU 2023-08-31 Item 5",
+    "MU 2024-08-29 Item 7",
+    "MU 2024-08-29 Item 7",
+    "MU 2024-08-29 Item 8",
+    "MU 2023-08-31 Item 8"
+   ],
+   "chunk_ids": [
+    "MU-2025-08-28-5-4",
+    "MU-2024-08-29-5-4",
+    "MU-2025-08-28-7-0",
+    "MU-2023-08-31-7-0",
+    "MU-2024-08-29-7-0",
+    "MU-2023-08-31-5-5",
+    "MU-2024-08-29-7-1",
+    "MU-2024-08-29-7-3",
+    "MU-2024-08-29-8-79",
+    "MU-2023-08-31-8-90"
+   ],
+   "chunk_texts": [
+    ": May 30, 2025 – June 26, 2025 = 24,996; — = $118.61; $— = —; — = $2,806\nPerformance Graph\nThe following graph illustrates a five-year comparison of cumulative total returns for our common stock, the S&P 500 Composite Index, and the Philadelphia Semiconductor Index (SOX) from August 31, 2020, through August 31, 2025. We operate on a 52- or 53-week fiscal year which ends on the Thursday closest to August 31. Accordingly, the last day of our fiscal year varies. For consistent presentation and comparison to the industry indices shown herein, we have calculated our stock performance graph assuming an August 31 year end.\nNote: Management cautions that the stock price performance information shown in the graph above may not be indicative of current stock price levels or future stock price performance.",
+    "The following graph illustrates a five-year comparison of cumulative total returns for our common stock, the S&P 500 Composite Index, and the Philadelphia Semiconductor Index (SOX) from August 31, 2019, through August 31, 2024. We operate on a 52 or 53-week fiscal year which ends on the Thursday closest to August 31. Accordingly, the last day of our fiscal year varies. For consistent presentation and comparison to the industry indices shown herein, we have calculated our stock performance graph assuming an August 31 year end.\nNote: Management cautions that the stock price performance information shown in the graph above may not be indicative of current stock price levels or future stock price performance.",
+    "ITEM 7. MANAGEMENT’S DISCUSSION AND ANALYSIS OF FINANCIAL CONDITION AND RESULTS OF OPERATIONS\nThis discussion should be read in conjunction with the consolidated financial statements and accompanying notes for the year ended August 28, 2025. All period references are to our fiscal periods unless otherwise indicated. Our fiscal year is the 52\n-\n or 53-week period ending on the Thursday closest to August 31. Fiscal 2025, 2024, and 2023 each contained 52 weeks. All tabular dollar amounts are in millions, except per share amounts.\nOverview\nFor an overview of our business, see Part I, Item 1. Business, Overview.\nIndustry Conditions",
+    "ITEM 7. MANAGEMENT’S DISCUSSION AND ANALYSIS OF FINANCIAL CONDITION AND RESULTS OF OPERATIONS\nThis discussion should be read in conjunction with the consolidated financial statements and accompanying notes for the year ended August 31, 2023. All period references are to our fiscal periods unless otherwise indicated. Our fiscal year is the 52 or 53-week period ending on the Thursday closest to August 31. Fiscal 2023, 2022, and 2021 each contained 52 weeks. All tabular dollar amounts are in millions, except per share amounts.\nOverview\nFor an overview of our business, see “Part I – Item 1. Business – Overview.”\nIndustry Conditions ",
+    "ITEM 7. MANAGEMENT’S DISCUSSION AND ANALYSIS OF FINANCIAL CONDITION AND RESULTS OF OPERATIONS\nThis discussion should be read in conjunction with the consolidated financial statements and accompanying notes for the year ended August 29, 2024. All period references are to our fiscal periods unless otherwise indicated. Our fiscal year is the 52 or 53-week period ending on the Thursday closest to August 31. Fiscal 2024, 2023, and 2022 each contained 52 weeks. All tabular dollar amounts are in millions, except per share amounts.\nOverview\nFor an overview of our business, see “Part I – Item 1. Business – Overview.”\nIndustry Conditions",
+    "Note: Management cautions that the stock price performance information shown in the graph above may not be indicative of current stock price levels or future stock price performance.\nThe performance graph above assumes $100 was invested on August 31, 2018 in common stock of Micron Technology, Inc., the S&P 500 Composite Index, and the Philadelphia Semiconductor Index (SOX). Any dividends paid during the period presented were assumed to be reinvested. The performance was plotted using the following data:\n2018 | 2019 | 2020 | 2021 | 2022 | 2023\nMicron Technology, Inc.: 2018 = $100; 2019 = $86; 2020 = $87; 2021 = $140; 2022 = $108; 2023 = $135\nS&P 500 Composite Index: 2018 = 100; 2019 = 103; 2020 = 125; 2021 = 165; 2022 = 146; 2023 = 169\nPhiladelphia Semiconductor Index (SOX): 2018 = 100; 2019 = 110; 2020 = 168; 2021 = 257; 2022 = 204; 2023 = 283",
+    "Throughout 2024, we experienced substantial improvements in pricing and margins. Increasing demand growth, driven in part by deployment of AI and mostly normal customer inventories, combined with industry-wide supply discipline, resulted in an industry supply and demand balance that substantially improved from 2023 conditions. We executed well on pricing and improved our financial performance significantly from the start of the year. We are exiting the year with excellent momentum and an industry-leading product portfolio.",
+    "retain our worldwide DRAM and NAND market share.",
+    "% of target amounts, depending upon the achievement level. In 2022, our Board of Directors approved dividend equivalent rights for unvested restricted stock units awarded on or after October 13, 2021. \nRestricted Stock Awards activity for 2024 is summarized as follows:\nNumber of Shares | Weighted-Average Grant Date Fair Value Per Share\nOutstanding as of August 31, 2023: Number of Shares = 29; Weighted-Average Grant Date Fair Value Per Share = $59.11\nGranted: Number of Shares = 13; Weighted-Average Grant Date Fair Value Per Share = 72.72\nVested: Number of Shares = ( 12 ); Weighted-Average Grant Date Fair Value Per Share = 57.92\nForfeited: Number of Shares = ( 2 ); Weighted-Average Grant Date Fair Value Per Share = 60.42\nOutstanding as of August 29, 2024: Number of Shares = 28; Weighted-Average Grant Date Fair Value Per Share = 65.82\nFor the year ended: 2024 | 2023 | 2022\nRestricted stock award shares granted: 13 | 17 | 13",
+    "% of target amounts, depending upon the achievement level. In 2022, our Board of Directors approved dividend equivalent rights for unvested restricted stock units awarded on or after October 13, 2021. \nRestricted Stock Awards activity for 2023 is summarized as follows:\nNumber of Shares | Weighted-Average Grant Date Fair Value Per Share\nOutstanding as of September 1, 2022: Number of Shares = 23; Weighted-Average Grant Date Fair Value Per Share = $60.93\nGranted: Number of Shares = 17; Weighted-Average Grant Date Fair Value Per Share = 55.99\nRestrictions lapsed: Number of Shares = ( 9 ); Weighted-Average Grant Date Fair Value Per Share = 58.23\nCanceled: Number of Shares = ( 2 ); Weighted-Average Grant Date Fair Value Per Share = 58.00\nOutstanding as of August 31, 2023: Number of Shares = 29; Weighted-Average Grant Date Fair Value Per Share = 59.11\n79 |\n2023 10-K\nFor the year ended: 2023 | 2022 | 2021\nRestricted stock award shares granted: 17 | 13 | 11"
+   ],
+   "recall": null,
+   "answer": "Not in the filings.",
+   "refused": true,
+   "refusal_ok": true,
+   "verdict": "correct",
+   "category": "C",
+   "judge_reason": "The system correctly states that the information is not in the filings, matching the golden answer.",
+   "answer_score": 1.0,
+   "crag": 1.0
+  }
+ ]
+}

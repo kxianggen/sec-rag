@@ -59,8 +59,10 @@ def evidence_hit(evidence: str, chunk_texts: list[str]) -> float | None:
 def main():
     if len(sys.argv) != 2:
         sys.exit("Usage: uv run python evidence.py results/<run>.json")
-    golden = [json.loads(l) for l in GOLDEN.read_text(encoding="utf-8").splitlines() if l.strip()]
-    rows = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))["rows"]
+    data = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+    golden_path = Path(data.get("golden", GOLDEN))       # the question set this run used
+    golden = [json.loads(l) for l in golden_path.read_text(encoding="utf-8").splitlines() if l.strip()]
+    rows = data["rows"]
     if "chunk_texts" not in rows[0]:
         sys.exit("This results file has no chunk text (runs before 15 Oct). Re-run eval.py to get one.")
 
