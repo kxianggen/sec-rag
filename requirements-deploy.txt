@@ -1,8 +1,7 @@
 # What the web app (app.py) needs at runtime -- the offline pipeline (extract, chunk, embed, xbrl, eval)
-# is not in the image. torch is installed separately in the Dockerfile (CPU-only build).
-# Versions pinned to match uv.lock.
-sentence-transformers==6.1.0
-transformers==5.17.0
+# is not in the image. No PyTorch: questions are embedded with ONNX Runtime via fastembed
+# (SEC_RAG_EMBEDDER=onnx, verified against PyTorch with check_onnx.py). Pinned versions.
+fastembed==0.9.0
 numpy==2.4.6
 fastapi==0.143.1
 uvicorn==0.54.0

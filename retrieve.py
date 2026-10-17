@@ -28,7 +28,6 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 import numpy as np
-from sentence_transformers import SentenceTransformer
 
 # Default index: "final" = table rows (Exp 4) + contextual headers (Phase 1a), Intel removed
 # (finalize_index.py, 17 Oct). "tables_hdr" = the same with Intel (all runs of 16 Oct).
@@ -44,12 +43,36 @@ _bm25 = None        # keyword index, built on first hybrid search
 _conn = None        # Postgres connection (pgvector store only)
 
 STORE = os.getenv("SEC_RAG_STORE", "numpy")
+# How the QUESTION is embedded (chunk vectors were made once by embed.py with PyTorch):
+#   "torch" -- sentence-transformers + PyTorch (default on the laptop)
+#   "onnx"  -- the same all-MiniLM-L6-v2 weights run by ONNX Runtime via fastembed: no PyTorch,
+#              about half the memory; used in the deployed container (512 MB free host)
+EMBEDDER = os.getenv("SEC_RAG_EMBEDDER", "torch")
 
 RRF_K = 60          # reciprocal rank fusion constant (the usual default)
 TOKEN_RE = re.compile(r"[a-z0-9]+")
 STOPWORDS = {"the", "a", "an", "of", "in", "its", "it", "to", "and", "or", "what", "did", "was",
              "were", "is", "how", "which", "for", "on", "from", "say", "about", "had", "have", "do",
              "does", "their", "this", "that", "by", "at", "with", "much", "many"}
+
+
+class _OnnxEmbedder:
+    """Drop-in for SentenceTransformer.encode() using fastembed (ONNX Runtime)."""
+
+    def __init__(self, name: str):
+        from fastembed import TextEmbedding
+        self._model = TextEmbedding(model_name=name)
+
+    def encode(self, texts, normalize_embeddings: bool = True):
+        v = np.array(list(self._model.embed(list(texts))), dtype=np.float32)
+        return v / np.linalg.norm(v, axis=1, keepdims=True) if normalize_embeddings else v
+
+
+def _make_model():
+    if EMBEDDER == "onnx":
+        return _OnnxEmbedder(MODEL)
+    from sentence_transformers import SentenceTransformer     # imported only when used (not in the container)
+    return SentenceTransformer(MODEL)
 
 
 def set_index(name: str) -> None:
@@ -92,7 +115,7 @@ def _connect():
 def _load():
     global _model, _chunks, _vectors, _latest
     if _model is None:
-        _model = SentenceTransformer(MODEL)
+        _model = _make_model()
         if STORE == "pgvector":
             # Chunk text + metadata still come into memory: BM25 (hybrid) needs every text.
             # Vectors stay in the database; only the search runs there.

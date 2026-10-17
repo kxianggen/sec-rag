@@ -180,6 +180,8 @@ def main():
     p.add_argument("--rewrite", type=int, choices=[1, 2], default=None,
                    help="Phase 1b part 2: LLM writes one focused search per target (+1 LLM call per question). "
                         "1 = per company x year (16 Oct: 0.68, 5 wrong, not adopted), 2 = per company")
+    p.add_argument("--embedder", choices=["torch", "onnx"], default=None,
+                   help="how questions are embedded: torch (default) or onnx (what the deployed container uses)")
     p.add_argument("--no-facts", action="store_true",
                    help="turn OFF the exact XBRL figures (default on since Phase 2: 0.67 -> 0.77); off reproduces earlier runs")
     p.add_argument("--split-only", action="store_true",
@@ -192,6 +194,9 @@ def main():
                         "3 = + copy numbers exactly (Phase 1b)")
     a = p.parse_args()
     GOLDEN = a.golden
+    if a.embedder:
+        import retrieve
+        retrieve.EMBEDDER = a.embedder
     set_index(a.index)
     set_store(a.store)
 
@@ -202,7 +207,7 @@ def main():
     if a.out:
         a.out.parent.mkdir(parents=True, exist_ok=True)
         a.out.write_text(json.dumps({"k": a.k, "index": a.index, "store": a.store, "mode": a.mode,
-                                          "max_per_section": a.max_per_section, "expand": not a.no_expand, "rewrite": a.rewrite, "split_only": a.split_only, "facts": not a.no_facts, "golden": str(a.golden),
+                                          "max_per_section": a.max_per_section, "expand": not a.no_expand, "rewrite": a.rewrite, "split_only": a.split_only, "facts": not a.no_facts, "golden": str(a.golden), "embedder": a.embedder or "torch",
                                           "prompt": a.prompt, "rubric": a.rubric,
                                           "judge_model": JUDGE_MODEL if a.rubric == "v2.1" else "answer model", "rows": rows}, indent=1, ensure_ascii=False), encoding="utf-8")
         print(f"\nSaved {a.out}")
