@@ -1,156 +1,136 @@
-# sec-rag — question answering over SEC 10-K filings
+# FilingLens — cited answers from SEC 10-K filings
 
-Ask questions about six US semiconductor companies' annual reports (NVIDIA, AMD, Micron,
-Broadcom, Qualcomm, Marvell; fiscal years 2023–2026) and get answers that quote only the
-filings, cite their sources, and say "Not in the filings." when the answer isn't there.
+[![CI](https://github.com/kxianggen/sec-rag/actions/workflows/ci.yml/badge.svg)](https://github.com/kxianggen/sec-rag/actions/workflows/ci.yml)
 
-The corpus is a fixed snapshot of 18 10-K filings downloaded in September 2026 (Intel was
-dropped: its 10-K structure defeats the section parser — see FAILURES #1). "Latest fiscal
-year" means the newest filing in this snapshot.
+**Live demo: [filinglens-wtl8.onrender.com](https://filinglens-wtl8.onrender.com)** · runs on a free
+instance, so the first question after a quiet spell can take about a minute while it wakes up.
 
-*Full README (architecture, setup, demo) in progress. Results so far:*
+Ask questions about six US semiconductor companies' annual reports — NVIDIA, AMD, Micron,
+Broadcom, Qualcomm and Marvell, fiscal years 2023–2026 — and get answers that use **only** the
+filings, cite every claim, and say *"Not in the filings."* when the answer isn't there.
 
-## Results
-
-Measured on 12 hand-written golden questions (10 answerable + 2 unanswerable) with
-`eval.py`. Answers graded by an LLM judge (see below). The golden set later grew to 30
-questions — current results are in [Results on 30 questions](#results-on-30-questions).
-
-| Stage | Change | Recall@5 | Refusal ok | Answer score |
+| | Questions | Answer score | CRAG score | Wrong answers |
 |---|---|---|---|---|
-| Baseline (T10) | dense retrieval, company + year filters | 0.50 | 8/12 | — |
-| T11 | detect every fiscal year in the question | 0.60 | 10/12 | — |
-| T12 | retrieve per company for cross-company questions | 0.65 | 12/12 | — |
-| T14 | "latest fiscal year" → each company's newest filing | 0.65 | 10/12 | 0.62 |
-| Exp 2 (current) | 10 chunks instead of 5 | 0.80 @10 | 12/12 | 0.67 |
+| Starting point (dense retrieval) | 30 (dev) | 0.55 | +0.32 | 7 |
+| **Final system** | **30 (dev)** | **0.77** | **+0.70** | **2** |
+| **Final system, held-out** | **11 (written after the system was frozen, run once)** | **0.82** | **+0.73** | **1** |
 
-- **Recall@k:** share of the golden source passages (company + filing + section) found in
-  the top k chunks (k = 5 until Experiment 2, then 10), averaged over answerable questions.
-- **Refusal ok:** answered when it should, refused when it should.
-- **Answer score:** correct = 1, partial = 0.5, incorrect = 0, graded against the golden
-  answer.
+Graded by an LLM judge (gpt-4o) against a written rubric; the judge agrees with my blind hand
+labels on **15 of 17** answers (0.88). Details in [Evaluation](#evaluation).
 
-T14 lowered refusal ok for a good reason: two cross-company questions that were
-previously answered *wrongly* (fiscal 2023 data; an invented figure) are now refused. The
-system went from confidently wrong to honestly saying it doesn't have the answer.
+## How it works
 
-### Experiment 1 — does where you cut the text matter?
+```mermaid
+flowchart LR
+    Q[Question] --> D[Detect companies,<br/>fiscal years, 'latest']
+    D --> S[Hybrid search<br/>dense + BM25, RRF]
+    D --> F[XBRL fact lookup<br/>exact reported figures]
+    S --> P[Prompt: numbered passages<br/>+ facts, cite-or-refuse rules]
+    F --> P
+    P --> L[gpt-4o-mini, temperature 0]
+    L --> A[Answer with clickable citations<br/>+ the passages it used]
+```
 
-| Chunking | Recall@5 | Answer score | Refusal ok |
-|---|---|---|---|
-| Fixed (cut every 1,000 characters) | 0.40 | 0.38 | 8/12 |
-| **Paragraph (whole lines packed up to 1,000 characters)** | **0.65** | **0.62** | **10/12** |
+- **Corpus:** 18 10-K filings (6 companies × 3 years) from SEC EDGAR, split into Items
+  (Business, Risk Factors, MD&A, Financial Statements, …) and packed into **8,883 chunks**.
+  Every table row is rewritten as a self-contained line — *"Total debt principal outstanding
+  (in millions): November 2, 2025 = $67,120; November 3, 2024 = $69,847"* — so a number never
+  loses its label or its year.
+- **Contextual headers:** each chunk is searched with a header such as *"NVIDIA 10-K fiscal 2026 ·
+  Item 7 Management's Discussion and Analysis · Results of Operations"*.
+- **Hybrid search:** all-MiniLM-L6-v2 embeddings (384-d) for meaning + a BM25 keyword index for
+  exact terms, merged with reciprocal rank fusion. Company, fiscal-year and "latest filing"
+  filters; one search per company for comparison questions; finance abbreviations expanded
+  (R&D → research and development).
+- **Structured facts:** 21,821 numbers read from the filings' inline **XBRL** tags (e.g.
+  `us-gaap:Revenues`, company-wide, full year). For number questions the exact figure is added to
+  the prompt as its own citable source — XBRL separates a company's total from its segments,
+  which text search kept confusing.
+- **Two interchangeable vector stores:** in-memory numpy, or **pgvector on Supabase (Postgres)**
+  with filters in SQL — verified to return identical results on all 30 questions.
+- **Serving:** FastAPI (`POST /ask`, `GET /health`), input validation, per-visitor and daily rate
+  limits, a plain HTML page that inserts model output as text only (no HTML injection).
+- **Deployment:** Docker image on Render. Questions are embedded with **ONNX Runtime** instead of
+  PyTorch — same model, cosine similarity 1.000000 on all 41 test questions, identical retrieval —
+  which cut memory from **452 MiB to 223 MiB** so it fits a 512 MB free instance.
 
-I compared fixed-size chunks with paragraph chunks, keeping everything else the same: the
-12 golden questions, chunk size, embedding model, k = 5, LLM and judge. Paragraph chunking
-won clearly. Fixed cuts hurt in two ways: sometimes they split the sentence holding the
-answer, so it was no longer retrieved (Q1, NVIDIA's fiscal 2026 revenue); sometimes the
-right section was retrieved but the chunk no longer contained the full figure, so the model
-refused (Q4, recall 1.00 but "Not in the filings."). Number questions suffered most (fact
-recall 0.33 → 0.00). Caveats: 12 questions is a small set, where one question moves the
-score by about 0.1, and paragraph chunks are also shorter on average (8,504 vs 6,953
-chunks), so chunk length changed slightly too.
+## Evaluation
 
-### Experiment 2 — does the model need more context?
+**Golden set (dev):** 30 questions I wrote — 7 fact, 6 cross-period, 6 cross-company,
+7 narrative, 4 unanswerable — each answer looked up in the raw filing with a verbatim quote.
+Each question also lists the **required facts** it asks for, so answers aren't marked down for
+leaving out background the question never asked about.
 
-| Chunks per question | Answer score | Refusal ok | Prompt size |
-|---|---|---|---|
-| 5 | 0.62 | 10/12 | 1× |
-| **10** | **0.67** | **12/12** | ~2× |
+**Held-out set:** 11 new questions (including metrics the fact lookup doesn't cover, and two
+traps: the filing never names TSMC; NVIDIA's 10-K never mentions HBM), written after the system
+was frozen and run exactly once. Score 0.82 vs 0.77 on dev — no sign of overfitting to the 30.
 
-With 5 chunks, the two cross-company questions get only 2 chunks per company and refuse.
-With 10, every answerable question gets an answer. (Recall rises to 0.80, but recall@10 vs
-recall@5 isn't a fair comparison: more slots, more chances.) The answer-score gain comes
-from one question: Micron's gross margin is now quoted exactly ("40%") instead of
-recomputed ("≈39.8%"). The cross-company questions still miss: for AMD vs NVIDIA net income
-the model now gives NVIDIA's correct figure and says AMD's isn't in the excerpts, which is
-better than inventing it (an earlier run did) or refusing, but still graded incorrect.
-The missing piece is one specific table row, which suggests keyword search (BM25) next.
-Decision: **k = 10**. At this scale the extra cost is negligible (well under a tenth of a
-US cent per question with gpt-4o-mini) and answers are more complete and more honest; at
-production volume the 2× prompt size would need weighing against that small gain.
+**Metrics**
+- **Answer score:** correct 1 · partial 0.5 · incorrect 0 (rubric categories A–E adapted from
+  OpenAI's fact-grading eval: a subset of the required facts = partial; contradicting them = incorrect;
+  a figure outside rounding, e.g. "$8.4B" for $8,091M, = incorrect).
+- **CRAG score:** correct +1 · partial +0.5 · refusal 0 · **wrong −1** — makes a confident wrong
+  answer cost more than "I don't know".
+- **Recall@10** (right company + filing + Item retrieved) and **evidence hit** (the exact golden
+  quote found in a retrieved chunk) — two levels of retrieval quality.
+- **Judge validation:** I labelled 17 answers blind; the judge agreed on 15. Both disagreements
+  were the judge being stricter than the rubric, so reported scores lean conservative.
 
-## Results on 30 questions
+**Experiments** (30 dev questions, all re-graded with the final rubric). Each row is one change on top of
+the system adopted so far:
 
-The 12-question set was too small (one question moves the score by ~0.08) and I had tuned the
-system on it. I grew it to 30: 7 fact, 6 cross-period, 6 cross-company, 7 narrative and
-4 unanswerable, each answer checked against a quote from the filing.
+| Change | Answer | CRAG | Wrong | Decision |
+|---|---|---|---|---|
+| Baseline: dense retrieval, paragraph chunks | 0.55 | +0.32 | 7 | — |
+| Section cap (≤ 3 chunks per section) | 0.62 | +0.48 | 4 | not adopted (decided under the first rubric, where it gained nothing); a blind rule that inflates recall |
+| **Hybrid search (dense + BM25, RRF)** | 0.63 | +0.47 | 5 | **adopted** |
+| Hybrid + section cap | 0.57 | +0.33 | 7 | not adopted |
+| Table rows as self-contained lines | 0.62 | +0.48 | 4 | tested with headers ↓ |
+| **Table rows + contextual headers** | 0.67 | +0.60 | 2 | **adopted** |
+| Abbreviation expansion | 0.67 | +0.57 | 3 | **adopted** — fixed retrieval for its target (evidence 0 → 1); the −1 is answer noise on unchanged retrieval |
+| LLM query rewriter (per company × year) | 0.68 | +0.52 | 5 | not adopted: splitting by year hid tables that show both years |
+| LLM query rewriter v2 (per company) | 0.63 | +0.50 | 4 | not adopted |
+| Prompt rule: copy numbers exactly | 0.65 | +0.55 | 3 | not adopted: the model broke the rule it was given |
+| **XBRL facts in the prompt** | **0.77** | **+0.70** | **2** | **adopted** |
 
-| Run (k = 10, answers at temperature 0) | Recall@10 | Refusal ok | Answer score |
-|---|---|---|---|
-| Baseline: dense retrieval | 0.68 | 26/30 | 0.55 |
-| **Hybrid: dense + BM25 keyword search (current)** | **0.76** | **27/30** | **0.65** |
+From the query-rewriter experiments on, a change was adopted only if it beat the current system on
+both CRAG and wrong answers — a rule set before seeing the numbers. The rubric itself changed once
+(v1 → v2.1, adding required facts and a stronger judge); every earlier run was re-graded so the
+whole table uses one ruler. Answers run at temperature 0; even so, about one question per run flips by
+chance, so changes smaller than ~0.03 are treated as noise.
 
-The score *dropped* when the set grew (0.67 on 12 → 0.58 on 30, before temperature 0): the
-original 12 scored ~0.71 against ~0.50 on the 18 new ones. Scores on the questions you tuned
-on are optimistic — that's why the set grew before any more tuning.
+Earlier stages on a 12-question set (dense filters, multi-year detection, per-company retrieval,
+fixed vs paragraph chunking, 5 vs 10 chunks) and everything that went wrong are logged in
+[FAILURES.md](FAILURES.md).
 
-Answers now run at temperature 0. Before that, re-running the same 30 questions flipped
-8 grades (4 up, 4 down) while the total barely moved, so a single run couldn't tell a real
-improvement from luck.
+## What it can't do (yet)
 
-### Experiment 3 — fixing what retrieval misses
+- **Questions that name no company** search all six at once; a company that mentions a topic
+  often can crowd out the others (held-out: found Micron's HBM mentions, missed Marvell's).
+- **Metrics outside the fact list** rely on text search, where a neighbouring table row can be
+  picked (held-out: "cash, cash equivalents and restricted cash" instead of "cash and cash equivalents").
+- **No follow-up questions:** each question is answered on its own.
+- Snapshot of filings downloaded September 2026; Intel was dropped because its filing structure
+  defeats the section parser (FAILURES #1).
 
-**The problem.** In the baseline, financial-statement notes (Items 8 and 15 — dense tables
-full of numbers) crowded out the prose sections that hold many answers. For "How many
-employees did NVIDIA have at the end of fiscal 2026?", 8 of the 10 retrieved chunks were
-Item 15 notes and the employee count in Item 1 never made it in, so the system said
-"Not in the filings."
+## Run it locally
 
-**What I tried**, one change at a time, against the same baseline:
+```bash
+uv sync
+cp .env.example .env            # add OPENAI_API_KEY (and DATABASE_URL for the pgvector store)
+uv run python ingest.py         # download the 10-K filings from EDGAR
+uv run python extract.py                       # text split into Items -> data/text (xbrl.py reads fiscal years here)
+uv run python extract.py --out data/text_tables # the same, in the folder chunk.py reads below
+uv run python chunk.py --text data/text_tables --headers --out data/chunks_tables_hdr.jsonl
+uv run python embed.py --chunks data/chunks_tables_hdr.jsonl --out data/embeddings_tables_hdr.npy
+uv run python finalize_index.py && uv run python xbrl.py
+uv run uvicorn app:app          # http://localhost:8000
+uv run python eval.py           # the 30-question evaluation (~30 US cents with the gpt-4o judge)
+```
 
-| Run | Recall@10 | Refusal ok | Answer score |
-|---|---|---|---|
-| Baseline (dense) | 0.68 | 26/30 | 0.55 |
-| A. Section cap: at most 3 chunks from one section | 0.87* | 26/30 | 0.55 |
-| **B. Hybrid: dense + BM25 keyword search** | **0.76** | **27/30** | **0.65** |
-| C. Hybrid + section cap | 0.88* | 27/30 | 0.57 |
-| D. Hybrid + prompt rule "use the company total, not a segment" | 0.76 | 27/30 | 0.63 |
+Or with Docker: `docker build -t filinglens . && docker run -p 8000:7860 --env-file .env filinglens`.
 
-\* inflated — see below.
+**Stack:** Python · FastAPI · sentence-transformers / ONNX Runtime · BM25 · numpy · Postgres +
+pgvector (Supabase) · OpenAI API · Docker · Render · GitHub Actions (CI: compile check + unit tests on every push)
 
-**A. Section cap.** Keep at most 3 chunks from the same section (company + filing + Item);
-when a 4th comes up, skip it and take the next-ranked chunk from another section. Recall
-jumped to 0.87 but the answer score didn't move. Two reasons. First, recall only checks that
-*a* chunk from the right section was retrieved, not *the* chunk with the answer, and forcing
-more sections into the top 10 raises that almost automatically: the NVIDIA employees
-question went from recall 0 to 1.00 and still refused, because the two Item 1 chunks that
-got in weren't the employees paragraph. Second, the cap is blind: it drops the 4th chunk of
-a section even when that chunk holds the answer. It fixed three questions (e.g. NVIDIA's $40.4B of share
-buybacks, which sits in Items 5 and 7) and broke one where the answer *was* in the busy
-section (Micron's revenue, from Item 8).
-
-**B. Hybrid search — adopted.** Dense retrieval ranks chunks by meaning; BM25 ranks them by
-exact word matches, giving more weight to words that are rare across the filings. I merge
-the two rankings with reciprocal rank fusion (each chunk scores 1/(60 + its rank) in each
-list, so the two scoring scales never need matching). A word like "employees" is fairly rare,
-so the paragraph that contains it moved up and NVIDIA's ~42,000 employees was answered
-correctly. Answer score 0.55 → 0.65, the biggest single gain on the 30 questions. One
-caveat: refusal ok rose to 27/30 partly because one question (Broadcom's R&D) went from an
-honest refusal to a wrong number.
-
-**C. Both together.** Worse than hybrid alone (0.57). The cap cut Qualcomm Item 7 chunks
-that hybrid had found, so two questions lost their figures; one then quoted Qualcomm's chip
-segment ($37.7B) instead of its total revenue ($44.3B).
-
-**D. Prompt rule.** I added "use the company-wide total, not a segment's figure, unless the
-question names the segment". It fixed nothing (none of the remaining wrong answers were
-segment mix-ups) and made one worse: for AMD vs NVIDIA net income, the model swapped
-"AMD's figure isn't in the excerpts" for a wrong number. Not adopted. (A prompt change
-can't affect retrieval — recall was identical — only how the answer is written.)
-
-**Decision:** hybrid search is the default; the section cap and the prompt rule stay
-available as options but are off. **What's left:** two employee questions that span two
-years or two companies (only 5 chunk slots each, and Item 1 doesn't make it), and answers
-that pick the wrong number from a table even when the right section is retrieved — next
-step is to save the retrieved chunk text with each result so those numbers can be traced.
-
-### Can the judge be trusted?
-
-Answers are graded by an LLM judge (`judge.py`) against written rules (correct / partial /
-incorrect; invented numbers are always incorrect). Before trusting it, I graded 8 answers
-by hand and compared: the judge agrees on **7 of 8 (0.88)**, after fixing two problems the
-comparison exposed (the judge was run without temperature 0, and one answer key was
-incomplete). The remaining disagreement is on a question I later reworded as ambiguous.
-
-See [FAILURES.md](FAILURES.md) for everything that went wrong and what fixed it.
+Built by Kong Xiang Gen.

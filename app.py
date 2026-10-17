@@ -108,7 +108,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="sec-rag", description="Questions about six US chip makers' 10-K filings, "
+app = FastAPI(title="FilingLens", description="Questions about six US chip makers' 10-K filings, "
               "answered only from the filings, with sources.", lifespan=lifespan)
 
 

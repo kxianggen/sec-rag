@@ -47,3 +47,4 @@ for name, got, want in CASES:
     failed += not ok
     print(f"{'PASS' if ok else 'FAIL'}  {name}" + ("" if ok else f"   (got {got!r}, want {want!r})"))
 print(f"\n{len(CASES) - failed}/{len(CASES)} passed")
+raise SystemExit(1 if failed else 0)

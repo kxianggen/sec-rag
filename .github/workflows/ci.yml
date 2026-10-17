@@ -1,0 +1,27 @@
+# Continuous integration: on every push and pull request, check that the code compiles and the
+# unit tests pass. No API keys or data files are needed (the evaluation itself is run by hand,
+# because it calls a paid LLM).
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Every Python file compiles
+        run: python -m py_compile *.py
+
+      - name: Unit tests (metrics, judge scoring, company / year detection)
+        run: |
+          python test_metrics.py
+          python test_scoring.py
+          python test_companies.py
