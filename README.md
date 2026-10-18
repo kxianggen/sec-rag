@@ -1,13 +1,36 @@
-# FilingLens — cited answers from SEC 10-K filings
+# FilingLens
 
 [![CI](https://github.com/kxianggen/sec-rag/actions/workflows/ci.yml/badge.svg)](https://github.com/kxianggen/sec-rag/actions/workflows/ci.yml)
 
-**Live demo: [filinglens-wtl8.onrender.com](https://filinglens-wtl8.onrender.com)** · runs on a free
-instance, so the first question after a quiet spell can take about a minute while it wakes up.
+Ask questions about chip makers' annual reports and get answers you can actually check: every
+claim links back to the passage in the filing it came from.
 
-Ask questions about six US semiconductor companies' annual reports — NVIDIA, AMD, Micron,
-Broadcom, Qualcomm and Marvell, fiscal years 2023–2026 — and get answers that use **only** the
-filings, cite every claim, and say *"Not in the filings."* when the answer isn't there.
+**Try it: [filinglens-wtl8.onrender.com](https://filinglens-wtl8.onrender.com)** (it runs on a free
+server, so the first question after a quiet spell can take about a minute while it wakes up).
+
+FilingLens covers the 10-K filings of six US semiconductor companies (NVIDIA, AMD, Micron,
+Broadcom, Qualcomm and Marvell) for fiscal years 2023–2026. It only answers from those filings.
+If the answer isn't in them, it says *"Not in the filings."* instead of guessing.
+
+## Using it
+
+- Type a question, or pick a suggested one. They're grouped by topic: comparisons, numbers and
+  trends, what the filings say, and a few that it should refuse.
+- Each answer shows its top sources as cards above the text. Click a number in the answer to jump
+  to the exact passage. Exact figures from the filings' XBRL financial data are labelled
+  separately from text passages, so you can tell a reported number from a quoted sentence.
+- Past questions are kept in your browser's history, and reopening one doesn't ask the model again.
+- Works on phones and in dark mode.
+
+For example, *"Which spent more on R&D in its latest fiscal year, NVIDIA or AMD?"* gets NVIDIA,
+with $18,497 million in fiscal 2026 against AMD's $8,091 million in fiscal 2025, with both figures
+cited.
+
+## How well it works
+
+I wrote 30 test questions by hand and looked up every answer in the original filings. After
+freezing the system, I wrote 11 new questions and ran them exactly once, to make sure I hadn't
+just tuned it to my own test set.
 
 | | Questions | Answer score | CRAG score | Wrong answers |
 |---|---|---|---|---|
@@ -15,8 +38,18 @@ filings, cite every claim, and say *"Not in the filings."* when the answer isn't
 | **Final system** | **30 (dev)** | **0.77** | **+0.70** | **2** |
 | **Final system, held-out** | **11 (written after the system was frozen, run once)** | **0.82** | **+0.73** | **1** |
 
-Graded by an LLM judge (gpt-4o) against a written rubric; the judge agrees with my blind hand
-labels on **15 of 17** answers (0.88). Details in [Evaluation](#evaluation).
+- **Answer score:** 1 for correct, 0.5 for partly correct, 0 for wrong. A figure outside rounding
+  (say "$8.4B" for $8,091M) counts as wrong.
+- **CRAG score:** a stricter version where a wrong answer costs −1 but "I don't know" costs 0,
+  so a confident mistake hurts more than an honest refusal.
+- Each question lists the facts it actually asks for, so an answer isn't marked down for skipping
+  background nobody asked about.
+- An LLM judge (gpt-4o) does the grading against a written rubric, adapted from OpenAI's
+  fact-grading eval. To check the judge, I labelled 17 answers myself without seeing its grades,
+  and we agreed on 15. In both disagreements the judge was stricter than the rubric, so if
+  anything the scores lean low.
+- The held-out set includes two trick questions: the filings never name TSMC, and NVIDIA's 10-K
+  never mentions HBM.
 
 ## How it works
 
@@ -31,89 +64,77 @@ flowchart LR
     L --> A[Answer with clickable citations<br/>+ the passages it used]
 ```
 
-- **Corpus:** 18 10-K filings (6 companies × 3 years) from SEC EDGAR, split into Items
-  (Business, Risk Factors, MD&A, Financial Statements, …) and packed into **8,883 chunks**.
-  Every table row is rewritten as a self-contained line — *"Total debt principal outstanding
-  (in millions): November 2, 2025 = $67,120; November 3, 2024 = $69,847"* — so a number never
-  loses its label or its year.
-- **Contextual headers:** each chunk is searched with a header such as *"NVIDIA 10-K fiscal 2026 ·
-  Item 7 Management's Discussion and Analysis · Results of Operations"*.
-- **Hybrid search:** all-MiniLM-L6-v2 embeddings (384-d) for meaning + a BM25 keyword index for
-  exact terms, merged with reciprocal rank fusion. Company, fiscal-year and "latest filing"
-  filters; one search per company for comparison questions; finance abbreviations expanded
+- **The data.** 18 filings from SEC EDGAR, split into their sections (Business, Risk Factors,
+  MD&A, Financial Statements and so on) and cut into **8,883 chunks**. Tables are rewritten row
+  by row, so a line like *"Total debt principal outstanding (in millions): November 2, 2025 =
+  $67,120; November 3, 2024 = $69,847"* never loses its label or its year. Each chunk also carries
+  a short header such as *"NVIDIA 10-K fiscal 2026 · Item 7 Management's Discussion and Analysis ·
+  Results of Operations"*.
+- **Search.** Two searches run side by side: embeddings (all-MiniLM-L6-v2) for meaning, and BM25
+  for exact words. Their results are merged with reciprocal rank fusion. The question is checked
+  for company names, fiscal years and "latest", so the search only looks in the right filings.
+  Comparison questions search each company separately, and common abbreviations are expanded
   (R&D → research and development).
-- **Structured facts:** 21,821 numbers read from the filings' inline **XBRL** tags (e.g.
-  `us-gaap:Revenues`, company-wide, full year). For number questions the exact figure is added to
-  the prompt as its own citable source — XBRL separates a company's total from its segments,
-  which text search kept confusing.
-- **Two interchangeable vector stores:** in-memory numpy, or **pgvector on Supabase (Postgres)**
-  with filters in SQL — verified to return identical results on all 30 questions.
-- **Serving:** FastAPI (`POST /ask`, `GET /health`), input validation, per-visitor and daily rate
-  limits, a plain HTML page that inserts model output as text only (no HTML injection).
-- **Deployment:** Docker image on Render. Questions are embedded with **ONNX Runtime** instead of
-  PyTorch — same model, cosine similarity 1.000000 on all 41 test questions, identical retrieval —
-  which cut memory from **452 MiB to 223 MiB** so it fits a 512 MB free instance.
+- **Exact numbers.** Text search kept mixing up a company's total with one of its segments. So I
+  also pulled **21,821 numbers** from the filings' inline XBRL tags (like `us-gaap:Revenues`,
+  company-wide, full year). For number questions, the exact figure goes into the prompt as its own
+  citable source. This was the biggest single improvement.
+- **Answering.** gpt-4o-mini at temperature 0, told to cite every claim or refuse.
+- **Storage.** The vectors can live in memory (numpy) or in Postgres with **pgvector on
+  Supabase**. Both return identical results on all 30 test questions.
+- **Serving.** FastAPI (`POST /ask`, `GET /health`) with input checks and rate limits per visitor
+  and per day. The page is a single HTML/CSS/JS file with no framework, and it inserts model
+  output as plain text only, so nothing can inject HTML into it.
+- **Deployment.** A Docker image on Render's free tier. Questions are embedded with **ONNX
+  Runtime** instead of PyTorch: same model, cosine similarity 1.000000 on all 41 test questions,
+  identical retrieval, and memory down from **452 MiB to 223 MiB**, enough to fit in 512 MB.
 
-## Evaluation
+## What I tried
 
-**Golden set (dev):** 30 questions I wrote — 7 fact, 6 cross-period, 6 cross-company,
-7 narrative, 4 unanswerable — each answer looked up in the raw filing with a verbatim quote.
-Each question also lists the **required facts** it asks for, so answers aren't marked down for
-leaving out background the question never asked about.
+Each row is one change on top of whatever had been kept before it, scored on the 30 dev questions
+(all re-graded with the final rubric):
 
-**Held-out set:** 11 new questions (including metrics the fact lookup doesn't cover, and two
-traps: the filing never names TSMC; NVIDIA's 10-K never mentions HBM), written after the system
-was frozen and run exactly once. Score 0.82 vs 0.77 on dev — no sign of overfitting to the 30.
-
-**Metrics**
-- **Answer score:** correct 1 · partial 0.5 · incorrect 0 (rubric categories A–E adapted from
-  OpenAI's fact-grading eval: a subset of the required facts = partial; contradicting them = incorrect;
-  a figure outside rounding, e.g. "$8.4B" for $8,091M, = incorrect).
-- **CRAG score:** correct +1 · partial +0.5 · refusal 0 · **wrong −1** — makes a confident wrong
-  answer cost more than "I don't know".
-- **Recall@10** (right company + filing + Item retrieved) and **evidence hit** (the exact golden
-  quote found in a retrieved chunk) — two levels of retrieval quality.
-- **Judge validation:** I labelled 17 answers blind; the judge agreed on 15. Both disagreements
-  were the judge being stricter than the rubric, so reported scores lean conservative.
-
-**Experiments** (30 dev questions, all re-graded with the final rubric). Each row is one change on top of
-the system adopted so far:
-
-| Change | Answer | CRAG | Wrong | Decision |
+| Change | Answer | CRAG | Wrong | Result |
 |---|---|---|---|---|
-| Baseline: dense retrieval, paragraph chunks | 0.55 | +0.32 | 7 | — |
-| Section cap (≤ 3 chunks per section) | 0.62 | +0.48 | 4 | not adopted (decided under the first rubric, where it gained nothing); a blind rule that inflates recall |
-| **Hybrid search (dense + BM25, RRF)** | 0.63 | +0.47 | 5 | **adopted** |
-| Hybrid + section cap | 0.57 | +0.33 | 7 | not adopted |
-| Table rows as self-contained lines | 0.62 | +0.48 | 4 | tested with headers ↓ |
-| **Table rows + contextual headers** | 0.67 | +0.60 | 2 | **adopted** |
-| Abbreviation expansion | 0.67 | +0.57 | 3 | **adopted** — fixed retrieval for its target (evidence 0 → 1); the −1 is answer noise on unchanged retrieval |
-| LLM query rewriter (per company × year) | 0.68 | +0.52 | 5 | not adopted: splitting by year hid tables that show both years |
-| LLM query rewriter v2 (per company) | 0.63 | +0.50 | 4 | not adopted |
-| Prompt rule: copy numbers exactly | 0.65 | +0.55 | 3 | not adopted: the model broke the rule it was given |
-| **XBRL facts in the prompt** | **0.77** | **+0.70** | **2** | **adopted** |
+| Baseline: dense retrieval, paragraph chunks | 0.55 | +0.32 | 7 | starting point |
+| Section cap (≤ 3 chunks per section) | 0.62 | +0.48 | 4 | dropped: a blunt rule that inflates recall, and it gained nothing under the first rubric |
+| **Hybrid search (dense + BM25, RRF)** | 0.63 | +0.47 | 5 | **kept** |
+| Hybrid + section cap | 0.57 | +0.33 | 7 | dropped |
+| Table rows as self-contained lines | 0.62 | +0.48 | 4 | tested together with headers ↓ |
+| **Table rows + contextual headers** | 0.67 | +0.60 | 2 | **kept** |
+| Abbreviation expansion | 0.67 | +0.57 | 3 | **kept**: it fixed retrieval for the question it targeted; the extra wrong answer was noise, with retrieval unchanged |
+| LLM query rewriter (per company × year) | 0.68 | +0.52 | 5 | dropped: splitting by year hid tables that show both years |
+| LLM query rewriter v2 (per company) | 0.63 | +0.50 | 4 | dropped |
+| Prompt rule: copy numbers exactly | 0.65 | +0.55 | 3 | dropped: the model broke the rule anyway |
+| **XBRL facts in the prompt** | **0.77** | **+0.70** | **2** | **kept** |
 
-From the query-rewriter experiments on, a change was adopted only if it beat the current system on
-both CRAG and wrong answers — a rule set before seeing the numbers. The rubric itself changed once
-(v1 → v2.1, adding required facts and a stronger judge); every earlier run was re-graded so the
-whole table uses one ruler. Answers run at temperature 0; even so, about one question per run flips by
-chance, so changes smaller than ~0.03 are treated as noise.
+A few ground rules I followed:
 
-Earlier stages on a 12-question set (dense filters, multi-year detection, per-company retrieval,
-fixed vs paragraph chunking, 5 vs 10 chunks) and everything that went wrong are logged in
+- From the query rewriter onwards, a change was kept only if it beat the current system on both
+  CRAG score and wrong answers. I set that rule before seeing the numbers.
+- The rubric changed once (v1 → v2.1, adding required facts and a stronger judge), so I re-graded
+  every earlier run to keep the whole table on the same scale.
+- Even at temperature 0, about one question per run flips by chance, so I treat differences
+  smaller than ~0.03 as noise.
+- Besides the answer scores, I tracked retrieval on its own: **Recall@10** (was the right
+  company, filing and section retrieved?) and **evidence hit** (was the exact quote retrieved?).
+
+Earlier experiments on a 12-question set (filters, multi-year detection, per-company retrieval,
+chunk sizes, 5 vs 10 chunks), along with everything that went wrong, are in
 [FAILURES.md](FAILURES.md).
 
-## What it can't do (yet)
+## Known limits
 
-- **Questions that name no company** search all six at once; a company that mentions a topic
-  often can crowd out the others (held-out: found Micron's HBM mentions, missed Marvell's).
-- **Metrics outside the fact list** rely on text search, where a neighbouring table row can be
-  picked (held-out: "cash, cash equivalents and restricted cash" instead of "cash and cash equivalents").
+- **Questions that name no company** search all six at once, and a company that mentions a topic
+  a lot can crowd out the others. In the held-out set, it found Micron's HBM mentions but missed
+  Marvell's.
+- **Numbers outside the XBRL fact list** rely on text search, which can grab a neighbouring table
+  row ("cash, cash equivalents and restricted cash" instead of "cash and cash equivalents").
 - **No follow-up questions:** each question is answered on its own.
-- Snapshot of filings downloaded September 2026; Intel was dropped because its filing structure
-  defeats the section parser (FAILURES #1).
+- The filings are a snapshot from September 2026. Intel was dropped because its filing layout
+  breaks the section parser (FAILURES #1).
 
-## Run it locally
+## Run it yourself
 
 ```bash
 uv sync
@@ -131,6 +152,7 @@ uv run python eval.py           # the 30-question evaluation (~30 US cents with 
 Or with Docker: `docker build -t filinglens . && docker run -p 8000:7860 --env-file .env filinglens`.
 
 **Stack:** Python · FastAPI · sentence-transformers / ONNX Runtime · BM25 · numpy · Postgres +
-pgvector (Supabase) · OpenAI API · Docker · Render · GitHub Actions (CI: compile check + unit tests on every push)
+pgvector (Supabase) · OpenAI API · Docker · Render · GitHub Actions (compile check and unit tests
+on every push)
 
 Built by Kong Xiang Gen.
