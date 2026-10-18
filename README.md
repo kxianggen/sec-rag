@@ -155,4 +155,4 @@ Or with Docker: `docker build -t filinglens . && docker run -p 8000:7860 --env-f
 pgvector (Supabase) · OpenAI API · Docker · Render · GitHub Actions (compile check and unit tests
 on every push)
 
-Built by Kong Xiang Gen.
+Built by Jayson.
